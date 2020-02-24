@@ -29,7 +29,7 @@ public class Controller {
 
         gender could be "MF" or "M" or "F"
 
-        age could be "1234" where 1 to 4 are the available age groups included
+        age could be "1234" where 1 to 4 are the available age groups
         e.g. if you only wanted oldest and youngest just do "14"
 
         income could be "123" if you wanted low, medium and high, "1" if you just want low etc
