@@ -2,6 +2,7 @@ package tests;
 
 import daos.ClickDao;
 import entities.Click;
+import models.ReaderCSV;
 
 import java.time.LocalDateTime;
 
@@ -15,5 +16,8 @@ public class Main {
         newClick.setClickCost(1.245378);
         clickDao.save(newClick);
         clickDao.getClicks().forEach(Click::printClick);
+        
+        ReaderCSV.readCSV("click_log.csv", "click");
+    	
     }
 }
