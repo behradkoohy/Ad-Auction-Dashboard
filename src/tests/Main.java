@@ -1,7 +1,7 @@
 package tests;
 
 import daos.ClickDao;
-import models.Click;
+import entities.Click;
 
 import java.time.LocalDateTime;
 

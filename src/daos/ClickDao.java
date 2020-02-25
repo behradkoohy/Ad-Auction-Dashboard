@@ -1,6 +1,6 @@
 package daos;
 
-import models.Click;
+import entities.Click;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

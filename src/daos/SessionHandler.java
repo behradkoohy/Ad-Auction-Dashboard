@@ -1,6 +1,6 @@
 package daos;
 
-import models.Click;
+import entities.Click;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
