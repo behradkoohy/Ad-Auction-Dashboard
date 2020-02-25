@@ -50,6 +50,7 @@ public class Click implements Serializable {
         this.clickCost = clickCost;
     }
 
+    //Add no-arg and arg constructor for new clicks (e.g. from csv import), remove set methods?
 
     public void printClick() {
         System.out.println(identifier);
