@@ -1,5 +1,5 @@
 //Common package where classes used by all levels of the system can be stored
-package models;
+package common;
 
 //Data class which holds all the information to populate a UI update
 public class Data {
