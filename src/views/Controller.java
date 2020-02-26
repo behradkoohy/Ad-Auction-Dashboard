@@ -257,6 +257,9 @@ public class Controller {
     }
 
     @FXML
+    /**
+     * Called every time the value of the date from picker changes
+     */
     public void updateDFrom(){
 
         dFrom = dFromPicker.getValue();
@@ -264,6 +267,9 @@ public class Controller {
     }
 
     @FXML
+    /**
+     * Called every time the value of the date to picker changes
+     */
     public void updateDTo(){
 
         dTo = dToPicker.getValue();
@@ -271,6 +277,9 @@ public class Controller {
     }
 
     @FXML
+    /**
+     * Called every time the value of the time from picker changes
+     */
     public void updateTFrom(){
 
         tFrom = timeFromPicker.getValue();
@@ -278,6 +287,9 @@ public class Controller {
     }
 
     @FXML
+    /**
+     * Called every time the value of the time to picker changes
+     */
     public void updateTTo(){
 
         tTo = timeToPicker.getValue();
@@ -345,6 +357,7 @@ public class Controller {
 
     }
 
+    //Generates a random string to populate UI for testing
     private String random(){
 
         Random r = new Random();
@@ -352,6 +365,7 @@ public class Controller {
 
     }
 
+    //Just for testing
     @FXML
     private void test(){
 
@@ -366,8 +380,6 @@ public class Controller {
         CPC.setText(random());
         CPM.setText(random());
         bounceRate.setText(random());
-
-
 
     }
 
