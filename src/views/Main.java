@@ -17,10 +17,15 @@ public class Main extends Application {
     //JavaFX requires to be in the same class as the main method
     @Override
     public void start(Stage primaryStage) throws Exception{
+
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root));
+
+        //Not needed later
+        primaryStage.setResizable(false);
         primaryStage.show();
+
     }
 
     public static void main(String[] args) {

@@ -21,7 +21,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="520.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.Controller">
+<AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="520.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.Controller">
    <children>
       <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="537.0" prefWidth="833.0">
          <columnConstraints>
@@ -32,7 +32,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <JFXTabPane prefHeight="525.0" prefWidth="534.0">
+            <JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="525.0" prefWidth="534.0">
                <tabs>
                   <Tab text="Campaign Statistics">
                      <content>
@@ -127,7 +127,7 @@
                   </Tab>
                </tabs>
             </JFXTabPane>
-            <JFXTabPane prefHeight="525.0" prefWidth="237.0" style="-fx-background-color: #e0e0e0#e0e0e0;" GridPane.columnIndex="1">
+            <JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="525.0" prefWidth="237.0" style="-fx-background-color: #e0e0e0#e0e0e0;" GridPane.columnIndex="1">
                <tabs>
                   <Tab text="Analytics">
                      <content>
@@ -271,9 +271,9 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <VBox prefHeight="498.0" prefWidth="248.0">
+                              <VBox prefHeight="505.0" prefWidth="278.0">
                                  <children>
-                                    <JFXToggleButton onAction="#toggleHighContrast" text="High Contrast" />
+                                    <JFXToggleButton onAction="#toggleHighContrast" text="High Contrast Mode" />
                                     <JFXToggleButton onAction="#toggleLargeFont" text="Large Font Mode" />
                                  </children>
                               </VBox>

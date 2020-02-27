@@ -1,9 +1,8 @@
 package views;
 
 import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTimePicker;
-import models.Data;
+import common.Data;
 import javafx.fxml.FXML;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.control.Label;
@@ -186,6 +185,7 @@ public class Controller {
      */
     public void refreshUI(Data d){}
 
+    //These toggle methods will be called whenever the checkboxes are ticked/unticked
     @FXML
     public void toggleMale(){
 
@@ -258,7 +258,7 @@ public class Controller {
 
     @FXML
     /**
-     * Called every time the value of the date from picker changes
+     * Called every time the value of the from date picker changes
      */
     public void updateDFrom(){
 
@@ -268,7 +268,7 @@ public class Controller {
 
     @FXML
     /**
-     * Called every time the value of the date to picker changes
+     * Called every time the value of the to date picker changes
      */
     public void updateDTo(){
 
@@ -278,7 +278,7 @@ public class Controller {
 
     @FXML
     /**
-     * Called every time the value of the time from picker changes
+     * Called every time the value of the from time picker changes
      */
     public void updateTFrom(){
 
@@ -288,7 +288,7 @@ public class Controller {
 
     @FXML
     /**
-     * Called every time the value of the time to picker changes
+     * Called every time the value of the to time picker changes
      */
     public void updateTTo(){
 
