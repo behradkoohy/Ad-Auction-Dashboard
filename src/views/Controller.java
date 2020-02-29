@@ -4,8 +4,10 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTimePicker;
 import common.Data;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,6 +49,9 @@ public class Controller {
     Corresponding UI components that can be found in scene builder with these identifiers,
     this is what the "@FXML" annotation means
      */
+
+    @FXML
+    private BorderPane borderPane;
 
     @FXML
     private JFXDatePicker dFromPicker;
@@ -139,6 +144,31 @@ public class Controller {
 
     private void init(){
 
+        Thread t = new Thread(new Runnable(){
+
+            public void run(){
+
+                while(borderPane == null){
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+                borderPane.prefHeightProperty().bind(borderPane.getScene().heightProperty());
+                borderPane.prefWidthProperty().bind(borderPane.getScene().widthProperty());
+
+                System.out.println("success");
+
+            }
+
+        });
+
+        t.start();
 
     }
 
@@ -357,17 +387,29 @@ public class Controller {
 
     }
 
+    @FXML
+    /**
+     * Called when the user presses the "load new campaign" button
+     */
+    public void loadNewCampaign(){
+
+        CampaignPopup popUp = new CampaignPopup(this);
+
+        System.out.println("method called");
+
+    }
+
     //Generates a random string to populate UI for testing
     private String random(){
 
         Random r = new Random();
-        return String.valueOf(r.nextInt(100));
+        return String.valueOf(r.nextInt(1000));
 
     }
 
     //Just for testing
     @FXML
-    private void test(){
+    public void test(){
 
         numImpressions.setText(random());
         numClicks.setText(random());
