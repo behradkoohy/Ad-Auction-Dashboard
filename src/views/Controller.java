@@ -194,9 +194,8 @@ public class Controller {
      */
     public void initialize(){
 
-        updateChart();
-
-        pieChartTest();
+        //TODO remove
+        test();
 
     }
 
@@ -213,6 +212,7 @@ public class Controller {
         genderPie.getData().addAll(gender1, gender2);
         genderPie.setTitle("Gender");
         genderPie.setLegendVisible(false);
+        genderPie.setStyle("-fx-font-size: " + 10 + "px;");
 
         PieChart.Data age1 = new PieChart.Data("<25", r.nextInt(30));
         PieChart.Data age2 = new PieChart.Data("25-34", r.nextInt(30));
@@ -221,12 +221,16 @@ public class Controller {
         PieChart.Data age5 = new PieChart.Data(">54", r.nextInt(30));
         agePie.getData().addAll(age1, age2, age3, age4, age5);
         agePie.setTitle("Age");
+        agePie.setLegendVisible(false);
+        agePie.setStyle("-fx-font-size: " + 10 + "px;");
 
         PieChart.Data income1 = new PieChart.Data("Low", r.nextInt(30));
         PieChart.Data income2 = new PieChart.Data("Medium", r.nextInt(30));
         PieChart.Data income3 = new PieChart.Data("High", r.nextInt(30));
         incomePie.getData().addAll(income1, income2, income3);
         incomePie.setTitle("Income");
+        incomePie.setLegendVisible(false);
+        incomePie.setStyle("-fx-font-size: " + 10 + "px;");
 
     }
 
@@ -533,6 +537,7 @@ public class Controller {
         bounceRate.setText(random());
 
         updateChart();
+        updateHistogram();
         pieChartTest();
 
     }
