@@ -4,10 +4,7 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTimePicker;
 import common.Data;
 import javafx.fxml.FXML;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
@@ -60,6 +57,9 @@ public class Controller {
     /*
     Corresponding UI components that can be found in scene builder with these identifiers,
     this is what the "@FXML" annotation means
+
+    When the application starts the FXML loader will inject the actual
+    UI component references in scene builder with these variables
      */
 
     @FXML
@@ -120,13 +120,31 @@ public class Controller {
     private Label bounceRate;
 
     @FXML
+    private PieChart genderPie;
+
+    @FXML
+    private PieChart agePie;
+
+    @FXML
+    private PieChart incomePie;
+
+    @FXML
     private LineChart<?,?> lineChart;
 
     @FXML
-    private CategoryAxis xAxis;
+    private CategoryAxis lineChartXAxis;
 
     @FXML
-    private NumberAxis yAxis;
+    private NumberAxis lineChartYAxis;
+
+    @FXML
+    private BarChart barChart;
+
+    @FXML
+    private CategoryAxis barChartXAxis;
+
+    @FXML
+    private NumberAxis barChartYAxis;
 
     public Controller(){
 
@@ -150,6 +168,7 @@ public class Controller {
         highContrastMode = false;
         largeFontMode = false;
 
+        //For testing purposes
         dFrom = LocalDate.now();
         tFrom = LocalTime.now();
 
@@ -164,45 +183,50 @@ public class Controller {
 
         unitsDifference = 0;
 
-        this.init();
-
     }
 
     @FXML
+    /**
+     * This method is called when the FXML loader has finished injecting
+     * references, so whenever you need to call a method on a UI component
+     * when the program opens do it from here so you know for
+     * certain it won't be null
+     */
     public void initialize(){
 
         updateChart();
 
+        pieChartTest();
+
     }
 
-    private void init(){
+    private void pieChartTest(){
 
-        /*
-        Thread t = new Thread(new Runnable(){
+        genderPie.getData().clear();
+        agePie.getData().clear();
+        incomePie.getData().clear();
 
-            public void run(){
+        Random r = new Random();
 
-                while(borderPane == null){
+        PieChart.Data gender1 = new PieChart.Data("Men", r.nextInt(50));
+        PieChart.Data gender2 = new PieChart.Data("Women", r.nextInt(50));
+        genderPie.getData().addAll(gender1, gender2);
+        genderPie.setTitle("Gender");
+        genderPie.setLegendVisible(false);
 
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        PieChart.Data age1 = new PieChart.Data("<25", r.nextInt(30));
+        PieChart.Data age2 = new PieChart.Data("25-34", r.nextInt(30));
+        PieChart.Data age3 = new PieChart.Data("35-44", r.nextInt(30));
+        PieChart.Data age4 = new PieChart.Data("45-54", r.nextInt(30));
+        PieChart.Data age5 = new PieChart.Data(">54", r.nextInt(30));
+        agePie.getData().addAll(age1, age2, age3, age4, age5);
+        agePie.setTitle("Age");
 
-                }
-
-
-                borderPane.prefHeightProperty().bind(borderPane.getScene().heightProperty());
-                borderPane.prefWidthProperty().bind(borderPane.getScene().widthProperty());
-
-                System.out.println("success");
-
-            }
-
-        });
-
-        t.start();*/
+        PieChart.Data income1 = new PieChart.Data("Low", r.nextInt(30));
+        PieChart.Data income2 = new PieChart.Data("Medium", r.nextInt(30));
+        PieChart.Data income3 = new PieChart.Data("High", r.nextInt(30));
+        incomePie.getData().addAll(income1, income2, income3);
+        incomePie.setTitle("Income");
 
     }
 
@@ -360,6 +384,11 @@ public class Controller {
 
     }
 
+    /*
+    Methods corresponding to the checkboxes for the chart
+    Each time one checkbox value is changed the chart will
+    automatically update
+     */
     @FXML
     private void toggleImpressions(){
 
@@ -414,43 +443,26 @@ public class Controller {
 
     }
 
-    private void updateChart(){
+    public void updateChart(){
 
-
-        ChartHandler handler = new ChartHandler(lineChart, xAxis,
-                yAxis, calcMetric(), unitsDifference, impressions,
+        ChartHandler handler = new ChartHandler(lineChart, lineChartXAxis,
+                lineChartYAxis, calcMetric(), unitsDifference, impressions,
                 conversions, clicks, uniqueUsers, bounces);
 
-        /*
-        System.out.println("xaxis val:" + xAxis);
-        System.out.println("yaxis val:" + yAxis);
+    }
 
-        XYChart.Series series1 = new XYChart.Series();
-        series1.getData().add(new XYChart.Data("test", 2));
-        series1.getData().add(new XYChart.Data("test", 3));
+    public void updateHistogram(){
 
-        lineChart.getData().addAll(series1);*/
+        HistogramHandler handler = new HistogramHandler(barChart, barChartXAxis,
+                barChartYAxis, calcMetric());
 
     }
 
     /**
      * Calculates the time and date difference specified by the user,
-     * and returns a value from 1 to 4 corresponding to which metric should be
-     * used
+     * and returns the string of the unit that should be used as a metric
      *
-     * If they have chosen a time period less than one hour then the
-     * metric should be minutes
-     *
-     * If they have chosen a time period between one hour and 24 hours
-     * then the metric should be hours
-     *
-     * If they have chosen a time period between 24 hours and one month then
-     * the metric should be days
-     *
-     * If they have chosen a time period greater than a month then the metric
-     * should be weeks
-     *
-     * @return code 1,2, 3 or 4 denotes whether the metric should be mins, hours, days or weeks
+     * @return metric whether the metric is minutes, hours, days or weeks
      */
     public String calcMetric(){
 
@@ -496,7 +508,7 @@ public class Controller {
 
     }
 
-    //Generates a random string to populate UI for testing
+    //TODO Generates a random string to populate UI for testing
     private String random(){
 
         Random r = new Random();
@@ -504,7 +516,7 @@ public class Controller {
 
     }
 
-    //Just for testing
+    //TODO Just for testing
     @FXML
     public void test(){
 
@@ -521,6 +533,7 @@ public class Controller {
         bounceRate.setText(random());
 
         updateChart();
+        pieChartTest();
 
     }
 

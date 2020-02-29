@@ -46,16 +46,15 @@ public class ChartHandler {
 
     }
 
-    public void init(){
+    /**
+     * Updates the chart to have the latest data
+     */
+    private void init(){
 
         chart.getData().clear();
 
-        //Disregard the time for now and just test chart function using 10 points on x axis
+        //TODO Disregard the time for now and just test chart function using 10 points on x axis
         unitDifference = 10;
-
-        /*
-        xAxis.setLabel(metric);
-        yAxis.setLabel("Number");*/
 
         if(xAxis == null){
 
@@ -100,6 +99,7 @@ public class ChartHandler {
 
         }
 
+        //TODO: for testing, remove this after
         System.out.println("finished loading the data, axis values are:");
         System.out.println("x axis:" + xAxis);
         System.out.println("y axis:" + yAxis);
