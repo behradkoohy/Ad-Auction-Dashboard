@@ -4,8 +4,10 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTimePicker;
 import common.Data;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
-import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
@@ -41,9 +43,19 @@ public class Controller {
     private LocalTime tFrom;
     private LocalTime tTo;
 
+    //Whether or not these metrics should be displayed on the graph
+    private boolean impressions;
+    private boolean conversions;
+    private boolean clicks;
+    private boolean uniqueUsers;
+    private boolean bounces;
+
     //Accessibility settings
     private boolean highContrastMode;
     private boolean largeFontMode;
+
+    //The number of "units" that will be displayed along the x axis
+    private int unitsDifference;
 
     /*
     Corresponding UI components that can be found in scene builder with these identifiers,
@@ -108,7 +120,13 @@ public class Controller {
     private Label bounceRate;
 
     @FXML
-    private AreaChart chart;
+    private LineChart<?,?> lineChart;
+
+    @FXML
+    private CategoryAxis xAxis;
+
+    @FXML
+    private NumberAxis yAxis;
 
     public Controller(){
 
@@ -122,6 +140,12 @@ public class Controller {
         lowIncome = true;
         medIncome = true;
         highIncome = true;
+
+        impressions = true;
+        conversions = true;
+        clicks = true;
+        uniqueUsers = true;
+        bounces = true;
 
         highContrastMode = false;
         largeFontMode = false;
@@ -138,12 +162,22 @@ public class Controller {
         dTo = LocalDate.now();
         tTo = LocalTime.now();
 
+        unitsDifference = 0;
+
         this.init();
+
+    }
+
+    @FXML
+    public void initialize(){
+
+        updateChart();
 
     }
 
     private void init(){
 
+        /*
         Thread t = new Thread(new Runnable(){
 
             public void run(){
@@ -168,7 +202,7 @@ public class Controller {
 
         });
 
-        t.start();
+        t.start();*/
 
     }
 
@@ -327,6 +361,46 @@ public class Controller {
     }
 
     @FXML
+    private void toggleImpressions(){
+
+        impressions = !impressions;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleConversions(){
+
+        conversions = !conversions;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleClicks(){
+
+        clicks = !clicks;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleUnique(){
+
+        uniqueUsers = !uniqueUsers;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleBounces(){
+
+        bounces = !bounces;
+        updateChart();
+
+    }
+
+    @FXML
     private void toggleHighContrast(){
 
         highContrastMode = !highContrastMode;
@@ -337,6 +411,25 @@ public class Controller {
     private void toggleLargeFont(){
 
         largeFontMode = !largeFontMode;
+
+    }
+
+    private void updateChart(){
+
+
+        ChartHandler handler = new ChartHandler(lineChart, xAxis,
+                yAxis, calcMetric(), unitsDifference, impressions,
+                conversions, clicks, uniqueUsers, bounces);
+
+        /*
+        System.out.println("xaxis val:" + xAxis);
+        System.out.println("yaxis val:" + yAxis);
+
+        XYChart.Series series1 = new XYChart.Series();
+        series1.getData().add(new XYChart.Data("test", 2));
+        series1.getData().add(new XYChart.Data("test", 3));
+
+        lineChart.getData().addAll(series1);*/
 
     }
 
@@ -359,7 +452,7 @@ public class Controller {
      *
      * @return code 1,2, 3 or 4 denotes whether the metric should be mins, hours, days or weeks
      */
-    public int calcMetric(){
+    public String calcMetric(){
 
         LocalDateTime before = LocalDateTime.of(dFrom, tFrom);
         LocalDateTime after = LocalDateTime.of(dTo, tTo);
@@ -369,19 +462,23 @@ public class Controller {
 
         if(days >= 30){
 
-            return 4;
+            unitsDifference = Math.round(before.until(after, ChronoUnit.WEEKS));
+            return "Weeks";
 
         } else if(days >= 1){
 
-            return 3;
+            unitsDifference = Math.round(days);
+            return "Days";
 
         } else if(hours >= 1){
 
-            return 2;
+            unitsDifference = Math.round(hours);
+            return "Hours";
 
         } else {
 
-            return 1;
+            unitsDifference = Math.round(before.until(after, ChronoUnit.MINUTES));
+            return "Minutes";
 
         }
 
@@ -395,7 +492,7 @@ public class Controller {
 
         CampaignPopup popUp = new CampaignPopup(this);
 
-        System.out.println("method called");
+        //System.out.println("method called");
 
     }
 
@@ -422,6 +519,8 @@ public class Controller {
         CPC.setText(random());
         CPM.setText(random());
         bounceRate.setText(random());
+
+        updateChart();
 
     }
 

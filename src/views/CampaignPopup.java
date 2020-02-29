@@ -91,7 +91,7 @@ public class CampaignPopup {
 
         Button load = new Button("Load");
         //load.setStyle("-fx-background-color: #9575cd");
-        bottom.add(load,0,0);
+        bottom.add(load,1,0);
         load.setOnAction(new EventHandler(){
 
             @Override
@@ -126,7 +126,7 @@ public class CampaignPopup {
 
         Button cancel = new Button( "Cancel");
         //cancel.setStyle("-fx-background-color: #9575cd");
-        bottom.add(cancel, 1,0);
+        bottom.add(cancel, 0,0);
         cancel.setOnAction(e -> popUp.close());
 
         bottom.setPadding(new Insets(0,0,10,0));

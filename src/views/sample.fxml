@@ -8,8 +8,8 @@
 <?import com.jfoenix.controls.JFXTimePicker?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.AreaChart?>
 <?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
@@ -22,9 +22,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="537.0" prefWidth="833.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.Controller">
+<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="585.0" prefWidth="836.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.Controller">
    <top>
-      <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="537.0" prefWidth="833.0" BorderPane.alignment="CENTER">
+      <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="585.0" prefWidth="836.0" BorderPane.alignment="CENTER">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="559.0" minWidth="10.0" prefWidth="511.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="234.0" />
@@ -97,7 +97,7 @@
                                           <Label fx:id="bounceRate" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                                        </children>
                                        <VBox.margin>
-                                          <Insets top="10.0" />
+                                          <Insets top="30.0" />
                                        </VBox.margin>
                                     </GridPane>
                                  </children>
@@ -108,34 +108,72 @@
                   </Tab>
                   <Tab text="Graphs">
                      <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <AnchorPane fx:id="graphPane" minHeight="0.0" minWidth="0.0" prefHeight="541.0" prefWidth="591.0">
                            <children>
-                              <AreaChart fx:id="chart" layoutX="14.0" layoutY="14.0">
+                              <LineChart fx:id="lineChart" layoutX="28.0" layoutY="21.0">
                                 <xAxis>
-                                  <CategoryAxis side="BOTTOM" />
+                                  <CategoryAxis side="BOTTOM" fx:id="xAxis" />
                                 </xAxis>
                                 <yAxis>
-                                  <NumberAxis side="LEFT" />
+                                  <NumberAxis fx:id="yAxis" side="LEFT" />
                                 </yAxis>
-                              </AreaChart>
+                              </LineChart>
+                              <VBox layoutX="28.0" layoutY="467.0" prefHeight="85.0" prefWidth="513.0">
+                                 <children>
+                                    <Label alignment="CENTER" prefHeight="17.0" prefWidth="503.0" text="Metrics to Display:" underline="true">
+                                       <VBox.margin>
+                                          <Insets bottom="20.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <FlowPane prefHeight="38.0" prefWidth="508.0">
+                                       <children>
+                                          <JFXCheckBox onAction="#toggleImpressions" selected="true" text="Impressions">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox onAction="#toggleConversions" selected="true" text="Conversions">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox onAction="#toggleClicks" selected="true" text="Clicks">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox onAction="#toggleUnique" selected="true" text="Unique users">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox onAction="#toggleBounces" selected="true" text="Bounces">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                       </children>
+                                    </FlowPane>
+                                 </children>
+                              </VBox>
                            </children>
                         </AnchorPane>
                      </content>
                   </Tab>
-                  <Tab text="Histogram">
+                  <Tab text="Click Histogram">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                      </content>
                   </Tab>
                </tabs>
             </JFXTabPane>
-            <JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="525.0" prefWidth="237.0" style="-fx-background-color: #e0e0e0#e0e0e0;" GridPane.columnIndex="1">
+            <JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="598.0" prefWidth="279.0" style="-fx-background-color: #e0e0e0#e0e0e0;" GridPane.columnIndex="1">
                <tabs>
                   <Tab text="Filter">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <VBox minHeight="506.0" minWidth="278.0" prefHeight="506.0" prefWidth="278.0" spacing="10.0">
+                              <VBox minHeight="506.0" minWidth="278.0" prefHeight="604.0" prefWidth="278.0" spacing="10.0">
                                  <children>
                                     <Label fx:id="genderTitle" text="Gender" underline="true">
                                        <padding>
@@ -241,7 +279,7 @@
                                     </FlowPane>
                                     <JFXDatePicker fx:id="dFromPicker" onAction="#updateDFrom" promptText="Date From">
                                        <VBox.margin>
-                                          <Insets left="10.0" />
+                                          <Insets left="10.0" top="10.0" />
                                        </VBox.margin>
                                     </JFXDatePicker>
                                     <JFXDatePicker fx:id="dToPicker" onAction="#updateDTo" promptText="Date To">
@@ -261,7 +299,7 @@
                                     </JFXTimePicker>
                                     <JFXButton onAction="#test" style="-fx-background-color: #9575cd#9575cd;" text="RELOAD DATA" textFill="WHITE">
                                        <VBox.margin>
-                                          <Insets left="10.0" top="20.0" />
+                                          <Insets left="10.0" top="30.0" />
                                        </VBox.margin>
                                     </JFXButton>
                                  </children>
