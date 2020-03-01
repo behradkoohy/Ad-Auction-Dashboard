@@ -22,7 +22,7 @@ public class SessionHandler {
                 //Should create hibernate.cfg.xml but am lazy
                 Properties settings = new Properties();
                 settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/sys");
+                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/app");
                 settings.put(Environment.USER, "application");
                 settings.put(Environment.PASS, "app_password1");
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
