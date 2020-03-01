@@ -4,7 +4,7 @@
 1. Install a MySQL database version `8.0.19 (MySQL Community Server - GPL)`
 2. Configure to `localhost` on port `3309`
 3. Create new schema/database named `app` if not already
-4. To configure with relevant tables run the query below:
+4. To configure with relevant tables run the queries below:
     ```
     CREATE TABLE app.Click (
         Identifier INT,
@@ -27,6 +27,17 @@
         ImpressionCost FLOAT(8) NOT NULL,
         PRIMARY KEY (Identifier)
    )
+   
+    CREATE TABLE app.ServerEntry (
+        Identifier INT,
+        Campaign VARCHAR(255)   NOT NULL,
+        EntryDate DATETIME      NOT NULL,
+        Id BIGINT               NOT NULL,
+        ExitDate DATETIME       NOT NULL,
+        PageViews INT           NOT NULL,
+        Conversion BOOL         NOT NULL,
+        PRIMARY KEY (Identifier)
+    )
     ```
 5. Create a new user with username `application` and password `app_password1`
 
