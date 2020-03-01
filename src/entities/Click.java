@@ -8,16 +8,30 @@ import java.time.LocalDateTime;
 @Table(name = "click")
 public class Click implements Serializable {
 
+    public Click() {
+
+    }
+
+    public Click(String campaign, long id, LocalDateTime date, double clickCost) {
+        this.campaign = campaign;
+        this.id = id;
+        this.date = date;
+        this.clickCost = clickCost;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column
     private int identifier;
 
     @Column
-    private long id;
+    private String campaign;
 
     @Column
     private LocalDateTime date;
+
+    @Column
+    private long id;
 
     @Column
     private double clickCost;
@@ -26,36 +40,24 @@ public class Click implements Serializable {
         return identifier;
     }
 
+    public String getCampaign() { return campaign; }
+
+    public LocalDateTime getDate() { return date; }
+
     public long getId() {
         return id;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
     }
 
     public double getClickCost() {
         return clickCost;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public void setClickCost(double clickCost) {
-        this.clickCost = clickCost;
-    }
-
-    //Add no-arg and arg constructor for new clicks (e.g. from csv import), remove set methods?
-
-    public void printClick() {
-        System.out.println(identifier);
-        System.out.println(id);
-        System.out.println(date);
-        System.out.println(clickCost);
+    //For testing
+    public void print() {
+        System.out.println("Identifier: " + identifier);
+        System.out.println("Campaign: " + campaign );
+        System.out.println("ID: " + id);
+        System.out.println("Date: " + date);
+        System.out.println("Click cost: " + clickCost);
     }
 }

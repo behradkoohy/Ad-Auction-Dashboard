@@ -1,23 +1,39 @@
 package tests;
 
 import daos.ClickDao;
+<<<<<<< HEAD
 import entities.Click;
 import models.ReaderCSV;
+=======
+import daos.ImpressionDao;
+import entities.Impression;
+>>>>>>> 329b56c38897e052eafdf06eb480a2494629660a
 
 import java.time.LocalDateTime;
 
+
 public class Main {
     public static void main(String[] args) {
-        //Testing
         ClickDao clickDao = new ClickDao();
-        Click newClick = new Click();
-        newClick.setId(1234562922096180000L);
-        newClick.setDate(LocalDateTime.now());
-        newClick.setClickCost(1.245378);
+        ImpressionDao impressionDao = new ImpressionDao();
+        //Testing
+        /*
+        Click newClick = new Click("Second Campaign", 1234562922096180000L, LocalDateTime.now(), 1.245378 );
         clickDao.save(newClick);
-        clickDao.getClicks().forEach(Click::printClick);
-        
-        ReaderCSV.readCSV("click_log.csv", "click");
-    	
+        clickDao.getFromCampaign("First Campaign").forEach(Click::print);
+        */
+
+
+        Impression newImpression = new Impression("Another Campaign", LocalDateTime.now(), 1234562922096180000L,
+                Impression.Gender.MALE, Impression.Age.FROM35TO44, Impression.Income.MEDIUM, Impression.Context.NEWS,
+                1.245378);
+        Impression anotherImpression = new Impression("Another Campaign", LocalDateTime.now(), 1234564922096183300L,
+                Impression.Gender.MALE, Impression.Age.OVER54, Impression.Income.LOW, Impression.Context.NEWS,
+                0.448778);
+
+        impressionDao.save(newImpression);
+        impressionDao.save(anotherImpression);
+
+        impressionDao.getByAge(Impression.Age.FROM35TO44).forEach(Impression::print);;
     }
 }

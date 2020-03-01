@@ -1,19 +1,19 @@
 package daos;
 
-import entities.Click;
+import entities.ServerEntry;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.util.List;
 
 
-public class ClickDao {
+public class ServerEntryDao {
 
-    public void save(Click click) {
+    public void save(ServerEntry serverEntry) {
         Transaction transaction = null;
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.save(click);
+            session.save(serverEntry);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -23,15 +23,15 @@ public class ClickDao {
         }
     }
 
-    public List<Click> getAll() {
+    public List<ServerEntry> getAll() {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Click", Click.class).list();
+            return session.createQuery("from ServerEntry", ServerEntry.class).list();
         }
     }
 
-    public List<Click> getFromCampaign(String campaign) {
+    public List<ServerEntry> getFromCampaign(String campaign) {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Click where campaign=:campaign", Click.class).setParameter("campaign", campaign).list();
+            return session.createQuery("from Click where campaign=:campaign", ServerEntry.class).setParameter("campaign", campaign).list();
         }
     }
 
