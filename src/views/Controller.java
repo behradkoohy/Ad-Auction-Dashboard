@@ -2,7 +2,6 @@ package views;
 
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTimePicker;
-import common.Data;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
@@ -248,34 +247,6 @@ public class Controller {
      * @param timeTo String representation of the end filter time
      * @return Data object with the specified attributes
      */
-    public Data getRequest(String gender, String age, String income,
-                           String dateFrom, String dateTo, String timeFrom,
-                           String timeTo){
-
-        /*
-        Will work something like this:
-
-        gender could be "MF" or "M" or "F"
-
-        age could be "1234" where 1 to 4 are the available age groups
-        e.g. if you only wanted oldest and youngest just do "14"
-
-        income could be "123" if you wanted low, medium and high, "1" if you just want low etc
-
-        //controller will then forward this request to database then when it receives will return the data object
-        Data d = controller.get(gender, age ... timeFrom, timeTo);
-        return d
-        */
-
-        return null;
-
-    }
-
-    /**
-     * Refreshes the UI according to the data in object d
-     * @param d
-     */
-    public void refreshUI(Data d){}
 
     //These toggle methods will be called whenever the checkboxes are ticked/unticked
     @FXML
