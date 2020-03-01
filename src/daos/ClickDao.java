@@ -23,9 +23,15 @@ public class ClickDao {
         }
     }
 
-    public List<Click> getClicks() {
+    public List<Click> getAll() {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
             return session.createQuery("from Click", Click.class).list();
+        }
+    }
+
+    public List<Click> getFromCampaign(String campaign) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            return session.createQuery("from Click where campaign=:campaign", Click.class).setParameter("campaign", campaign).list();
         }
     }
 
