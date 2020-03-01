@@ -2,6 +2,7 @@ package daos;
 
 import entities.Click;
 import entities.Impression;
+import entities.ServerEntry;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -37,6 +38,7 @@ public class SessionHandler {
 
                 configuration.addAnnotatedClass(Click.class);
                 configuration.addAnnotatedClass(Impression.class);
+                configuration.addAnnotatedClass(ServerEntry.class);
 
                 ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                         .applySettings(configuration.getProperties()).build();
