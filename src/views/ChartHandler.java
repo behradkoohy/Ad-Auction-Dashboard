@@ -42,7 +42,11 @@ public class ChartHandler {
 
         r = new Random();
 
+        //TODO remove
+        System.out.println("unit difference is: " + unitDifference);
+
         this.init();
+        //this.init();
 
     }
 
@@ -54,7 +58,10 @@ public class ChartHandler {
         chart.getData().clear();
 
         //TODO Disregard the time for now and just test chart function using 10 points on x axis
-        unitDifference = 10;
+        //unitDifference = 10;
+
+        xAxis.setLabel(metric);
+        yAxis.setLabel("Number");
 
         if(xAxis == null){
 
@@ -67,7 +74,6 @@ public class ChartHandler {
             System.out.println("y axis null");
 
         }
-
 
         if(impressions){
 
@@ -104,9 +110,6 @@ public class ChartHandler {
         System.out.println("x axis:" + xAxis);
         System.out.println("y axis:" + yAxis);
 
-        xAxis.setLabel(metric);
-        yAxis.setLabel("Number");
-
     }
 
     private void addImpressions(){
@@ -128,7 +131,6 @@ public class ChartHandler {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("Conversions");
-
 
         for(int x = 1; x <= unitDifference; x++){
 

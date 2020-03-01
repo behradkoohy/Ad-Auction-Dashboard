@@ -369,14 +369,17 @@
                                           <Insets top="10.0" />
                                        </VBox.margin>
                                     </FlowPane>
+                                    <Label text="Date/Time from" underline="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
                                     <JFXDatePicker fx:id="dFromPicker" onAction="#updateDFrom" promptText="Date From">
                                        <VBox.margin>
-                                          <Insets left="10.0" top="10.0" />
-                                       </VBox.margin>
-                                    </JFXDatePicker>
-                                    <JFXDatePicker fx:id="dToPicker" onAction="#updateDTo" promptText="Date To">
-                                       <VBox.margin>
-                                          <Insets left="10.0" />
+                                          <Insets left="10.0" top="5.0" />
                                        </VBox.margin>
                                     </JFXDatePicker>
                                     <JFXTimePicker fx:id="timeFromPicker" onAction="#updateTFrom" promptText="Time From">
@@ -384,6 +387,19 @@
                                           <Insets left="10.0" />
                                        </VBox.margin>
                                     </JFXTimePicker>
+                                    <Label text="Date/Time to" underline="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <JFXDatePicker fx:id="dToPicker" onAction="#updateDTo" promptText="Date To">
+                                       <VBox.margin>
+                                          <Insets left="10.0" />
+                                       </VBox.margin>
+                                    </JFXDatePicker>
                                     <JFXTimePicker fx:id="timeToPicker" onAction="#updateTTo" promptText="Time To">
                                        <VBox.margin>
                                           <Insets left="10.0" />
@@ -391,7 +407,7 @@
                                     </JFXTimePicker>
                                     <JFXButton onAction="#test" style="-fx-background-color: #9575cd#9575cd;" text="RELOAD DATA" textFill="WHITE">
                                        <VBox.margin>
-                                          <Insets left="10.0" top="30.0" />
+                                          <Insets left="10.0" top="10.0" />
                                        </VBox.margin>
                                     </JFXButton>
                                  </children>

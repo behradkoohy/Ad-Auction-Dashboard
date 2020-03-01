@@ -212,7 +212,7 @@ public class CampaignPopup {
     }
 
     /**
-     * Displays and shows an error dialog window with the given window
+     * Displays and shows an error dialog window with the given message
      * @param message
      */
     public void error(String message){

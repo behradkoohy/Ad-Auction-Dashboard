@@ -194,6 +194,21 @@ public class Controller {
      */
     public void initialize(){
 
+        lineChart.setAnimated(false);
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime weekAgo = now.minus(1, ChronoUnit.WEEKS);
+
+        dToPicker.setValue(now.toLocalDate());
+        updateDTo();
+        timeToPicker.setValue(now.toLocalTime());
+        updateTTo();
+
+        dFromPicker.setValue(weekAgo.toLocalDate());
+        updateDFrom();
+        timeFromPicker.setValue(weekAgo.toLocalTime());
+        updateTFrom();
+
         //TODO remove
         test();
 
