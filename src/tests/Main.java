@@ -1,13 +1,12 @@
 package tests;
 
 import daos.ClickDao;
-<<<<<<< HEAD
-import entities.Click;
-import models.ReaderCSV;
-=======
 import daos.ImpressionDao;
+
+import entities.Click;
 import entities.Impression;
->>>>>>> 329b56c38897e052eafdf06eb480a2494629660a
+
+import models.ReaderCSV;
 
 import java.time.LocalDateTime;
 
