@@ -1,18 +1,21 @@
 package views;
 
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTimePicker;
-import common.Data;
+import com.jfoenix.controls.*;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.BorderPane;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.List;
 
 public class Controller {
 
@@ -54,6 +57,8 @@ public class Controller {
     //The number of "units" that will be displayed along the x axis
     private int unitsDifference;
 
+    private CampaignHandler campaignHandler;
+
     /*
     Corresponding UI components that can be found in scene builder with these identifiers,
     this is what the "@FXML" annotation means
@@ -63,7 +68,29 @@ public class Controller {
      */
 
     @FXML
-    private BorderPane borderPane;
+    private JFXTabPane LHS;
+
+    @FXML
+    private JFXComboBox campaignDropDown;
+
+    @FXML
+    private JFXButton loadPrevious;
+
+    @FXML
+    private JFXTextField campaignName;
+
+    @FXML
+    private Label clickLogLabel;
+
+    @FXML
+    private Label impressionLogLabel;
+
+    @FXML
+    private Label serverLogLabel;
+
+    @FXML
+    //This can be changed each time the user switches to a new/different campaign
+    private Label campaignNameLabel;
 
     @FXML
     private JFXDatePicker dFromPicker;
@@ -76,15 +103,6 @@ public class Controller {
 
     @FXML
     private JFXTimePicker timeToPicker;
-
-    @FXML
-    private Label genderTitle;
-
-    @FXML
-    private Label ageTitle;
-
-    @FXML
-    private Label incomeTitle;
 
     @FXML
     private Label numImpressions;
@@ -159,29 +177,20 @@ public class Controller {
         medIncome = true;
         highIncome = true;
 
+        //Initial state of checkboxes below the chart
         impressions = true;
         conversions = true;
-        clicks = true;
-        uniqueUsers = true;
-        bounces = true;
+        clicks = false;
+        uniqueUsers = false;
+        bounces = false;
 
         highContrastMode = false;
         largeFontMode = false;
 
-        //For testing purposes
-        dFrom = LocalDate.now();
-        tFrom = LocalTime.now();
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        dTo = LocalDate.now();
-        tTo = LocalTime.now();
-
         unitsDifference = 0;
+
+        campaignHandler = new CampaignHandler(this, clickLogLabel,
+                impressionLogLabel, serverLogLabel);
 
     }
 
@@ -194,26 +203,78 @@ public class Controller {
      */
     public void initialize(){
 
-        lineChart.setAnimated(false);
+        //TODO dont think this is needed as I can toggle in scene builder, keep here for now
+        //lineChart.setAnimated(false);
 
+        //Initially the date spinners will be from week ago until now
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime weekAgo = now.minus(1, ChronoUnit.WEEKS);
-
         dToPicker.setValue(now.toLocalDate());
         updateDTo();
         timeToPicker.setValue(now.toLocalTime());
         updateTTo();
-
         dFromPicker.setValue(weekAgo.toLocalDate());
         updateDFrom();
         timeFromPicker.setValue(weekAgo.toLocalTime());
         updateTFrom();
+
+        //Setting up the look of the pie charts
+        genderPie.setTitle("Gender");
+        genderPie.setLegendVisible(false);
+        genderPie.setStyle("-fx-font-size: " + 10 + "px;");
+        agePie.setTitle("Age");
+        agePie.setLegendVisible(false);
+        agePie.setStyle("-fx-font-size: " + 10 + "px;");
+        incomePie.setTitle("Income");
+        incomePie.setLegendVisible(false);
+        incomePie.setStyle("-fx-font-size: " + 10 + "px;");
 
         //TODO remove
         test();
 
     }
 
+    /**
+     * Updates the pie chart with the latest data with all of the values
+     * @param men
+     * @param women
+     * @param lt25
+     * @param btwn2534
+     * @param btwn3544
+     * @param btwn4554
+     * @param gt55
+     * @param lowIncome
+     * @param medIncome
+     * @param highIncome
+     */
+    public void updatePieChartData(int men, int women, int lt25,
+                                   int btwn2534, int btwn3544,
+                                   int btwn4554, int gt55, int lowIncome,
+                                   int medIncome, int highIncome){
+
+        genderPie.getData().clear();
+        agePie.getData().clear();
+        incomePie.getData().clear();
+
+        PieChart.Data gender1 = new PieChart.Data("Men", men);
+        PieChart.Data gender2 = new PieChart.Data("Women", women);
+        genderPie.getData().addAll(gender1, gender2);
+
+        PieChart.Data age1 = new PieChart.Data("<25", lt25);
+        PieChart.Data age2 = new PieChart.Data("25-34", btwn2534);
+        PieChart.Data age3 = new PieChart.Data("35-44", btwn3544);
+        PieChart.Data age4 = new PieChart.Data("45-54", btwn4554);
+        PieChart.Data age5 = new PieChart.Data(">54", gt55);
+        agePie.getData().addAll(age1, age2, age3, age4, age5);
+
+        PieChart.Data income1 = new PieChart.Data("Low", lowIncome);
+        PieChart.Data income2 = new PieChart.Data("Medium", medIncome);
+        PieChart.Data income3 = new PieChart.Data("High", highIncome);
+        incomePie.getData().addAll(income1, income2, income3);
+
+    }
+
+    //TODO refreshes pie charts with random data, only for testing so remove
     private void pieChartTest(){
 
         genderPie.getData().clear();
@@ -250,47 +311,14 @@ public class Controller {
     }
 
     /**
-     * Forwards a request to the controller which in turn
-     * forwards a request to the database to get a data object with
-     * all the specified attributes
-     *
-     * @param gender String represenation of gender groups
-     * @param age String representation of age groups
-     * @param income String representation of income groups
-     * @param dateFrom String representation of the start filter date
-     * @param dateTo String representation of the end filter date
-     * @param timeFrom String representation of the start filter time
-     * @param timeTo String representation of the end filter time
-     * @return Data object with the specified attributes
+     * Used by the campaign manager to go to next page after loading/creating a campaign
      */
-    public Data getRequest(String gender, String age, String income,
-                           String dateFrom, String dateTo, String timeFrom,
-                           String timeTo){
+    public void goToMainPage(){
 
-        /*
-        Will work something like this:
-
-        gender could be "MF" or "M" or "F"
-
-        age could be "1234" where 1 to 4 are the available age groups
-        e.g. if you only wanted oldest and youngest just do "14"
-
-        income could be "123" if you wanted low, medium and high, "1" if you just want low etc
-
-        //controller will then forward this request to database then when it receives will return the data object
-        Data d = controller.get(gender, age ... timeFrom, timeTo);
-        return d
-        */
-
-        return null;
+        SingleSelectionModel<Tab> model = LHS.getSelectionModel();
+        model.select(1);
 
     }
-
-    /**
-     * Refreshes the UI according to the data in object d
-     * @param d
-     */
-    public void refreshUI(Data d){}
 
     //These toggle methods will be called whenever the checkboxes are ticked/unticked
     @FXML
@@ -464,8 +492,10 @@ public class Controller {
 
     public void updateChart(){
 
+        List data = new ArrayList(10);
+
         ChartHandler handler = new ChartHandler(lineChart, lineChartXAxis,
-                lineChartYAxis, calcMetric(), unitsDifference, impressions,
+                lineChartYAxis, calcMetric(), data, unitsDifference, impressions,
                 conversions, clicks, uniqueUsers, bounces);
 
     }
@@ -517,15 +547,62 @@ public class Controller {
 
     @FXML
     /**
-     * Called when the user presses the "load new campaign" button
+     * Called by the choose file for click log button
      */
+    public void chooseClickLog(){
+
+        campaignHandler.chooseClick();
+
+    }
+
+    @FXML
+    /**
+     * Called by the choose file for impression log button
+     */
+    public void chooseImpressionLog(){
+
+        campaignHandler.chooseImpression();
+
+    }
+
+    @FXML
+    /**
+     * Called by the choose file for server log button
+     */
+    public void chooseServerLog(){
+
+        campaignHandler.chooseServer();
+
+    }
+
+    @FXML
+    /**
+     * Called by the load campaign button, loads a previous campaign from the combo box
+     */
+    public void loadCampaign(){
+
+
+
+    }
+
+    @FXML
+    /**
+     * Called by the create campaign button
+     */
+    public void createCampaign(){
+
+        campaignHandler.createCampaign();
+
+    }
+
+    /*
     public void loadNewCampaign(){
 
         CampaignPopup popUp = new CampaignPopup(this);
 
         //System.out.println("method called");
 
-    }
+    }*/
 
     //TODO Generates a random string to populate UI for testing
     private String random(){
@@ -554,6 +631,20 @@ public class Controller {
         updateChart();
         updateHistogram();
         pieChartTest();
+
+    }
+
+    /**
+     * Displays and shows an error dialog window with the given message
+     * @param message
+     */
+    public void error(String message){
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
 
     }
 

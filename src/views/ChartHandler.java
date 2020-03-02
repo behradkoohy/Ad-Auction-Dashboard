@@ -2,6 +2,7 @@ package views;
 
 import javafx.scene.chart.*;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -15,6 +16,14 @@ public class ChartHandler {
     private NumberAxis yAxis;
 
     private String metric;
+
+    /*
+    The list of data that will populate the chart,
+    the list items are the y values and the list indices
+    are the x values
+    */
+    private List data;
+
     private int unitDifference;
     private boolean impressions;
     private boolean conversions;
@@ -25,12 +34,13 @@ public class ChartHandler {
     private Random r;
 
     public ChartHandler(LineChart chart, CategoryAxis xAxis, NumberAxis yAxis,
-                        String metric, int unitDifference, boolean impressions, boolean conversions, boolean clicks,
+                        String metric, List<Integer> data, int unitDifference, boolean impressions, boolean conversions, boolean clicks,
                         boolean unique, boolean bounces){
 
         this.chart = chart;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
+        this.data = data;
 
         this.metric = metric;
         this.unitDifference = unitDifference;
