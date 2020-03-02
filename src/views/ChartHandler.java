@@ -109,6 +109,10 @@ public class ChartHandler {
 
     }
 
+    /*
+    At the moment this is dummy data, can change the constructor e.g. add the controller as
+    an argument so that the updated data sets from the database to go on the chart can be accessed
+    */
     private void addImpressions(){
 
         XYChart.Series series = new XYChart.Series();
