@@ -37,6 +37,7 @@ public class HistogramHandler {
 
     private void init(){
 
+        //This sets up the bar chart to look like a histogram
         chart.getData().clear();
         chart.setLegendVisible(false);
         chart.setAnimated(false);
