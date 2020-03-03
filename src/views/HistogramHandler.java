@@ -113,8 +113,8 @@ public class HistogramHandler {
 
         chart.getData().add(series);
 
-        xAxis.setLabel("Click range");
-        yAxis.setLabel("Number of clicks");
+        xAxis.setLabel("Days");
+        yAxis.setLabel("Cost of clicks");
 
     }
 
