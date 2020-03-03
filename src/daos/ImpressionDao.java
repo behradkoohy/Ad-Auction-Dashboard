@@ -5,6 +5,7 @@ import entities.Impression.Age;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -40,6 +41,16 @@ public class ImpressionDao {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
             return session.createQuery("from Impression where age=:age", Impression.class).setParameter("age", age).list();
         }
+    }
+
+    public List<Impression> getByDateAndCampaign(String campaign, LocalDateTime currentTime, LocalDateTime nextTime) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            return session.createQuery("from Impression where age=:age and date between(cTime, nTime) ", Impression.class)
+                    .setParameter("campaign", campaign)
+                    .setParameter("cTime", currentTime)
+                    .setParameter("nTime", nextTime).list();
+        }
+
     }
 
 
