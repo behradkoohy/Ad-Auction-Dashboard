@@ -1,11 +1,14 @@
 package views;
 
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXDatePicker;
+import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTimePicker;
-import common.Data;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
 import javafx.scene.layout.BorderPane;
 
 import java.time.LocalDate;
@@ -54,6 +57,9 @@ public class Controller {
     //The number of "units" that will be displayed along the x axis
     private int unitsDifference;
 
+    //Class for handling loading campaigns, this can connect to Alex' CSV reader class
+    private CampaignHandler campaignHandler;
+
     /*
     Corresponding UI components that can be found in scene builder with these identifiers,
     this is what the "@FXML" annotation means
@@ -61,6 +67,24 @@ public class Controller {
     When the application starts the FXML loader will inject the actual
     UI component references in scene builder with these variables
      */
+
+    @FXML
+    private JFXTabPane LHS;
+
+    @FXML
+    /*
+    The drop down list that shows the campaigns you can choose from
+     */
+    private JFXComboBox campaignChooser;
+
+    @FXML
+    private Label clickLabel;
+
+    @FXML
+    private Label impressionLabel;
+
+    @FXML
+    private Label serverLabel;
 
     @FXML
     private BorderPane borderPane;
@@ -148,6 +172,7 @@ public class Controller {
 
     public Controller(){
 
+        //True/false assignments correspond to whether the checkboxes are selected
         male = true;
         female = true;
         lt25 = true;
@@ -161,9 +186,9 @@ public class Controller {
 
         impressions = true;
         conversions = true;
-        clicks = true;
-        uniqueUsers = true;
-        bounces = true;
+        clicks = false;
+        uniqueUsers = false;
+        bounces = false;
 
         highContrastMode = false;
         largeFontMode = false;
@@ -191,14 +216,72 @@ public class Controller {
      * references, so whenever you need to call a method on a UI component
      * when the program opens do it from here so you know for
      * certain it won't be null
+     *
+     * Do all initialization steps in this method
      */
     public void initialize(){
 
+        //Setting up the look of the pie charts
+        genderPie.setTitle("Gender");
+        genderPie.setLegendVisible(false);
+        genderPie.setStyle("-fx-font-size: " + 10 + "px;");
+        agePie.setTitle("Age");
+        agePie.setLegendVisible(false);
+        agePie.setStyle("-fx-font-size: " + 10 + "px;");
+        incomePie.setTitle("Income");
+        incomePie.setLegendVisible(false);
+        incomePie.setStyle("-fx-font-size: " + 10 + "px;");
+
+        campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
+
         //TODO remove
-        test();
+        this.reloadData();
 
     }
 
+    /**
+     * Update the pie charts to show that some data has changed
+     *
+     * All values are the number of users there are for each attribute
+     *
+     * @param men
+     * @param women
+     * @param lt25
+     * @param btwn2534
+     * @param btwn3544
+     * @param btwn4554
+     * @param gt55
+     * @param lowIncome
+     * @param medIncome
+     * @param highIncome
+     */
+    public void updatePieCharts(int men, int women, int lt25, int btwn2534,
+                                int btwn3544, int btwn4554, int gt55, int lowIncome,
+                                int medIncome, int highIncome){
+
+        genderPie.getData().clear();
+        agePie.getData().clear();
+        incomePie.getData().clear();
+
+        PieChart.Data gender1 = new PieChart.Data("Men", men);
+        PieChart.Data gender2 = new PieChart.Data("Women", women);
+        genderPie.getData().addAll(gender1, gender2);
+
+        PieChart.Data age1 = new PieChart.Data("<25", lt25);
+        PieChart.Data age2 = new PieChart.Data("25-34", btwn2534);
+        PieChart.Data age3 = new PieChart.Data("35-44", btwn3544);
+        PieChart.Data age4 = new PieChart.Data("45-54", btwn4554);
+        PieChart.Data age5 = new PieChart.Data(">54", gt55);
+        agePie.getData().addAll(age1, age2, age3, age4, age5);
+
+        PieChart.Data income1 = new PieChart.Data("Low", lowIncome);
+        PieChart.Data income2 = new PieChart.Data("Medium", medIncome);
+        PieChart.Data income3 = new PieChart.Data("High", highIncome);
+        incomePie.getData().addAll(income1, income2, income3);
+
+    }
+
+    //TODO for testing
     private void pieChartTest(){
 
         genderPie.getData().clear();
@@ -210,9 +293,6 @@ public class Controller {
         PieChart.Data gender1 = new PieChart.Data("Men", r.nextInt(50));
         PieChart.Data gender2 = new PieChart.Data("Women", r.nextInt(50));
         genderPie.getData().addAll(gender1, gender2);
-        genderPie.setTitle("Gender");
-        genderPie.setLegendVisible(false);
-        genderPie.setStyle("-fx-font-size: " + 10 + "px;");
 
         PieChart.Data age1 = new PieChart.Data("<25", r.nextInt(30));
         PieChart.Data age2 = new PieChart.Data("25-34", r.nextInt(30));
@@ -222,7 +302,6 @@ public class Controller {
         agePie.getData().addAll(age1, age2, age3, age4, age5);
         agePie.setTitle("Age");
         agePie.setLegendVisible(false);
-        agePie.setStyle("-fx-font-size: " + 10 + "px;");
 
         PieChart.Data income1 = new PieChart.Data("Low", r.nextInt(30));
         PieChart.Data income2 = new PieChart.Data("Medium", r.nextInt(30));
@@ -233,49 +312,6 @@ public class Controller {
         incomePie.setStyle("-fx-font-size: " + 10 + "px;");
 
     }
-
-    /**
-     * Forwards a request to the controller which in turn
-     * forwards a request to the database to get a data object with
-     * all the specified attributes
-     *
-     * @param gender String represenation of gender groups
-     * @param age String representation of age groups
-     * @param income String representation of income groups
-     * @param dateFrom String representation of the start filter date
-     * @param dateTo String representation of the end filter date
-     * @param timeFrom String representation of the start filter time
-     * @param timeTo String representation of the end filter time
-     * @return Data object with the specified attributes
-     */
-    public Data getRequest(String gender, String age, String income,
-                           String dateFrom, String dateTo, String timeFrom,
-                           String timeTo){
-
-        /*
-        Will work something like this:
-
-        gender could be "MF" or "M" or "F"
-
-        age could be "1234" where 1 to 4 are the available age groups
-        e.g. if you only wanted oldest and youngest just do "14"
-
-        income could be "123" if you wanted low, medium and high, "1" if you just want low etc
-
-        //controller will then forward this request to database then when it receives will return the data object
-        Data d = controller.get(gender, age ... timeFrom, timeTo);
-        return d
-        */
-
-        return null;
-
-    }
-
-    /**
-     * Refreshes the UI according to the data in object d
-     * @param d
-     */
-    public void refreshUI(Data d){}
 
     //These toggle methods will be called whenever the checkboxes are ticked/unticked
     @FXML
@@ -501,14 +537,47 @@ public class Controller {
     }
 
     @FXML
+    public void chooseClick(){
+
+        campaignHandler.chooseClick();
+
+    }
+
+    @FXML
+    public void chooseServer(){
+
+        campaignHandler.chooseServer();
+
+    }
+
+    @FXML
+    public void chooseImpression(){
+
+        campaignHandler.chooseImpression();
+
+    }
+
+    @FXML
     /**
-     * Called when the user presses the "load new campaign" button
+     * Called when the user clicks the "create campaign" button
+     *
+     * This method should call an appropriate method from the
+     * CampaignHandler class
      */
     public void loadNewCampaign(){
 
-        CampaignPopup popUp = new CampaignPopup(this);
 
         //System.out.println("method called");
+
+    }
+
+    /**
+     * Sets the LHS tab pane to index 1 (the second tab as starts from 0)
+     */
+    public void goToMain(){
+
+        SingleSelectionModel<Tab> selectionModel = LHS.getSelectionModel();
+        selectionModel.select(1);
 
     }
 
@@ -520,9 +589,14 @@ public class Controller {
 
     }
 
-    //TODO Just for testing
+
     @FXML
-    public void test(){
+    /**
+     * Called by the reload data button, updates all
+     * UI components to have the most up to date data
+     */
+    //TODO Replace all the random values with values from database
+    public void reloadData(){
 
         numImpressions.setText(random());
         numClicks.setText(random());
