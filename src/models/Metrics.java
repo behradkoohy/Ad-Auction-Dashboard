@@ -29,6 +29,12 @@ public class Metrics {
     private ServerEntryDao serverDao;
 
 
+    public Metrics(ClickDao clickDao, ImpressionDao impressionsDao, ServerEntryDao serverEntryDao) {
+        this.clickDao = clickDao;
+        this.impressionsDao = impressionsDao;
+        this.serverDao = serverEntryDao;
+    }
+
     public int getNumImpressions(String campaign) {
         return impressionsDao.getFromCampaign(campaign).size();
     }
