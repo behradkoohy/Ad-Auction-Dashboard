@@ -1,15 +1,28 @@
 package views;
 
+
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
+
 
 /**
  * Class for selecting which campaign is in use and providing the ability to load a new
  * campaign
  */
+
 public class CampaignHandler {
 
     private File clickLog;
@@ -25,11 +38,28 @@ public class CampaignHandler {
     public CampaignHandler(Controller c, Label clickLabel,
                            Label impressionLabel, Label serverLabel){
 
-        this.c = c;
 
         this.clickLabel = clickLabel;
         this.impressionLabel = impressionLabel;
         this.serverLabel = serverLabel;
+
+
+        this.c = c;
+
+    }
+
+    public void createCampaign(){
+
+        if(clickLog == null || impressionLog == null || serverLog == null){
+
+            c.error("Please make sure you have chosen all 3 of the required CSV files!");
+
+        } else {
+
+            c.goToMainPage();
+
+        }
+
 
     }
 
@@ -47,7 +77,9 @@ public class CampaignHandler {
 
         } else if(clickLog.equals(impressionLog) || clickLog.equals(serverLog)){
 
-            error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
+
+            c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
+
             clickLog = null;
 
         }
@@ -70,7 +102,8 @@ public class CampaignHandler {
 
         } else if(impressionLog.equals(clickLog) || impressionLog.equals(serverLog)){
 
-            error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
+            c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
+
             impressionLog = null;
 
         }
@@ -93,7 +126,9 @@ public class CampaignHandler {
 
         } else if(serverLog.equals(clickLog) || serverLog.equals(impressionLog)){
 
-            error("You cannot have the same file for two inputs! Please make sure you have chosen the unique server log csv file");
+
+            c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique server log csv file");
+
 
         }
 

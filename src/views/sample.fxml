@@ -27,7 +27,7 @@
 
 <BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="586.0" prefWidth="932.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="views.Controller">
    <top>
-      <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="586.0" prefWidth="911.0" BorderPane.alignment="CENTER">
+      <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="602.0" prefWidth="918.0" BorderPane.alignment="CENTER">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="699.0" minWidth="10.0" prefWidth="699.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="233.0" />
@@ -42,16 +42,12 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <VBox prefHeight="555.0" prefWidth="699.0">
+                              <VBox prefHeight="554.0" prefWidth="680.0">
                                  <children>
-                                    <FlowPane prefHeight="38.0" prefWidth="384.0">
+                                    <FlowPane prefHeight="51.0" prefWidth="650.0">
                                        <children>
-                                          <JFXComboBox fx:id="campaignChooser" prefHeight="27.0" prefWidth="312.0" promptText="Load Previous Campaign">
-                                             <FlowPane.margin>
-                                                <Insets left="20.0" />
-                                             </FlowPane.margin>
-                                          </JFXComboBox>
-                                          <JFXButton onAction="#goToMain" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="LOAD  CAMPAIGN" textFill="WHITE">
+                                          <JFXComboBox fx:id="campaignDropDown" prefHeight="27.0" prefWidth="213.0" promptText="Choose Previous Campaign" />
+                                          <JFXButton buttonType="RAISED" onAction="#loadCampaign" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="LOAD CAMPAIGN" textFill="WHITE">
                                              <FlowPane.margin>
                                                 <Insets left="30.0" />
                                              </FlowPane.margin>
@@ -59,6 +55,100 @@
                                        </children>
                                        <VBox.margin>
                                           <Insets left="30.0" top="30.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
+                                    <Label text="Create Campaign from CSV data:" underline="true">
+                                       <VBox.margin>
+                                          <Insets left="30.0" top="10.0" />
+                                       </VBox.margin>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <FlowPane prefHeight="48.0" prefWidth="650.0">
+                                       <children>
+                                          <Label text="Campaign Name:" />
+                                          <JFXTextField fx:id="campaignName" prefHeight="27.0" prefWidth="313.0">
+                                             <FlowPane.margin>
+                                                <Insets left="20.0" />
+                                             </FlowPane.margin>
+                                          </JFXTextField>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="30.0" top="20.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
+                                    <GridPane vgap="5.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="202.0" minWidth="10.0" prefWidth="130.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="497.0" minWidth="10.0" prefWidth="149.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="340.0" minWidth="0.0" prefWidth="340.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <VBox.margin>
+                                          <Insets left="30.0" right="30.0" top="10.0" />
+                                       </VBox.margin>
+                                       <children>
+                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="193.0" text="Click Log File:" />
+                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="193.0" text="Impression Log File:" GridPane.rowIndex="1" />
+                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="193.0" text="Server Log File:" GridPane.rowIndex="2" />
+                                          <JFXButton onAction="#chooseClickLog" prefHeight="27.0" prefWidth="108.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;" text="Choose file" GridPane.columnIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="20.0" />
+                                             </GridPane.margin>
+                                          </JFXButton>
+                                          <JFXButton onAction="#chooseImpressionLog" prefHeight="27.0" prefWidth="108.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;" text="Choose file" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="20.0" />
+                                             </GridPane.margin>
+                                          </JFXButton>
+                                          <JFXButton onAction="#chooseServerLog" prefHeight="27.0" prefWidth="108.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;" text="Choose file" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                             <GridPane.margin>
+                                                <Insets left="20.0" />
+                                             </GridPane.margin>
+                                          </JFXButton>
+                                          <Label fx:id="clickLogLabel" text="No file selected" GridPane.columnIndex="2" />
+                                          <Label fx:id="impressionLogLabel" text="No file selected" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                          <Label fx:id="serverLogLabel" text="No file selected" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                       </children>
+                                    </GridPane>
+                                    <JFXButton buttonType="RAISED" onAction="#createCampaign" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="CREATE CAMPAIGN" textFill="WHITE">
+                                       <VBox.margin>
+                                          <Insets left="40.0" top="30.0" />
+                                       </VBox.margin>
+                                    </JFXButton>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+                  <Tab text="Campaign Statistics">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+
+                           <children>
+                              <VBox prefHeight="555.0" prefWidth="699.0">
+                                 <children>
+                                    <FlowPane prefHeight="200.0" prefWidth="200.0">
+                                       <children>
+                                          <Label text="Current Campaign:" underline="true">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="campaignNameLabel" text="Campaign Name">
+                                             <FlowPane.margin>
+                                                <Insets left="20.0" />
+
+                                             </FlowPane.margin>
+                                          </Label>
+                                       </children>
+                                          <Insets left="60.0" top="40.0" />
                                        </VBox.margin>
                                     </FlowPane>
                                     <Label text="Create new Campaign from CSV files:" underline="true">
@@ -254,7 +344,8 @@
                                           </GridPane>
                                        </children>
                                        <VBox.margin>
-                                          <Insets left="70.0" top="50.0" />
+                                          <Insets left="60.0" top="40.0" />
+
                                        </VBox.margin>
                                     </FlowPane>
                                     <FlowPane>
@@ -262,9 +353,10 @@
                                           <Insets left="20.0" top="30.0" />
                                        </VBox.margin>
                                        <children>
+                                          <PieChart fx:id="genderPie" prefHeight="220.0" prefWidth="220.0" />
                                           <PieChart fx:id="agePie" prefHeight="220.0" prefWidth="220.0" />
                                           <PieChart fx:id="incomePie" prefHeight="220.0" prefWidth="220.0" />
-                                          <PieChart fx:id="genderPie" prefHeight="220.0" prefWidth="220.0" />
+
                                        </children>
                                     </FlowPane>
                                  </children>
@@ -277,7 +369,7 @@
                      <content>
                         <AnchorPane fx:id="graphPane" minHeight="0.0" minWidth="0.0" prefHeight="541.0" prefWidth="591.0">
                            <children>
-                              <LineChart fx:id="lineChart" layoutX="29.0" layoutY="14.0">
+                              <LineChart fx:id="lineChart" animated="false" layoutX="29.0" layoutY="14.0">
                                 <xAxis>
                                   <CategoryAxis fx:id="lineChartXAxis" side="BOTTOM" />
                                 </xAxis>
@@ -305,6 +397,7 @@
                                              </FlowPane.margin>
                                           </JFXCheckBox>
                                           <JFXCheckBox onAction="#toggleClicks" text="Clicks">
+
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
@@ -321,6 +414,47 @@
                                           </JFXCheckBox>
                                        </children>
                                     </FlowPane>
+                                    <FlowPane prefHeight="38.0" prefWidth="508.0">
+                                       <children>
+                                          <JFXCheckBox onAction="#toggleTotal" text="Total cost">
+                                             <FlowPane.margin>
+                                                <Insets left="30.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox onAction="#toggleCTR" text="CTR">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox onAction="#toggleCPA" text="CPA">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox onAction="#toggleCPC" text="CPC">
+
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+
+                                          <JFXCheckBox onAction="#toggleUnique" text="Unique users">
+
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox onAction="#toggleBounceRate" text="Bounce rate">
+
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
                                  </children>
                               </VBox>
                            </children>
@@ -331,7 +465,7 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <BarChart fx:id="barChart" layoutX="29.0" layoutY="14.0">
+                              <BarChart fx:id="barChart" animated="false" layoutX="29.0" layoutY="14.0">
                                 <xAxis>
                                   <CategoryAxis fx:id="barChartXAxis" side="BOTTOM" />
                                 </xAxis>
@@ -485,6 +619,74 @@
                                        <padding>
                                           <Insets left="10.0" />
                                        </padding>
+
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <FlowPane prefHeight="26.0" prefWidth="248.0">
+                                       <children>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleLow" selected="true" text="Low">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleMed" selected="true" text="Medium">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleHigh" selected="true" text="High">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets top="10.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
+                                    <Label text="Date/Time from" underline="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                    </Label>
+                                    <JFXDatePicker fx:id="dFromPicker" onAction="#updateDFrom" promptText="Date From">
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="5.0" />
+                                       </VBox.margin>
+                                    </JFXDatePicker>
+                                    <JFXTimePicker fx:id="timeFromPicker" onAction="#updateTFrom" promptText="Time From">
+                                       <VBox.margin>
+                                          <Insets left="10.0" />
+                                       </VBox.margin>
+                                    </JFXTimePicker>
+                                    <Label text="Date/Time to" underline="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <JFXDatePicker fx:id="dToPicker" onAction="#updateDTo" promptText="Date To">
+                                       <VBox.margin>
+                                          <Insets left="10.0" />
+                                       </VBox.margin>
+                                    </JFXDatePicker>
+                                    <JFXTimePicker fx:id="timeToPicker" onAction="#updateTTo" promptText="Time To">
+                                       <VBox.margin>
+                                          <Insets left="10.0" />
+                                       </VBox.margin>
+                                    </JFXTimePicker>
+                                    <JFXButton onAction="#test" style="-fx-background-color: #9575cd#9575cd;" text="RELOAD DATA" textFill="WHITE">
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="20.0" />
+                                       </VBox.margin>
+                                    </JFXButton>
                                     </VBox>
                                  </children>
                               </AnchorPane>

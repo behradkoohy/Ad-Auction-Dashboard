@@ -1,11 +1,10 @@
 package views;
 
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTabPane;
-import com.jfoenix.controls.JFXTimePicker;
+import com.jfoenix.controls.*;
+
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -15,7 +14,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.List;
 
 public class Controller {
 
@@ -49,6 +50,12 @@ public class Controller {
     private boolean clicks;
     private boolean uniqueUsers;
     private boolean bounces;
+    private boolean totalCostB;
+    private boolean CTRB;
+    private boolean CPAB;
+    private boolean CPCB;
+    private boolean CPMB;
+    private boolean bounceRateB;
 
     //Accessibility settings
     private boolean highContrastMode;
@@ -57,7 +64,9 @@ public class Controller {
     //The number of "units" that will be displayed along the x axis
     private int unitsDifference;
 
+
     //Class for handling loading campaigns, this can connect to Alex' CSV reader class
+
     private CampaignHandler campaignHandler;
 
     /*
@@ -90,6 +99,28 @@ public class Controller {
     private BorderPane borderPane;
 
     @FXML
+    private JFXComboBox campaignDropDown;
+
+    @FXML
+    private JFXButton loadPrevious;
+
+    @FXML
+    private JFXTextField campaignName;
+
+    @FXML
+    private Label clickLogLabel;
+
+    @FXML
+    private Label impressionLogLabel;
+
+    @FXML
+    private Label serverLogLabel;
+
+    @FXML
+    //This can be changed each time the user switches to a new/different campaign
+    private Label campaignNameLabel;
+
+    @FXML
     private JFXDatePicker dFromPicker;
 
     @FXML
@@ -100,15 +131,6 @@ public class Controller {
 
     @FXML
     private JFXTimePicker timeToPicker;
-
-    @FXML
-    private Label genderTitle;
-
-    @FXML
-    private Label ageTitle;
-
-    @FXML
-    private Label incomeTitle;
 
     @FXML
     private Label numImpressions;
@@ -184,6 +206,7 @@ public class Controller {
         medIncome = true;
         highIncome = true;
 
+        //Initial state of checkboxes below the chart
         impressions = true;
         conversions = true;
         clicks = false;
@@ -193,20 +216,10 @@ public class Controller {
         highContrastMode = false;
         largeFontMode = false;
 
-        //For testing purposes
-        dFrom = LocalDate.now();
-        tFrom = LocalTime.now();
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        dTo = LocalDate.now();
-        tTo = LocalTime.now();
-
         unitsDifference = 0;
+
+        campaignHandler = new CampaignHandler(this, clickLogLabel,
+                impressionLogLabel, serverLogLabel);
 
     }
 
@@ -220,6 +233,22 @@ public class Controller {
      * Do all initialization steps in this method
      */
     public void initialize(){
+
+        //TODO dont think this is needed as I can toggle in scene builder, keep here for now
+        //lineChart.setAnimated(false);
+
+        //Initially the date spinners will be from week ago until now
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime weekAgo = now.minus(1, ChronoUnit.WEEKS);
+        dToPicker.setValue(now.toLocalDate());
+        updateDTo();
+        timeToPicker.setValue(now.toLocalTime());
+        updateTTo();
+        dFromPicker.setValue(weekAgo.toLocalDate());
+        updateDFrom();
+        timeFromPicker.setValue(weekAgo.toLocalTime());
+        updateTFrom();
+
 
         //Setting up the look of the pie charts
         genderPie.setTitle("Gender");
@@ -240,10 +269,12 @@ public class Controller {
     }
 
     /**
+
      * Update the pie charts to show that some data has changed
      *
      * All values are the number of users there are for each attribute
      *
+
      * @param men
      * @param women
      * @param lt25
@@ -255,9 +286,11 @@ public class Controller {
      * @param medIncome
      * @param highIncome
      */
-    public void updatePieCharts(int men, int women, int lt25, int btwn2534,
-                                int btwn3544, int btwn4554, int gt55, int lowIncome,
-                                int medIncome, int highIncome){
+    public void updatePieChartData(int men, int women, int lt25,
+                                   int btwn2534, int btwn3544,
+                                   int btwn4554, int gt55, int lowIncome,
+                                   int medIncome, int highIncome){
+
 
         genderPie.getData().clear();
         agePie.getData().clear();
@@ -281,7 +314,8 @@ public class Controller {
 
     }
 
-    //TODO for testing
+    //TODO refreshes pie charts with random data, only for testing so remove
+
     private void pieChartTest(){
 
         genderPie.getData().clear();
@@ -312,6 +346,17 @@ public class Controller {
         incomePie.setStyle("-fx-font-size: " + 10 + "px;");
 
     }
+
+    /**
+     * Used by the campaign manager to go to next page after loading/creating a campaign
+     */
+    public void goToMainPage(){
+
+        SingleSelectionModel<Tab> model = LHS.getSelectionModel();
+        model.select(1);
+
+    }
+
 
     //These toggle methods will be called whenever the checkboxes are ticked/unticked
     @FXML
@@ -470,6 +515,54 @@ public class Controller {
     }
 
     @FXML
+    private void toggleTotal(){
+
+        totalCostB = !totalCostB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCTR(){
+
+        CTRB = !CTRB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCPA(){
+
+        CPAB = !CPAB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCPC(){
+
+        CPCB = !CPCB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCPM(){
+
+        CPMB = !CPMB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleBounceRate(){
+
+        bounceRateB = !bounceRateB;
+        updateChart();
+
+    }
+
+    @FXML
     private void toggleHighContrast(){
 
         highContrastMode = !highContrastMode;
@@ -485,9 +578,12 @@ public class Controller {
 
     public void updateChart(){
 
+        List data = new ArrayList(10);
+
         ChartHandler handler = new ChartHandler(lineChart, lineChartXAxis,
-                lineChartYAxis, calcMetric(), unitsDifference, impressions,
-                conversions, clicks, uniqueUsers, bounces);
+                lineChartYAxis, calcMetric(), data, unitsDifference, impressions,
+                conversions, clicks, uniqueUsers, bounces, totalCostB, CTRB, CPAB,
+                CPCB, CPMB, bounceRateB);
 
     }
 
@@ -559,17 +655,68 @@ public class Controller {
 
     @FXML
     /**
+
+     * Called by the choose file for click log button
+     */
+    public void chooseClickLog(){
+
+        campaignHandler.chooseClick();
+
+    }
+
+    @FXML
+    /**
+     * Called by the choose file for impression log button
+     */
+    public void chooseImpressionLog(){
+
+        campaignHandler.chooseImpression();
+
+    }
+
+    @FXML
+    /**
+     * Called by the choose file for server log button
+     */
+    public void chooseServerLog(){
+
+        campaignHandler.chooseServer();
+
+    }
+
+    @FXML
+    /**
+     * Called by the load campaign button, loads a previous campaign from the combo box
+     */
+    public void loadCampaign(){
+
+
+
+    }
+
+    @FXML
+    /**
+     * Called by the create campaign button
+
      * Called when the user clicks the "create campaign" button
      *
      * This method should call an appropriate method from the
      * CampaignHandler class
+
      */
+    public void createCampaign(){
+
+        campaignHandler.createCampaign();
+
+    }
+
+    /*
     public void loadNewCampaign(){
 
 
         //System.out.println("method called");
 
-    }
+    }*/
 
     /**
      * Sets the LHS tab pane to index 1 (the second tab as starts from 0)
@@ -613,6 +760,20 @@ public class Controller {
         updateChart();
         updateHistogram();
         pieChartTest();
+
+    }
+
+    /**
+     * Displays and shows an error dialog window with the given message
+     * @param message
+     */
+    public void error(String message){
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
 
     }
 
