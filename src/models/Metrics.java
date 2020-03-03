@@ -69,10 +69,14 @@ public class Metrics {
         if (bounceDef) {
 
             for (ServerEntry server : serverDao.getFromCampaign(campaign)) {
-                Duration duration = Duration.between(server.getEntryDate(), server.getExitDate());
-                if (duration.compareTo(bounceTime) <= 0) {
-                    num ++;
+
+                if (server.getExitDate() != null) {
+                    Duration duration = Duration.between(server.getEntryDate(), server.getExitDate());
+                    if (duration.compareTo(bounceTime) <= 0) {
+                        num ++;
+                    }
                 }
+
 
             }
 
@@ -307,10 +311,15 @@ public class Metrics {
             if (bounceDef) {
 
                 for (ServerEntry server : serverDao.getByDateAndCampaign(campaign, current, nextTime)) {
-                    Duration timeSpent = Duration.between(server.getEntryDate(), server.getExitDate());
-                    if (timeSpent.compareTo(bounceTime) <= 0) {
-                        num ++;
+                    //exitDate can be null!!!! - check if this actually works
+                    if (server.getExitDate() != null) {
+                        Duration timeSpent = Duration.between(server.getEntryDate(), server.getExitDate());
+                        if (timeSpent.compareTo(bounceTime) <= 0) {
+                            num ++;
+                        }
                     }
+
+
 
                 }
 
@@ -344,10 +353,14 @@ public class Metrics {
             if (bounceDef) {
 
                 for (ServerEntry server : serverDao.getByDateAndCampaign(campaign, current, nextTime)) {
-                    Duration timeSpent = Duration.between(server.getEntryDate(), server.getExitDate());
-                    if (timeSpent.compareTo(bounceTime) <= 0) {
-                        num ++;
+
+                    if (server.getExitDate() != null) {
+                        Duration timeSpent = Duration.between(server.getEntryDate(), server.getExitDate());
+                        if (timeSpent.compareTo(bounceTime) <= 0) {
+                            num ++;
+                        }
                     }
+
 
                 }
 
