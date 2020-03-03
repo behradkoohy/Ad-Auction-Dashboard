@@ -5,6 +5,7 @@ import entities.Impression.Age;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -43,4 +44,7 @@ public class ImpressionDao {
     }
 
 
+    public List<Impression> getByDateAndCampaign(String campaign, LocalDateTime current, LocalDateTime nextTime) {
+        return null;
+    }
 }
