@@ -8,6 +8,9 @@ import models.Metrics;
 import models.ReaderCSV;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Assert.*;
+
+import static org.junit.Assert.assertTrue;
 
 public class MetricTests {
 
@@ -22,9 +25,9 @@ public class MetricTests {
         impressionsDao = new ImpressionDao();
         serverDao = new ServerEntryDao();
 
-        ReaderCSV.readCSV("/testFiles/testClick.csv");
-        ReaderCSV.readCSV("/testFiles/testImpression.csv");
-        ReaderCSV.readCSV("/testFiles/testServer.csv");
+        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv");
+        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv");
+        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv");
 
 
         metrics = new Metrics(clickDao, impressionsDao, serverDao);
@@ -33,7 +36,7 @@ public class MetricTests {
 
     @Test
     public void totalImpressionsTest() {
-
+        assertTrue(metrics.getNumImpressions("test") == 99);
     }
 
 
