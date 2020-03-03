@@ -1,6 +1,7 @@
 package views;
 
 import com.jfoenix.controls.*;
+
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
@@ -63,6 +64,9 @@ public class Controller {
     //The number of "units" that will be displayed along the x axis
     private int unitsDifference;
 
+
+    //Class for handling loading campaigns, this can connect to Alex' CSV reader class
+
     private CampaignHandler campaignHandler;
 
     /*
@@ -75,6 +79,24 @@ public class Controller {
 
     @FXML
     private JFXTabPane LHS;
+
+    @FXML
+    /*
+    The drop down list that shows the campaigns you can choose from
+     */
+    private JFXComboBox campaignChooser;
+
+    @FXML
+    private Label clickLabel;
+
+    @FXML
+    private Label impressionLabel;
+
+    @FXML
+    private Label serverLabel;
+
+    @FXML
+    private BorderPane borderPane;
 
     @FXML
     private JFXComboBox campaignDropDown;
@@ -172,6 +194,7 @@ public class Controller {
 
     public Controller(){
 
+        //True/false assignments correspond to whether the checkboxes are selected
         male = true;
         female = true;
         lt25 = true;
@@ -206,6 +229,8 @@ public class Controller {
      * references, so whenever you need to call a method on a UI component
      * when the program opens do it from here so you know for
      * certain it won't be null
+     *
+     * Do all initialization steps in this method
      */
     public void initialize(){
 
@@ -224,6 +249,7 @@ public class Controller {
         timeFromPicker.setValue(weekAgo.toLocalTime());
         updateTFrom();
 
+
         //Setting up the look of the pie charts
         genderPie.setTitle("Gender");
         genderPie.setLegendVisible(false);
@@ -235,13 +261,20 @@ public class Controller {
         incomePie.setLegendVisible(false);
         incomePie.setStyle("-fx-font-size: " + 10 + "px;");
 
+        campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
+
         //TODO remove
-        test();
+        this.reloadData();
 
     }
 
     /**
-     * Updates the pie chart with the latest data with all of the values
+
+     * Update the pie charts to show that some data has changed
+     *
+     * All values are the number of users there are for each attribute
+     *
+
      * @param men
      * @param women
      * @param lt25
@@ -257,6 +290,7 @@ public class Controller {
                                    int btwn2534, int btwn3544,
                                    int btwn4554, int gt55, int lowIncome,
                                    int medIncome, int highIncome){
+
 
         genderPie.getData().clear();
         agePie.getData().clear();
@@ -281,6 +315,7 @@ public class Controller {
     }
 
     //TODO refreshes pie charts with random data, only for testing so remove
+
     private void pieChartTest(){
 
         genderPie.getData().clear();
@@ -292,9 +327,6 @@ public class Controller {
         PieChart.Data gender1 = new PieChart.Data("Men", r.nextInt(50));
         PieChart.Data gender2 = new PieChart.Data("Women", r.nextInt(50));
         genderPie.getData().addAll(gender1, gender2);
-        genderPie.setTitle("Gender");
-        genderPie.setLegendVisible(false);
-        genderPie.setStyle("-fx-font-size: " + 10 + "px;");
 
         PieChart.Data age1 = new PieChart.Data("<25", r.nextInt(30));
         PieChart.Data age2 = new PieChart.Data("25-34", r.nextInt(30));
@@ -304,7 +336,6 @@ public class Controller {
         agePie.getData().addAll(age1, age2, age3, age4, age5);
         agePie.setTitle("Age");
         agePie.setLegendVisible(false);
-        agePie.setStyle("-fx-font-size: " + 10 + "px;");
 
         PieChart.Data income1 = new PieChart.Data("Low", r.nextInt(30));
         PieChart.Data income2 = new PieChart.Data("Medium", r.nextInt(30));
@@ -325,6 +356,7 @@ public class Controller {
         model.select(1);
 
     }
+
 
     //These toggle methods will be called whenever the checkboxes are ticked/unticked
     @FXML
@@ -601,7 +633,29 @@ public class Controller {
     }
 
     @FXML
+    public void chooseClick(){
+
+        campaignHandler.chooseClick();
+
+    }
+
+    @FXML
+    public void chooseServer(){
+
+        campaignHandler.chooseServer();
+
+    }
+
+    @FXML
+    public void chooseImpression(){
+
+        campaignHandler.chooseImpression();
+
+    }
+
+    @FXML
     /**
+
      * Called by the choose file for click log button
      */
     public void chooseClickLog(){
@@ -643,6 +697,12 @@ public class Controller {
     @FXML
     /**
      * Called by the create campaign button
+
+     * Called when the user clicks the "create campaign" button
+     *
+     * This method should call an appropriate method from the
+     * CampaignHandler class
+
      */
     public void createCampaign(){
 
@@ -653,11 +713,20 @@ public class Controller {
     /*
     public void loadNewCampaign(){
 
-        CampaignPopup popUp = new CampaignPopup(this);
 
         //System.out.println("method called");
 
     }*/
+
+    /**
+     * Sets the LHS tab pane to index 1 (the second tab as starts from 0)
+     */
+    public void goToMain(){
+
+        SingleSelectionModel<Tab> selectionModel = LHS.getSelectionModel();
+        selectionModel.select(1);
+
+    }
 
     //TODO Generates a random string to populate UI for testing
     private String random(){
@@ -667,9 +736,14 @@ public class Controller {
 
     }
 
-    //TODO Just for testing
+
     @FXML
-    public void test(){
+    /**
+     * Called by the reload data button, updates all
+     * UI components to have the most up to date data
+     */
+    //TODO Replace all the random values with values from database
+    public void reloadData(){
 
         numImpressions.setText(random());
         numClicks.setText(random());

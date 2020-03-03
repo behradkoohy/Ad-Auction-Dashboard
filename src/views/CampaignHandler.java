@@ -1,5 +1,6 @@
 package views;
 
+
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -16,6 +17,12 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
+
+/**
+ * Class for selecting which campaign is in use and providing the ability to load a new
+ * campaign
+ */
+
 public class CampaignHandler {
 
     private File clickLog;
@@ -31,9 +38,11 @@ public class CampaignHandler {
     public CampaignHandler(Controller c, Label clickLabel,
                            Label impressionLabel, Label serverLabel){
 
+
         this.clickLabel = clickLabel;
         this.impressionLabel = impressionLabel;
         this.serverLabel = serverLabel;
+
 
         this.c = c;
 
@@ -51,6 +60,7 @@ public class CampaignHandler {
 
         }
 
+
     }
 
     /**
@@ -67,7 +77,9 @@ public class CampaignHandler {
 
         } else if(clickLog.equals(impressionLog) || clickLog.equals(serverLog)){
 
+
             c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
+
             clickLog = null;
 
         }
@@ -91,6 +103,7 @@ public class CampaignHandler {
         } else if(impressionLog.equals(clickLog) || impressionLog.equals(serverLog)){
 
             c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
+
             impressionLog = null;
 
         }
@@ -113,12 +126,40 @@ public class CampaignHandler {
 
         } else if(serverLog.equals(clickLog) || serverLog.equals(impressionLog)){
 
+
             c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique server log csv file");
+
 
         }
 
         serverLabel.setText(serverLog.getName());
 
     }
+
+    public void importCampaign(){
+
+        if(clickLog == null || impressionLog == null || serverLog == null){
+
+            error("Please make sure you have selected the 3 unique csv log files!");
+            return;
+
+        }
+
+    }
+
+    /**
+     * Displays and shows an error dialog window with the given window
+     * @param message
+     */
+    public void error(String message){
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+
+    }
+
 
 }
