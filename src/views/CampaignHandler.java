@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import models.ReaderCSV;
 
 /**
  * Class for selecting which campaign is in use and providing the ability to load a new
@@ -21,6 +22,13 @@ public class CampaignHandler {
     private Label serverLabel;
 
     private Controller c;
+
+    private ReaderCSV rcsv = new ReaderCSV();
+
+    /*
+    * we need to connect this class to alex's csv handler
+    *
+    * */
 
     public CampaignHandler(Controller c, Label clickLabel,
                            Label impressionLabel, Label serverLabel){
