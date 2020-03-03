@@ -234,6 +234,8 @@ public class Controller {
 
         campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
 
+
+
         //TODO remove
         this.reloadData();
 
@@ -565,10 +567,10 @@ public class Controller {
      * CampaignHandler class
      */
     public void loadNewCampaign(){
+//        campaignHandler
 
-
-        //System.out.println("method called");
-
+        System.out.println("method called");
+        campaignHandler.importCampaign();
     }
 
     /**
@@ -597,6 +599,8 @@ public class Controller {
      */
     //TODO Replace all the random values with values from database
     public void reloadData(){
+
+
 
         numImpressions.setText(random());
         numClicks.setText(random());
