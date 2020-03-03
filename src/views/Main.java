@@ -20,7 +20,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         FXMLLoader loader = new FXMLLoader();
-        Parent root = loader.load(getClass().getResource("./sample.fxml"));
+
+
+        Parent root = loader.load(getClass().getResource("/views/sample.fxml"));
+
         primaryStage.setTitle("Ad Auction Analytics");
 
         Scene scene = new Scene(root);

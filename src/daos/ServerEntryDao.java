@@ -1,5 +1,6 @@
 package daos;
 
+import entities.Click;
 import entities.ServerEntry;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -80,4 +81,7 @@ public class ServerEntryDao {
         }
     }
 
+    public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime current, LocalDateTime nextTime) {
+        return null;
+    }
 }
