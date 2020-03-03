@@ -6,15 +6,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.PreparedStatement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-//import java.util.Date;  
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-
 
 import daos.ClickDao;
 import daos.ImpressionDao;
@@ -76,6 +72,8 @@ public class ReaderCSV {
                         LocalDateTime clickDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
                         Long clickId = Long.parseLong( contents[1] );
                         Double clickCost = Double.parseDouble(contents[2]);
+
+
 
                         Click newClick = new Click(camp, clickId, clickDate, clickCost);
                         //System.out.println(newClick);
@@ -170,12 +168,5 @@ public class ReaderCSV {
 	}
 
 
-	public static void main(String[] args) {
-		// Test method
-		// TODO: remove this main method
-		ReaderCSV csv = new ReaderCSV();
-		csv.readCSV("/Users/behradkoohy/Ad-Auction-Dashboard/2_week_campaign_2/click_log.csv");
 
-
-	}
 }

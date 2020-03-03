@@ -567,10 +567,10 @@ public class Controller {
      * CampaignHandler class
      */
     public void loadNewCampaign(){
-
+//        campaignHandler
 
         System.out.println("method called");
-
+        campaignHandler.importCampaign();
     }
 
     /**
