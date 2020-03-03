@@ -49,6 +49,12 @@ public class Controller {
     private boolean clicks;
     private boolean uniqueUsers;
     private boolean bounces;
+    private boolean totalCostB;
+    private boolean CTRB;
+    private boolean CPAB;
+    private boolean CPCB;
+    private boolean CPMB;
+    private boolean bounceRateB;
 
     //Accessibility settings
     private boolean highContrastMode;
@@ -477,6 +483,54 @@ public class Controller {
     }
 
     @FXML
+    private void toggleTotal(){
+
+        totalCostB = !totalCostB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCTR(){
+
+        CTRB = !CTRB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCPA(){
+
+        CPAB = !CPAB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCPC(){
+
+        CPCB = !CPCB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCPM(){
+
+        CPMB = !CPMB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleBounceRate(){
+
+        bounceRateB = !bounceRateB;
+        updateChart();
+
+    }
+
+    @FXML
     private void toggleHighContrast(){
 
         highContrastMode = !highContrastMode;
@@ -496,7 +550,8 @@ public class Controller {
 
         ChartHandler handler = new ChartHandler(lineChart, lineChartXAxis,
                 lineChartYAxis, calcMetric(), data, unitsDifference, impressions,
-                conversions, clicks, uniqueUsers, bounces);
+                conversions, clicks, uniqueUsers, bounces, totalCostB, CTRB, CPAB,
+                CPCB, CPMB, bounceRateB);
 
     }
 
