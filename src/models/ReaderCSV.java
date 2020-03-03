@@ -31,7 +31,7 @@ public class ReaderCSV {
 	static String IMPRESSION_LOG_HEADER= "Date,ID,Gender,Age,Income,Context,Impression Cost";
 	// TODO : see what is going to get passed from the controller and change file reading accordingly
 	
-	public static void readCSV(String filename) {
+	public static void readCSV(String filename, String campaignName) {
 		// type is either : click, impression, server
 		String type = "";
         String camp = "test"; // TODO : get current campaign
@@ -78,7 +78,7 @@ public class ReaderCSV {
                         Long clickId = Long.parseLong( contents[1] );
                         Double clickCost = Double.parseDouble(contents[2]);
                         clickIdentifer++;
-                        clicksToAdd.add(new Click(clickIdentifer, camp, clickId, clickDate, clickCost));
+                        clicksToAdd.add(new Click(clickIdentifer, campaignName, clickId, clickDate, clickCost));
                 		break;
                 	case "impression":
                 		LocalDateTime impressionDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
@@ -89,7 +89,7 @@ public class ReaderCSV {
                         Context impressionContext = returnContext( contents[5] );
                         Double impressionCost = Double.parseDouble( contents[6] );
                         impressionIdentifier++;
-                        impressionsToAdd.add(new Impression(impressionIdentifier, camp, impressionDate, impressionId,
+                        impressionsToAdd.add(new Impression(impressionIdentifier, campaignName, impressionDate, impressionId,
 								impressionGender, impressionAge, impressionIncome, impressionContext, impressionCost));
                 		break;
                 	case "server":
@@ -108,7 +108,7 @@ public class ReaderCSV {
                 		Boolean serverConversion = (contents[4] == "Yes" ? true : false);
 
                 		serverEntryIdentifier++;
-                		serverEntriesToAdd.add(new ServerEntry(serverEntryIdentifier, camp, serverEntryDate, serverId,
+                		serverEntriesToAdd.add(new ServerEntry(serverEntryIdentifier, campaignName, serverEntryDate, serverId,
 								serverExitDate, serverPageView, serverConversion));
 
                 		break;

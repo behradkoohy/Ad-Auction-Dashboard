@@ -712,12 +712,10 @@ public class Controller {
 
     }
 
-    /*
-    public void loadNewCampaign(){
-//        campaignHandler
 
+    public void loadNewCampaign(){
         System.out.println("method called");
-        campaignHandler.importCampaign();
+        campaignHandler.importCampaign(campaignName.getText());
     }
 
     /**

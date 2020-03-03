@@ -1,17 +1,8 @@
 package views;
 
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import models.ReaderCSV;
 
@@ -136,7 +127,7 @@ public class CampaignHandler {
         serverLoc = serverLog.getAbsolutePath();
     }
 
-    public void importCampaign(){
+    public void importCampaign(String campaignName){
         System.out.println("serverLog = " + serverLog);
         if(clickLog == null || impressionLog == null || serverLog == null){
 
@@ -151,9 +142,9 @@ public class CampaignHandler {
         if (filesSubmit.size() < 3){
             error("Please make sure all 3 CSV files are unique!");
         } else {
-            ReaderCSV.readCSV(clickLoc);
-            ReaderCSV.readCSV(impressionLoc);
-            ReaderCSV.readCSV(serverLoc);
+            ReaderCSV.readCSV(clickLoc, campaignName);
+            ReaderCSV.readCSV(impressionLoc, campaignName);
+            ReaderCSV.readCSV(serverLoc, campaignName);
             /*
             new Thread(() -> ReaderCSV.readCSV(clickLoc)).start();
             new Thread(() -> ReaderCSV.readCSV(impressionLoc)).start();

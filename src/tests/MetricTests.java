@@ -8,7 +8,6 @@ import models.Metrics;
 import models.ReaderCSV;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Assert.*;
 
 import static org.junit.Assert.assertTrue;
 
@@ -25,9 +24,9 @@ public class MetricTests {
         impressionsDao = new ImpressionDao();
         serverDao = new ServerEntryDao();
 
-        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv");
-        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv");
-        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv");
+        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv", "Test Campaign");
+        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "Test Campaign");
+        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "Test Campaign");
 
 
         metrics = new Metrics(clickDao, impressionsDao, serverDao);

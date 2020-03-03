@@ -72,7 +72,7 @@ public class ServerEntryDao {
 
     public int getMaxIdentifier() {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            List max = session.createQuery("select MAX(identifier) from ServerEntry ").list();
+            List max = session.createQuery("select MAX(identifier) from ServerEntry").list();
             if(max.get(0) == null) {
                 return 0;
             } else {
