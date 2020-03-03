@@ -1,7 +1,6 @@
 package daos;
 
-import entities.Impression;
-import entities.Impression.Age;
+import entities.ServerEntry;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -9,29 +8,29 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 
-public class ImpressionDao {
+public class ServerEntryDao {
 
-    public void save(Impression impression) {
+    public void save(ServerEntry serverEntry) {
         Transaction transaction = null;
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.save(impression);
+            session.save(serverEntry);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
-                //transaction.rollback();
+                transaction.rollback();
             }
             e.printStackTrace();
         }
     }
 
-    public void save(List<Impression> impressions) {
+    public void save(List<ServerEntry> serverEntries) {
         Transaction transaction = null;
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            for(int i = 0; i < impressions.size(); i++) {
+            for(int i = 0; i < serverEntries.size(); i++) {
                 try {
-                    session.persist(impressions.get(i));
+                    session.persist(serverEntries.get(i));
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
@@ -49,37 +48,30 @@ public class ImpressionDao {
         }
     }
 
-    public List<Impression> getAll() {
+    public List<ServerEntry> getAll() {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression", Impression.class).list();
+            return session.createQuery("from ServerEntry", ServerEntry.class).list();
         }
     }
 
-    public List<Impression> getFromCampaign(String campaign) {
+    public List<ServerEntry> getFromCampaign(String campaign) {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where campaign=:campaign", Impression.class).setParameter("campaign", campaign).list();
+            return session.createQuery("from ServerEntry where campaign=:campaign", ServerEntry.class).setParameter("campaign", campaign).list();
         }
     }
 
-    public List<Impression> getByAge(Age age) {
+    public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where age=:age", Impression.class).setParameter("age", age).list();
-        }
-    }
-
-    public List<Impression> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where age=:age and date between(cTime, nTime) ", Impression.class)
+            return session.createQuery("from ServerEntry where age=:age and entryDate between(cTime, nTime) ", ServerEntry.class)
                     .setParameter("campaign", campaign)
                     .setParameter("cTime", startDate)
                     .setParameter("nTime", endDate).list();
         }
-
     }
 
     public int getMaxIdentifier() {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            List max = session.createQuery("select MAX(identifier) from Impression ").list();
+            List max = session.createQuery("select MAX(identifier) from ServerEntry ").list();
             if(max.get(0) == null) {
                 return 0;
             } else {
@@ -87,4 +79,5 @@ public class ImpressionDao {
             }
         }
     }
+
 }

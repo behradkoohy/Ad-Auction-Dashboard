@@ -13,9 +13,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import models.ReaderCSV;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -33,7 +35,20 @@ public class CampaignHandler {
     private Label impressionLabel;
     private Label serverLabel;
 
+    private String clickLoc;
+    private String impressionLoc;
+    private String serverLoc;
+
     private Controller c;
+
+
+
+    private ReaderCSV rcsv = new ReaderCSV();
+
+    /*
+    * we need to connect this class to alex's csv handler
+    *
+    * */
 
     public CampaignHandler(Controller c, Label clickLabel,
                            Label impressionLabel, Label serverLabel){
@@ -71,21 +86,15 @@ public class CampaignHandler {
         FileChooser chooser = new FileChooser();
         clickLog = chooser.showOpenDialog(null);
 
-        if(impressionLog == null && serverLog == null){
+        if(clickLog.equals(impressionLog) || clickLog.equals(serverLog)){
 
-            return;
-
-        } else if(clickLog.equals(impressionLog) || clickLog.equals(serverLog)){
-
-
-            c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
-
+            error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
             clickLog = null;
 
         }
 
         clickLabel.setText(clickLog.getName());
-
+        clickLoc = clickLog.getAbsolutePath();
     }
 
     /**
@@ -96,36 +105,27 @@ public class CampaignHandler {
         FileChooser chooser = new FileChooser();
         impressionLog = chooser.showOpenDialog(null);
 
-        if(clickLog == null && serverLog == null){
+        if(impressionLog.equals(clickLog) || impressionLog.equals(serverLog)){
 
-            return;
-
-        } else if(impressionLog.equals(clickLog) || impressionLog.equals(serverLog)){
-
-            c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
-
+            error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
             impressionLog = null;
 
         }
 
         impressionLabel.setText(impressionLog.getName());
-
+        impressionLoc = impressionLog.getAbsolutePath();
     }
 
     /**
      * Initiates a file chooser to choose the server log file
      */
     public void chooseServer(){
-
         FileChooser chooser = new FileChooser();
         serverLog = chooser.showOpenDialog(null);
 
-        if(clickLog == null && impressionLog == null){
+        if(serverLog.equals(clickLog) || serverLog.equals(impressionLog)){
 
-            return;
-
-        } else if(serverLog.equals(clickLog) || serverLog.equals(impressionLog)){
-
+            error("You cannot have the same file for two inputs! Please make sure you have chosen the unique server log csv file");
 
             c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique server log csv file");
 
@@ -133,17 +133,37 @@ public class CampaignHandler {
         }
 
         serverLabel.setText(serverLog.getName());
-
+        serverLoc = serverLog.getAbsolutePath();
     }
 
     public void importCampaign(){
-
+        System.out.println("serverLog = " + serverLog);
         if(clickLog == null || impressionLog == null || serverLog == null){
 
             error("Please make sure you have selected the 3 unique csv log files!");
-            return;
 
         }
+        // check if all 3 variables are unique
+        Set<String> filesSubmit = new HashSet<>();
+        filesSubmit.add(clickLoc);
+        filesSubmit.add(impressionLoc);
+        filesSubmit.add(serverLoc);
+        if (filesSubmit.size() < 3){
+            error("Please make sure all 3 CSV files are unique!");
+        } else {
+            ReaderCSV.readCSV(clickLoc);
+            ReaderCSV.readCSV(impressionLoc);
+            ReaderCSV.readCSV(serverLoc);
+            /*
+            new Thread(() -> ReaderCSV.readCSV(clickLoc)).start();
+            new Thread(() -> ReaderCSV.readCSV(impressionLoc)).start();
+            new Thread(() -> ReaderCSV.readCSV(serverLoc)).start();
+
+             */
+            success("shdhfhdsjsjdhdjjsajsjdfhjdkaskdjf");
+        }
+
+
 
     }
 
@@ -155,6 +175,15 @@ public class CampaignHandler {
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+
+    }
+    public void success(String message){
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Success");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

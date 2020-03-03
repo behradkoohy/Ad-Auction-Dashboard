@@ -263,6 +263,8 @@ public class Controller {
 
         campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
 
+
+
         //TODO remove
         this.reloadData();
 
@@ -712,11 +714,11 @@ public class Controller {
 
     /*
     public void loadNewCampaign(){
+//        campaignHandler
 
-
-        //System.out.println("method called");
-
-    }*/
+        System.out.println("method called");
+        campaignHandler.importCampaign();
+    }
 
     /**
      * Sets the LHS tab pane to index 1 (the second tab as starts from 0)
@@ -744,6 +746,8 @@ public class Controller {
      */
     //TODO Replace all the random values with values from database
     public void reloadData(){
+
+
 
         numImpressions.setText(random());
         numClicks.setText(random());
