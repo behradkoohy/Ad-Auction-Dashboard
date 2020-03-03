@@ -80,4 +80,11 @@ public class ClickDao {
         }
     }
 
+
+    public List<String> getCampaigns() {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            return session.createQuery("select distinct campaign from Click ", String.class).list();
+        }
+    }
+
 }

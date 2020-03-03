@@ -1,7 +1,9 @@
 package views;
 
 import com.jfoenix.controls.*;
-
+import daos.ClickDao;
+import daos.ImpressionDao;
+import daos.ServerEntryDao;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
@@ -15,12 +17,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.List;
+import java.util.Random;
 
 public class Controller {
-
     //Current data values, changed each time UI manipulates them:
+
+    ClickDao clickDao = new ClickDao();
+    ImpressionDao impressionDao = new ImpressionDao();
+    ServerEntryDao serverEntryDao = new ServerEntryDao();
 
     //Gender
     private boolean male;
@@ -232,7 +237,7 @@ public class Controller {
      *
      * Do all initialization steps in this method
      */
-    public void initialize(){
+    public void initialize() {
 
         //TODO dont think this is needed as I can toggle in scene builder, keep here for now
         //lineChart.setAnimated(false);
@@ -263,10 +268,7 @@ public class Controller {
 
         campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
 
-
-
-        //TODO remove
-        this.reloadData();
+        campaignChooser.getItems().addAll(clickDao.getCampaigns());
 
     }
 
@@ -690,10 +692,8 @@ public class Controller {
     /**
      * Called by the load campaign button, loads a previous campaign from the combo box
      */
-    public void loadCampaign(){
-
-
-
+    public void loadCampaign() {
+        this.reloadData((String)campaignChooser.getValue());
     }
 
     @FXML
@@ -714,8 +714,14 @@ public class Controller {
 
 
     public void loadNewCampaign(){
-        System.out.println("method called");
         campaignHandler.importCampaign(campaignName.getText());
+        this.reloadData(campaignName.getText());
+        campaignChooser.getItems().add(campaignName.getText());
+        campaignName.setText("");
+        clickLabel.setText("");
+        impressionLabel.setText("");
+        serverLabel.setText("");
+
     }
 
     /**
@@ -743,10 +749,10 @@ public class Controller {
      * UI components to have the most up to date data
      */
     //TODO Replace all the random values with values from database
-    public void reloadData(){
+    public void reloadData(String campaignName){
 
-
-
+        System.out.println("Loading data for" + campaignName);
+        /*
         numImpressions.setText(random());
         numClicks.setText(random());
         numUnique.setText(random());
@@ -758,6 +764,7 @@ public class Controller {
         CPC.setText(random());
         CPM.setText(random());
         bounceRate.setText(random());
+         */
 
         updateChart();
         updateHistogram();
