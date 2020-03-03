@@ -3,12 +3,11 @@ package views;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
+import models.ReaderCSV;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-
-import models.ReaderCSV;
 
 /**
  * Class for selecting which campaign is in use and providing the ability to load a new
@@ -120,9 +119,15 @@ public class CampaignHandler {
         if (filesSubmit.size() < 3){
             error("Please make sure all 3 CSV files are unique!");
         } else {
+            ReaderCSV.readCSV(clickLoc);
+            ReaderCSV.readCSV(impressionLoc);
+            ReaderCSV.readCSV(serverLoc);
+            /*
             new Thread(() -> ReaderCSV.readCSV(clickLoc)).start();
             new Thread(() -> ReaderCSV.readCSV(impressionLoc)).start();
             new Thread(() -> ReaderCSV.readCSV(serverLoc)).start();
+
+             */
             success("shdhfhdsjsjdhdjjsajsjdfhjdkaskdjf");
         }
 

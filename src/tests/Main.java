@@ -3,13 +3,6 @@ package tests;
 import daos.ClickDao;
 import daos.ImpressionDao;
 
-import entities.Click;
-import entities.Impression;
-
-import models.ReaderCSV;
-
-import java.time.LocalDateTime;
-
 
 public class Main {
     public static void main(String[] args) {
@@ -23,6 +16,7 @@ public class Main {
         */
 
 
+        /*
         Impression newImpression = new Impression("Another Campaign", LocalDateTime.now(), 1234562922096180000L,
                 Impression.Gender.MALE, Impression.Age.FROM35TO44, Impression.Income.MEDIUM, Impression.Context.NEWS,
                 1.245378);
@@ -34,5 +28,7 @@ public class Main {
         impressionDao.save(anotherImpression);
 
         impressionDao.getByAge(Impression.Age.FROM35TO44).forEach(Impression::print);;
+
+         */
     }
 }
