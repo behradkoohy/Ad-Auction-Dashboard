@@ -1,6 +1,5 @@
 package daos;
 
-import entities.Click;
 import entities.ServerEntry;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -63,10 +62,11 @@ public class ServerEntryDao {
 
     public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from ServerEntry where age=:age and entryDate between(cTime, nTime) ", ServerEntry.class)
+            return session.createQuery("from ServerEntry where age=:age and entryDate between(startDate, endDate)", ServerEntry.class)
                     .setParameter("campaign", campaign)
-                    .setParameter("cTime", startDate)
-                    .setParameter("nTime", endDate).list();
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .list();
         }
     }
 
@@ -81,7 +81,4 @@ public class ServerEntryDao {
         }
     }
 
-    public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime current, LocalDateTime nextTime) {
-        return null;
-    }
 }

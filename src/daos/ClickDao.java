@@ -61,10 +61,11 @@ public class ClickDao {
 
     public List<Click> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate){
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Click where age=:age and date between(cTime, nTime) ", Click.class)
+            return session.createQuery("from Click where campaign=:campaign and date between(startDate, endDate)", Click.class)
                     .setParameter("campaign", campaign)
-                    .setParameter("cTime", startDate)
-                    .setParameter("nTime", endDate).list();
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .list();
         }
     }
 

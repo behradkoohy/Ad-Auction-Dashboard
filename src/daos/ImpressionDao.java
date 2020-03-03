@@ -69,10 +69,11 @@ public class ImpressionDao {
 
     public List<Impression> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where age=:age and date between(cTime, nTime) ", Impression.class)
+            return session.createQuery("from Impression where campaign=:campaign and date between(startDate, endDate)", Impression.class)
                     .setParameter("campaign", campaign)
-                    .setParameter("cTime", startDate)
-                    .setParameter("nTime", endDate).list();
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .list();
         }
 
     }
