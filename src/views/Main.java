@@ -15,7 +15,7 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader();
 
-        Parent root = loader.load(getClass().getResource("views/sample.fxml"));
+        Parent root = loader.load(getClass().getResource("/views/sample.fxml"));
         primaryStage.setTitle("Ad Auction Analytics");
 
         Scene scene = new Scene(root);

@@ -12,12 +12,18 @@ public class MetricTests {
     private ClickDao clickDao;
     private ImpressionDao impressionsDao;
     private ServerEntryDao serverDao;
+    private Metrics metrics;
 
     @Before
     public void setupThis(){
         clickDao = new ClickDao();
         impressionsDao = new ImpressionDao();
         serverDao = new ServerEntryDao();
+
+
+
+
+        metrics = new Metrics(clickDao, impressionsDao, serverDao);
 
     }
 
