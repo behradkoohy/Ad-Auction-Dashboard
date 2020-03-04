@@ -128,11 +128,6 @@ public class ChartHandler {
 
         }
 
-        if(totalCost){
-
-            addTotalCost();
-
-        }
 
         if(CTR){
 
@@ -237,7 +232,7 @@ public class ChartHandler {
 
         for(int x = 1; x <= unitDifference; x++){
 
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(1000)));
+            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
 
         }
 
@@ -245,28 +240,70 @@ public class ChartHandler {
 
     }
 
-    private void addTotalCost(){
-
-    }
 
     private void addCTR(){
+        XYChart.Series series = new XYChart.Series();
+        series.setName("CTR");
 
+        for(int x = 1; x <= unitDifference; x++){
+
+            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
+
+        }
+
+        chart.getData().add(series);
     }
 
     private void addCPA(){
+        XYChart.Series series = new XYChart.Series();
+        series.setName("CPA");
 
+        for(int x = 1; x <= unitDifference; x++){
+
+            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
+
+        }
+
+        chart.getData().add(series);
     }
 
     private void addCPC(){
+        XYChart.Series series = new XYChart.Series();
+        series.setName("CPC");
 
+        for(int x = 1; x <= unitDifference; x++){
+
+            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
+
+        }
+
+        chart.getData().add(series);
     }
 
     private void addCPM(){
+        XYChart.Series series = new XYChart.Series();
+        series.setName("CPM");
 
+        for(int x = 1; x <= unitDifference; x++){
+
+            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
+
+        }
+
+        chart.getData().add(series);
     }
 
     private void addBounceRate(){
+        XYChart.Series series = new XYChart.Series();
+        series.setName("Bounce Rate");
 
+        for(int x = 1; x <= unitDifference; x++){
+
+            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
+
+        }
+
+        chart.getData().add(series);
     }
 
 }

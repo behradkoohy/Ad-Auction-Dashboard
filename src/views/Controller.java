@@ -12,6 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.BorderPane;
+import models.HistogramModel;
+import models.Metrics;
+import models.PieChartModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,10 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-
-import models.Metrics;
-import models.PieChartModel;
-import models.HistogramModel;
 
 public class Controller {
     //Current data values, changed each time UI manipulates them:
@@ -207,6 +206,9 @@ public class Controller {
 
     @FXML
     private NumberAxis barChartYAxis;
+
+    @FXML
+    public Label statsCampaignNameLabel;
 
     public Controller(){
 
@@ -740,6 +742,7 @@ public class Controller {
      */
     //TODO Replace all the random values with values from database
     public void reloadData(String campaignName){
+        statsCampaignNameLabel.setText(campaignName);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
         System.out.println(dtf.format(LocalDateTime.now()));

@@ -151,7 +151,7 @@ public class CampaignHandler {
             new Thread(() -> ReaderCSV.readCSV(serverLoc)).start();
 
              */
-            success("Files successfully uploaded, loading data now...");
+            success("Files successfully uploaded, please click \"OK\" to begin loading data");
 
         }
 
