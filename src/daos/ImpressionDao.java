@@ -2,6 +2,8 @@ package daos;
 
 import entities.Impression;
 import entities.Impression.Age;
+import entities.Impression.Income;
+import entities.Impression.Gender;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -61,9 +63,30 @@ public class ImpressionDao {
         }
     }
 
-    public List<Impression> getByAge(Age age) {
+    public List<Impression> getByAge(String campaign, Age age) {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where age=:age", Impression.class).setParameter("age", age).list();
+            return session.createQuery("from Impression where campaign=:campaign and age=:age", Impression.class)
+                    .setParameter("campaign", campaign)
+                    .setParameter("age", age)
+                    .list();
+        }
+    }
+
+    public List<Impression> getByIncome(String campaign, Income income) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            return session.createQuery("from Impression where campaign=:campaign and income=:income", Impression.class)
+                    .setParameter("campaign", campaign)
+                    .setParameter("income", income)
+                    .list();
+        }
+    }
+
+    public List<Impression> getByGender(String campaign, Gender gender) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            return session.createQuery("from Impression where campaign=:campaign and gender=:gender", Impression.class)
+                    .setParameter("campaign", campaign)
+                    .setParameter("gender", gender)
+                    .list();
         }
     }
 

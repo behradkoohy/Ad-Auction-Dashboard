@@ -17,10 +17,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import models.Metrics;
+import models.PieChartModel;
+import models.HistogramModel;
 
 public class Controller {
     //Current data values, changed each time UI manipulates them:
@@ -77,6 +80,8 @@ public class Controller {
     private CampaignHandler campaignHandler;
 
     private Metrics metricsModel;
+    private PieChartModel pieChartModel;
+    private HistogramModel histogramModel;
 
     /*
     Corresponding UI components that can be found in scene builder with these identifiers,
@@ -324,39 +329,6 @@ public class Controller {
 
     }
 
-    //TODO refreshes pie charts with random data, only for testing so remove
-
-    private void pieChartTest(){
-
-        genderPie.getData().clear();
-        agePie.getData().clear();
-        incomePie.getData().clear();
-
-        Random r = new Random();
-
-        PieChart.Data gender1 = new PieChart.Data("Men", r.nextInt(50));
-        PieChart.Data gender2 = new PieChart.Data("Women", r.nextInt(50));
-        genderPie.getData().addAll(gender1, gender2);
-
-        PieChart.Data age1 = new PieChart.Data("<25", r.nextInt(30));
-        PieChart.Data age2 = new PieChart.Data("25-34", r.nextInt(30));
-        PieChart.Data age3 = new PieChart.Data("35-44", r.nextInt(30));
-        PieChart.Data age4 = new PieChart.Data("45-54", r.nextInt(30));
-        PieChart.Data age5 = new PieChart.Data(">54", r.nextInt(30));
-        agePie.getData().addAll(age1, age2, age3, age4, age5);
-        agePie.setTitle("Age");
-        agePie.setLegendVisible(false);
-
-        PieChart.Data income1 = new PieChart.Data("Low", r.nextInt(30));
-        PieChart.Data income2 = new PieChart.Data("Medium", r.nextInt(30));
-        PieChart.Data income3 = new PieChart.Data("High", r.nextInt(30));
-        incomePie.getData().addAll(income1, income2, income3);
-        incomePie.setTitle("Income");
-        incomePie.setLegendVisible(false);
-        incomePie.setStyle("-fx-font-size: " + 10 + "px;");
-
-    }
-
     /**
      * Used by the campaign manager to go to next page after loading/creating a campaign
      */
@@ -597,10 +569,10 @@ public class Controller {
 
     }
 
-    public void updateHistogram(){
+    public void updateHistogram(List<Integer> data){
 
         HistogramHandler handler = new HistogramHandler(barChart, barChartXAxis,
-                barChartYAxis, calcMetric());
+                barChartYAxis, calcMetric(), data);
 
     }
 
@@ -759,7 +731,9 @@ public class Controller {
 
         System.out.println("Loading data for" + campaignName);
 
-        numImpressions.setText(String.valueOf(this.metricsModel.getNumImpressions(campaignName)));
+        int nrImpressions = this.metricsModel.getNumImpressions(campaignName);
+
+        numImpressions.setText(String.valueOf(nrImpressions));
         numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
         numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs(campaignName)));
         numBounces.setText(String.valueOf(this.metricsModel.getNumBounces(campaignName)));
@@ -772,8 +746,21 @@ public class Controller {
         bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
 
         updateChart();
-        updateHistogram();
-        pieChartTest();
+
+        this.histogramModel = new HistogramModel(campaignName);
+        List<Integer> data = this.histogramModel.getData();
+        updateHistogram(data);
+
+        this.pieChartModel = new PieChartModel(campaignName, nrImpressions);
+        HashMap<String, Integer> ages =  this.pieChartModel.getAgeDistributions();
+        HashMap<String, Integer> genders =  this.pieChartModel.getGenderDistributions();
+        HashMap<String, Integer> incomes =  this.pieChartModel.getIncomeDistributions();
+
+        updatePieChartData(
+                genders.get("men"), genders.get("women"),
+                ages.get("lt25"), ages.get("btwn2534"), ages.get("btwn3544"), ages.get("btwn4554"), ages.get("gt55"),
+                incomes.get("low"), incomes.get("medium"), incomes.get("high")
+        );
 
     }
 
