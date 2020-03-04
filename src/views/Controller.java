@@ -279,7 +279,11 @@ public class Controller {
 
         campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
 
-        campaignChooser.getItems().addAll(clickDao.getCampaigns());
+        try {
+            campaignChooser.getItems().addAll(clickDao.getCampaigns());
+        } catch (Exception e) {
+            System.out.println("No data loaded!");
+        }
 
     }
 
