@@ -2,6 +2,7 @@ package daos;
 
 import entities.ServerEntry;
 import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
@@ -26,17 +27,13 @@ public class ServerEntryDao {
 
     public void save(List<ServerEntry> serverEntries) {
         Transaction transaction = null;
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+        try (StatelessSession session = SessionHandler.getSessionFactory().openStatelessSession()) {
             transaction = session.beginTransaction();
             for(int i = 0; i < serverEntries.size(); i++) {
                 try {
-                    session.persist(serverEntries.get(i));
+                    session.insert(serverEntries.get(i));
                 } catch(Exception e) {
                     e.printStackTrace();
-                }
-                if(i % 100 == 0) {
-                    session.flush();
-                    session.clear();
                 }
             }
             transaction.commit();

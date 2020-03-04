@@ -32,103 +32,118 @@ public class ReaderCSV {
 	// TODO : see what is going to get passed from the controller and change file reading accordingly
 	
 	public static void readCSV(String filename, String campaignName) {
-		// type is either : click, impression, server
-		String type = "";
-		
 		Path pathToFile = Paths.get(filename);
 		try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
 			String line = br.readLine();
 			if (line.equals(CLICK_LOG_HEADER)){
-				type = "click";
+				readClickCSV(br, campaignName);
 			} else if (line.equals(SERVER_LOG_HEADER)){
-				type = "server";
+				readServerEntryCSV(br, campaignName);
 			} else if (line.equals(IMPRESSION_LOG_HEADER)){
-				type = "impression";
+				readImpressionCSV(br, campaignName);
 			} else {
 				// throws some error message
 			}
-			line = br.readLine();
-			LinkedList<String> brin = new LinkedList<>();
-            // loop through all lines
-			while (line != null){
-				brin.add(line);
-				line = br.readLine();
-
-			}
-
-			ClickDao clickDao = new ClickDao();
-			ImpressionDao impressionDao = new ImpressionDao();
-			ServerEntryDao serverEntryDao = new ServerEntryDao();
-
-			List<Click> clicksToAdd = new ArrayList<>();
-			List<Impression> impressionsToAdd = new ArrayList<>();
-			List<ServerEntry> serverEntriesToAdd = new ArrayList<>();
-
-			int clickIdentifer = clickDao.getMaxIdentifier();
-			int impressionIdentifier = impressionDao.getMaxIdentifier();
-			int serverEntryIdentifier = serverEntryDao.getMaxIdentifier();
-
-            for (Iterator i = brin.iterator(); i.hasNext();) {
-            	String[] contents = ((String) i.next()).split(",");
-                switch (type){
-                	case "click":
-                        LocalDateTime clickDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
-                        Long clickId = Long.parseLong( contents[1] );
-                        Double clickCost = Double.parseDouble(contents[2]);
-                        clickIdentifer++;
-                        clicksToAdd.add(new Click(clickIdentifer, campaignName, clickId, clickDate, clickCost));
-                		break;
-                	case "impression":
-                		LocalDateTime impressionDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
-                        Long impressionId = Long.parseLong( contents[1] );
-                		Gender impressionGender = returnGender( contents[2] );
-                		Age impressionAge = returnAge( contents[3] );
-                		Income impressionIncome = returnIncome( contents[4] );
-                        Context impressionContext = returnContext( contents[5] );
-                        Double impressionCost = Double.parseDouble( contents[6] );
-                        impressionIdentifier++;
-                        impressionsToAdd.add(new Impression(impressionIdentifier, campaignName, impressionDate, impressionId,
-								impressionGender, impressionAge, impressionIncome, impressionContext, impressionCost));
-                		break;
-                	case "server":
-
-                		LocalDateTime serverEntryDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
-                        Long serverId = Long.parseLong( contents[1] );
-
-                        LocalDateTime serverExitDate;
-                        if( !contents[2].equals("n/a") ) {
-                        	serverExitDate = LocalDateTime.parse(contents[2], ReaderCSV.formatter);
-                        } else {
-                        	serverExitDate = serverEntryDate;
-						}
-
-                        int serverPageView = Integer.parseInt(contents[3]);
-                		Boolean serverConversion = (contents[4].equals("Yes") ? true : false);
-
-                		serverEntryIdentifier++;
-                		serverEntriesToAdd.add(new ServerEntry(serverEntryIdentifier, campaignName, serverEntryDate, serverId,
-								serverExitDate, serverPageView, serverConversion));
-
-                		break;
-                	default:
-                		// implement some error message
-                		break;
-                }
-
-            }
-            if(clicksToAdd.size() > 0) {
-				clickDao.save(clicksToAdd);
-			}
-			if(impressionsToAdd.size() > 0) {
-				impressionDao.save(impressionsToAdd);
-			}
-			if(serverEntriesToAdd.size() > 0) {
-				serverEntryDao.save(serverEntriesToAdd);
-			}
-
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+	}
+
+	private static void readClickCSV(BufferedReader br, String campaignName) {
+		try {
+			ClickDao clickDao = new ClickDao();
+			List<Click> clicksToAdd = new ArrayList<>();
+			int clickIdentifer = clickDao.getMaxIdentifier();
+
+			String line = br.readLine();
+			while (line != null) {
+				String[] contents = line.split(",");
+
+				LocalDateTime clickDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
+				long clickId = Long.parseLong( contents[1] );
+				double clickCost = Double.parseDouble(contents[2]);
+				clickIdentifer++;
+				clicksToAdd.add(new Click(clickIdentifer, campaignName, clickId, clickDate, clickCost));
+
+				line = br.readLine();
+			}
+
+			if(clicksToAdd.size() > 0) {
+				clickDao.save(clicksToAdd);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void readImpressionCSV(BufferedReader br, String campaignName) {
+		try {
+			ImpressionDao impressionDao = new ImpressionDao();
+			List<Impression> impressionsToAdd = new ArrayList<>();
+			int impressionIdentifier = impressionDao.getMaxIdentifier();
+
+			String line = br.readLine();
+			while (line != null) {
+				String[] contents = line.split(",");
+
+				LocalDateTime impressionDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
+				long impressionId = Long.parseLong( contents[1] );
+				Gender impressionGender = returnGender( contents[2] );
+				Age impressionAge = returnAge( contents[3] );
+				Income impressionIncome = returnIncome( contents[4] );
+				Context impressionContext = returnContext( contents[5] );
+				double impressionCost = Double.parseDouble( contents[6] );
+				impressionIdentifier++;
+				impressionsToAdd.add(new Impression(impressionIdentifier, campaignName, impressionDate, impressionId,
+						impressionGender, impressionAge, impressionIncome, impressionContext, impressionCost));
+
+				line = br.readLine();
+			}
+
+			if(impressionsToAdd.size() > 0) {
+				impressionDao.save(impressionsToAdd);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void readServerEntryCSV(BufferedReader br, String campaignName) {
+		try {
+			ServerEntryDao serverEntryDao = new ServerEntryDao();
+			List<ServerEntry> serverEntriesToAdd = new ArrayList<>();
+			int serverEntryIdentifier = serverEntryDao.getMaxIdentifier();
+
+			String line = br.readLine();
+			while (line != null) {
+				String[] contents = line.split(",");
+
+				LocalDateTime serverEntryDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
+				Long serverId = Long.parseLong( contents[1] );
+
+				LocalDateTime serverExitDate;
+				if( !contents[2].equals("n/a") ) {
+					serverExitDate = LocalDateTime.parse(contents[2], ReaderCSV.formatter);
+				} else {
+					serverExitDate = serverEntryDate;
+				}
+
+				int serverPageView = Integer.parseInt(contents[3]);
+				boolean serverConversion = (contents[4].equals("Yes"));
+
+				serverEntryIdentifier++;
+				serverEntriesToAdd.add(new ServerEntry(serverEntryIdentifier, campaignName, serverEntryDate, serverId,
+						serverExitDate, serverPageView, serverConversion));
+
+				line = br.readLine();
+			}
+
+			if(serverEntriesToAdd.size() > 0) {
+				serverEntryDao.save(serverEntriesToAdd);
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static Gender returnGender(String gender) {

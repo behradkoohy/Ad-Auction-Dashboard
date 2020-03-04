@@ -5,6 +5,7 @@ import entities.Impression.Age;
 import entities.Impression.Income;
 import entities.Impression.Gender;
 import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
@@ -29,17 +30,13 @@ public class ImpressionDao {
 
     public void save(List<Impression> impressions) {
         Transaction transaction = null;
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+        try (StatelessSession session = SessionHandler.getSessionFactory().openStatelessSession()) {
             transaction = session.beginTransaction();
             for(int i = 0; i < impressions.size(); i++) {
                 try {
-                    session.persist(impressions.get(i));
+                    session.insert(impressions.get(i));
                 } catch(Exception e) {
                     e.printStackTrace();
-                }
-                if(i % 100 == 0) {
-                    session.flush();
-                    session.clear();
                 }
             }
             transaction.commit();

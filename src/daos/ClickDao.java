@@ -2,6 +2,7 @@ package daos;
 
 import entities.Click;
 import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
@@ -25,17 +26,13 @@ public class ClickDao {
 
     public void save(List<Click> clicks) {
         Transaction transaction = null;
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+        try (StatelessSession session = SessionHandler.getSessionFactory().openStatelessSession()) {
             transaction = session.beginTransaction();
             for(int i = 0; i < clicks.size(); i++) {
                 try {
-                    session.persist(clicks.get(i));
+                    session.insert(clicks.get(i));
                 } catch(Exception e) {
                     e.printStackTrace();
-                }
-                if(i % 100 == 0) {
-                    session.flush();
-                    session.clear();
                 }
             }
             transaction.commit();
