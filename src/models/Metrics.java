@@ -8,12 +8,13 @@ import entities.Click;
 import entities.Impression;
 import entities.ServerEntry;
 
-import java.beans.IntrospectionException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
+
 import javafx.scene.chart.*;
 
 
@@ -28,31 +29,69 @@ public class Metrics {
     private ImpressionDao impressionsDao;
     private ServerEntryDao serverDao;
 
+    private HashMap<Twople, Double> cacheSingle;
+
+    private static int NUMIMPRESS = 0;
+    private static int NUMCLICKS = 1;
+    private static int NUMUNIQ = 2;
+    private static int CONVER = 3;
+    private static int CTR = 4;
+    private static int CPA = 5;
+    private static int TOTALCOST = 6;
+    private static int TOTALCLICK = 7;
+    private static int TOTALIMPRESS = 8;
+    private static int CPC = 9;
+    private static int CPM = 10;
+    private static int BOUNCE = 11;
+
+
 
     public Metrics(ClickDao clickDao, ImpressionDao impressionsDao, ServerEntryDao serverEntryDao) {
         this.clickDao = clickDao;
         this.impressionsDao = impressionsDao;
         this.serverDao = serverEntryDao;
+
+        this.cacheSingle = new HashMap();
     }
 
-    public int getNumImpressions(String campaign) {
-        return impressionsDao.getFromCampaign(campaign).size();
+    public Double getNumImpressions(String campaign) {
+        Twople twople = new Twople(NUMIMPRESS, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
+
+        Double num = Double.valueOf(impressionsDao.getFromCampaign(campaign).size());
+        cacheSingle.put(twople, num);
+
+        return num;
     }
 
-    public int getNumClicks(String campaign) {
-        return clickDao.getFromCampaign(campaign).size();
+    public Double getNumClicks(String campaign) {
+        Twople twople = new Twople(NUMCLICKS, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
+        Double num =Double.valueOf(clickDao.getFromCampaign(campaign).size());
+        cacheSingle.put(twople, num);
+        return num;
     }
 
 
-    public int getNumUniqs(String campaign) {
+    public Double getNumUniqs(String campaign) {
+        Twople twople = new Twople(NUMUNIQ, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
 
         HashSet set = new HashSet<>();
 
         for (Click click : clickDao.getFromCampaign(campaign)) {
             set.add(click.getId());
         }
+        Double num = Double.valueOf(set.size());
+        cacheSingle.put(twople, num);
 
-        return set.size();
+        return Double.valueOf(set.size());
 
     }
 
@@ -68,9 +107,13 @@ public class Metrics {
     }
 
 
-    public int getNumBounces(String campaign) {
+    public Double getNumBounces(String campaign) {
+        Twople twople = new Twople(BOUNCE, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
 
-        int num = 0;
+        Double num = 0.0;
         //time spent defines bounce
         if (bounceDef) {
 
@@ -95,34 +138,57 @@ public class Metrics {
                 }
             }
         }
-
+        cacheSingle.put(twople, num);
         return num;
     }
 
-    public int getConversions(String campaign) {
-        int num = 0;
+    public Double getConversions(String campaign) {
+        Twople twople = new Twople(CONVER, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
+        Double num = 0.0;
         for (ServerEntry server : serverDao.getFromCampaign(campaign)) {
             if (server.getConversion()) {
                 num++;
             }
         }
+        cacheSingle.put(twople, num);
         return num;
     }
 
-    public double getCTR(String campaign) {
-        return Double.valueOf(this.getNumClicks(campaign)) / Double.valueOf(this.getNumImpressions(campaign));
+    public Double getCTR(String campaign) {
+        Twople twople = new Twople(CTR, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
+        Double num = this.getNumClicks(campaign)/this.getNumImpressions(campaign);
+        cacheSingle.put(twople, num);
+        return num;
 
     }
 
     //TODO do we use total cost or just click cost or just impressions cost
-    public double getCPA(String campaign) {
-        return (this.getTotalCost(campaign) / this.getConversions(campaign));
+    public Double getCPA(String campaign) {
+        Twople twople = new Twople(CPA, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
+        Double num = this.getTotalCost(campaign) / this.getConversions(campaign);
+        cacheSingle.put(twople, num);
+        return num;
     }
 
 
-    public double getTotalCost(String campaign) {
+    public Double getTotalCost(String campaign) {
+        Twople twople = new Twople(TOTALCOST, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
+        Double num = this.getTotalClickCost(campaign) + this.getTotalImpressionsCost(campaign);
+        cacheSingle.put(twople, num);
 
-        return (this.getTotalClickCost(campaign) + this.getTotalImpressionsCost(campaign));
+        return num;
 
     }
 
@@ -139,11 +205,16 @@ public class Metrics {
         return totalCosts;
     }
 
-    private double getTotalClickCost(String campaign) {
+    private Double getTotalClickCost(String campaign) {
+        Twople twople = new Twople(TOTALCLICK, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
         double cost = 0;
         for (Click click : clickDao.getFromCampaign(campaign)) {
             cost += click.getClickCost();
         }
+        cacheSingle.put(twople, cost);
         return cost;
     }
 
@@ -169,12 +240,16 @@ public class Metrics {
 
     }
 
-    private double getTotalImpressionsCost(String campaign) {
+    private Double getTotalImpressionsCost(String campaign) {
+        Twople twople = new Twople(TOTALIMPRESS, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
         double cost = 0;
         for (Impression impression : impressionsDao.getFromCampaign(campaign)) {
             cost += impression.getImpressionCost();
         }
-
+        cacheSingle.put(twople, cost);
         return cost;
     }
 
@@ -200,16 +275,34 @@ public class Metrics {
     }
 
 
-    public double getCPC(String campaign) {
-        return (this.getTotalClickCost(campaign) / this.getNumClicks(campaign));
+    public Double getCPC(String campaign) {
+        Twople twople = new Twople(CPC, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
+        Double num = this.getTotalClickCost(campaign) / this.getNumClicks(campaign);
+        cacheSingle.put(twople, num);
+        return num;
     }
 
-    public double getCPM(String campaign) {
-        return (this.getTotalCost(campaign) / (this.getNumImpressions(campaign)/1000));
+    public Double getCPM(String campaign) {
+        Twople twople = new Twople(CPM, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
+        Double num = this.getTotalCost(campaign) / (this.getNumImpressions(campaign)/1000);
+        cacheSingle.put(twople, num);
+        return num;
     }
 
-    public double getBounceRate(String campaign) {
-        return Double.valueOf(this.getNumBounces(campaign)) / Double.valueOf(this.getNumClicks(campaign));
+    public Double getBounceRate(String campaign) {
+        Twople twople = new Twople(BOUNCE, campaign);
+        if (cacheSingle.containsKey(twople)) {
+            return cacheSingle.get(twople);
+        }
+        Double num = this.getNumBounces(campaign)/this.getNumClicks(campaign);
+        cacheSingle.put(twople, num);
+        return num;
     }
 
     /**
@@ -545,6 +638,32 @@ public class Metrics {
         return series;
 
     }
+
+    public class Twople {
+        private int name;
+        private String camp;
+
+        public Twople(int name, String camp) {
+            this.name = name;
+            this.camp = camp;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Twople twople = (Twople) o;
+            return name == twople.name &&
+                    camp.equals(twople.camp);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(name, camp);
+        }
+    }
+
+
 
 
 

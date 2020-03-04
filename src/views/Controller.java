@@ -731,7 +731,7 @@ public class Controller {
 
         System.out.println("Loading data for" + campaignName);
 
-        int nrImpressions = this.metricsModel.getNumImpressions(campaignName);
+        Double nrImpressions = this.metricsModel.getNumImpressions(campaignName);
 
         numImpressions.setText(String.valueOf(nrImpressions));
         numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
@@ -744,6 +744,7 @@ public class Controller {
         CPC.setText(String.valueOf(this.metricsModel.getCPC(campaignName)));
         CPM.setText(String.valueOf(this.metricsModel.getCPM(campaignName)));
         bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
+        
 
         updateChart();
 
@@ -751,7 +752,7 @@ public class Controller {
         List<Integer> data = this.histogramModel.getData();
         updateHistogram(data);
 
-        this.pieChartModel = new PieChartModel(campaignName, nrImpressions);
+        this.pieChartModel = new PieChartModel(campaignName, nrImpressions.intValue());
         HashMap<String, Integer> ages =  this.pieChartModel.getAgeDistributions();
         HashMap<String, Integer> genders =  this.pieChartModel.getGenderDistributions();
         HashMap<String, Integer> incomes =  this.pieChartModel.getIncomeDistributions();
