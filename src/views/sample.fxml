@@ -323,12 +323,12 @@
                                     </FlowPane>
                                     <FlowPane prefHeight="38.0" prefWidth="508.0">
                                        <children>
-                                          <JFXCheckBox onAction="#toggleTotal" selected="true" text="Total cost">
+                                          <JFXCheckBox onAction="#toggleTotal" text="Total cost">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox onAction="#toggleCTR" selected="true" text="CTR">
+                                          <JFXCheckBox onAction="#toggleCTR" text="CTR">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>

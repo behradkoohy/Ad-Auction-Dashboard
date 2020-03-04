@@ -226,6 +226,12 @@ public class Controller {
         clicks = false;
         uniqueUsers = false;
         bounces = false;
+        totalCostB = false;
+        CTRB = false;
+        CPAB = false;
+        CPCB = false;
+        CPMB = false;
+        bounceRateB = false;
 
         highContrastMode = false;
         largeFontMode = false;
