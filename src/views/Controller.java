@@ -23,6 +23,7 @@ import java.util.Random;
 
 import models.Metrics;
 import models.PieChartModel;
+import models.HistogramModel;
 
 public class Controller {
     //Current data values, changed each time UI manipulates them:
@@ -80,6 +81,7 @@ public class Controller {
 
     private Metrics metricsModel;
     private PieChartModel pieChartModel;
+    private HistogramModel histogramModel;
 
     /*
     Corresponding UI components that can be found in scene builder with these identifiers,
@@ -567,10 +569,10 @@ public class Controller {
 
     }
 
-    public void updateHistogram(){
+    public void updateHistogram(List<Integer> data){
 
         HistogramHandler handler = new HistogramHandler(barChart, barChartXAxis,
-                barChartYAxis, calcMetric());
+                barChartYAxis, calcMetric(), data);
 
     }
 
@@ -744,7 +746,10 @@ public class Controller {
         bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
 
         updateChart();
-        updateHistogram();
+
+        this.histogramModel = new HistogramModel(campaignName);
+        List<Integer> data = this.histogramModel.getData();
+        updateHistogram(data);
 
         this.pieChartModel = new PieChartModel(campaignName, nrImpressions);
         HashMap<String, Integer> ages =  this.pieChartModel.getAgeDistributions();
