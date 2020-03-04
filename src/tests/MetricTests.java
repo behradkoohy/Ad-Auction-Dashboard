@@ -7,26 +7,33 @@ import daos.ServerEntryDao;
 import models.Metrics;
 import models.ReaderCSV;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.io.File;
 
 import static org.junit.Assert.assertTrue;
 
 public class MetricTests {
 
-    private ClickDao clickDao;
-    private ImpressionDao impressionsDao;
-    private ServerEntryDao serverDao;
-    private Metrics metrics;
+    private static ClickDao clickDao;
+    private static ImpressionDao impressionsDao;
+    private static ServerEntryDao serverDao;
+    private static Metrics metrics;
 
-    @Before
-    public void setupThis(){
+    @BeforeClass
+    public static void setupThis(){
+
+        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv", "test");
+        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "test");
+        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "test");
+
         clickDao = new ClickDao();
         impressionsDao = new ImpressionDao();
         serverDao = new ServerEntryDao();
+        System.out.println("Setup");
 
-        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv", "Test Campaign");
-        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "Test Campaign");
-        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "Test Campaign");
+
 
 
         metrics = new Metrics(clickDao, impressionsDao, serverDao);
@@ -65,9 +72,18 @@ public class MetricTests {
     //total total cost = 464.941084
     @Test
     public void cPATest() {
-        assertTrue(metrics.getCPA("test") == (464.941084/6));
+        assertTrue(metrics.getCPA("test") == (464.9410839999999/6));
     }
 
+    @Test
+    public void cPCTest() {
+        assertTrue(metrics.getCPC("test") == (464.83540999999985/99));
+    }
+
+    @Test
+    public void cPMTest() {
+        assertTrue(metrics.getCPM("test") == (4696.374585858584));
+    }
 
 
 
