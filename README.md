@@ -2,7 +2,7 @@
 
 ## Setting up database
 1. Install a MySQL database version `8.0.19 (MySQL Community Server - GPL)`
-2. Configure to `localhost` on port `3309`
+2. Configure to `localhost` on port `3306`
 3. Create new schema/database named `app` if not already
 4. To configure with relevant tables run the queries below:
     ```
