@@ -1,6 +1,17 @@
 package models;
 
 
+import daos.ClickDao;
+import daos.ImpressionDao;
+import daos.ServerEntryDao;
+import entities.Click;
+import entities.Impression;
+import entities.Impression.Age;
+import entities.Impression.Context;
+import entities.Impression.Gender;
+import entities.Impression.Income;
+import entities.ServerEntry;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,20 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-
-import daos.ClickDao;
-import daos.ImpressionDao;
-import daos.ServerEntryDao;
-import entities.Click;
-import entities.Impression;
-import entities.Impression.Gender;
-import entities.Impression.Age;
-import entities.Impression.Context;
-import entities.Impression.Income;
-import entities.ServerEntry;
+import java.util.*;
 
 
 public class ReaderCSV {
@@ -33,16 +31,13 @@ public class ReaderCSV {
 	static String IMPRESSION_LOG_HEADER= "Date,ID,Gender,Age,Income,Context,Impression Cost";
 	// TODO : see what is going to get passed from the controller and change file reading accordingly
 	
-	public static void readCSV(String filename) {
+	public static void readCSV(String filename, String campaignName) {
 		// type is either : click, impression, server
 		String type = "";
-        String camp = "test"; // TODO : get current campaign
 		
 		Path pathToFile = Paths.get(filename);
 		try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
 			String line = br.readLine();
-			System.out.println("line = " + line);
-
 			if (line.equals(CLICK_LOG_HEADER)){
 				type = "click";
 			} else if (line.equals(SERVER_LOG_HEADER)){
@@ -53,7 +48,6 @@ public class ReaderCSV {
 				// throws some error message
 			}
 			line = br.readLine();
-//			System.out.println(line);
 			LinkedList<String> brin = new LinkedList<>();
             // loop through all lines
 			while (line != null){
@@ -61,68 +55,76 @@ public class ReaderCSV {
 				line = br.readLine();
 
 			}
-            for (Iterator i = brin.iterator(); i.hasNext();) {
 
+			ClickDao clickDao = new ClickDao();
+			ImpressionDao impressionDao = new ImpressionDao();
+			ServerEntryDao serverEntryDao = new ServerEntryDao();
+
+			List<Click> clicksToAdd = new ArrayList<>();
+			List<Impression> impressionsToAdd = new ArrayList<>();
+			List<ServerEntry> serverEntriesToAdd = new ArrayList<>();
+
+			int clickIdentifer = clickDao.getMaxIdentifier();
+			int impressionIdentifier = impressionDao.getMaxIdentifier();
+			int serverEntryIdentifier = serverEntryDao.getMaxIdentifier();
+
+            for (Iterator i = brin.iterator(); i.hasNext();) {
             	String[] contents = ((String) i.next()).split(",");
-				System.out.println(contents[0]);
                 switch (type){
                 	case "click":
-                		ClickDao clickDao = new ClickDao();
-
                         LocalDateTime clickDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
                         Long clickId = Long.parseLong( contents[1] );
                         Double clickCost = Double.parseDouble(contents[2]);
-
-
-
-                        Click newClick = new Click(camp, clickId, clickDate, clickCost);
-                        //System.out.println(newClick);
-                        clickDao.save(newClick);
-
+                        clickIdentifer++;
+                        clicksToAdd.add(new Click(clickIdentifer, campaignName, clickId, clickDate, clickCost));
                 		break;
                 	case "impression":
-                		ImpressionDao impressionDao = new ImpressionDao();
-
                 		LocalDateTime impressionDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
                         Long impressionId = Long.parseLong( contents[1] );
-
                 		Gender impressionGender = returnGender( contents[2] );
                 		Age impressionAge = returnAge( contents[3] );
                 		Income impressionIncome = returnIncome( contents[4] );
                         Context impressionContext = returnContext( contents[5] );
                         Double impressionCost = Double.parseDouble( contents[6] );
-
-                        Impression newImpression = new Impression(camp, impressionDate, impressionId, impressionGender, impressionAge, impressionIncome, impressionContext, impressionCost);
-                        impressionDao.save(newImpression);
-
+                        impressionIdentifier++;
+                        impressionsToAdd.add(new Impression(impressionIdentifier, campaignName, impressionDate, impressionId,
+								impressionGender, impressionAge, impressionIncome, impressionContext, impressionCost));
                 		break;
                 	case "server":
-
-                		ServerEntryDao serverDao = new ServerEntryDao();
 
                 		LocalDateTime serverEntryDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
                         Long serverId = Long.parseLong( contents[1] );
 
-                        LocalDateTime serverExitDate = null;
+                        LocalDateTime serverExitDate;
                         if( !contents[2].equals("n/a") ) {
                         	serverExitDate = LocalDateTime.parse(contents[2], ReaderCSV.formatter);
-                        }
+                        } else {
+                        	serverExitDate = serverEntryDate;
+						}
 
                         int serverPageView = Integer.parseInt(contents[3]);
-                		Boolean serverConversion = (contents[4] == "Yes" ? true : false);
+                		Boolean serverConversion = (contents[4].equals("Yes") ? true : false);
 
-                		ServerEntry serverEntry = new ServerEntry(camp, serverEntryDate, serverId, serverExitDate, serverPageView, serverConversion);
-                		serverDao.save(serverEntry);
+                		serverEntryIdentifier++;
+                		serverEntriesToAdd.add(new ServerEntry(serverEntryIdentifier, campaignName, serverEntryDate, serverId,
+								serverExitDate, serverPageView, serverConversion));
 
                 		break;
                 	default:
                 		// implement some error message
                 		break;
                 }
-                
-                line = br.readLine();
 
             }
+            if(clicksToAdd.size() > 0) {
+				clickDao.save(clicksToAdd);
+			}
+			if(impressionsToAdd.size() > 0) {
+				impressionDao.save(impressionsToAdd);
+			}
+			if(serverEntriesToAdd.size() > 0) {
+				serverEntryDao.save(serverEntriesToAdd);
+			}
 
         } catch (IOException ioe) {
             ioe.printStackTrace();

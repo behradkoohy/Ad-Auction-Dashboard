@@ -12,7 +12,8 @@ public class Click implements Serializable {
 
     }
 
-    public Click(String campaign, long id, LocalDateTime date, double clickCost) {
+    public Click(int identifier, String campaign, long id, LocalDateTime date, double clickCost) {
+        this.identifier = identifier;
         this.campaign = campaign;
         this.id = id;
         this.date = date;
@@ -20,7 +21,6 @@ public class Click implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column
     private int identifier;
 

@@ -90,7 +90,7 @@ public class Metrics {
         //pages viewed defines bounce
         else {
             for (ServerEntry server : serverDao.getFromCampaign(campaign)) {
-                if (server.getPageViews() < bouncePages) {
+                if (server.getPageViews() <= bouncePages) {
                     num ++;
                 }
             }
@@ -110,7 +110,7 @@ public class Metrics {
     }
 
     public double getCTR(String campaign) {
-        return (this.getNumClicks(campaign) / this.getNumImpressions(campaign));
+        return Double.valueOf(this.getNumClicks(campaign)) / Double.valueOf(this.getNumImpressions(campaign));
 
     }
 
@@ -120,7 +120,7 @@ public class Metrics {
     }
 
 
-    private double getTotalCost(String campaign) {
+    public double getTotalCost(String campaign) {
 
         return (this.getTotalClickCost(campaign) + this.getTotalImpressionsCost(campaign));
 
@@ -209,7 +209,7 @@ public class Metrics {
     }
 
     public double getBounceRate(String campaign) {
-        return (this.getNumBounces(campaign) / this.getNumClicks(campaign));
+        return Double.valueOf(this.getNumBounces(campaign)) / Double.valueOf(this.getNumClicks(campaign));
     }
 
     /**

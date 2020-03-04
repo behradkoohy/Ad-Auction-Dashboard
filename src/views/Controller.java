@@ -1,11 +1,12 @@
 package views;
 
-import com.jfoenix.controls.JFXComboBox;
-import com.jfoenix.controls.JFXDatePicker;
-import com.jfoenix.controls.JFXTabPane;
-import com.jfoenix.controls.JFXTimePicker;
+import com.jfoenix.controls.*;
+import daos.ClickDao;
+import daos.ImpressionDao;
+import daos.ServerEntryDao;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
@@ -15,11 +16,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
-public class Controller {
+import models.Metrics;
+import models.PieChartModel;
+import models.HistogramModel;
 
+public class Controller {
     //Current data values, changed each time UI manipulates them:
+
+    private ClickDao clickDao = new ClickDao();
+    private ImpressionDao impressionDao = new ImpressionDao();
+    private ServerEntryDao serverEntryDao = new ServerEntryDao();
 
     //Gender
     private boolean male;
@@ -49,6 +60,12 @@ public class Controller {
     private boolean clicks;
     private boolean uniqueUsers;
     private boolean bounces;
+    private boolean totalCostB;
+    private boolean CTRB;
+    private boolean CPAB;
+    private boolean CPCB;
+    private boolean CPMB;
+    private boolean bounceRateB;
 
     //Accessibility settings
     private boolean highContrastMode;
@@ -57,8 +74,14 @@ public class Controller {
     //The number of "units" that will be displayed along the x axis
     private int unitsDifference;
 
+
     //Class for handling loading campaigns, this can connect to Alex' CSV reader class
+
     private CampaignHandler campaignHandler;
+
+    private Metrics metricsModel;
+    private PieChartModel pieChartModel;
+    private HistogramModel histogramModel;
 
     /*
     Corresponding UI components that can be found in scene builder with these identifiers,
@@ -90,6 +113,28 @@ public class Controller {
     private BorderPane borderPane;
 
     @FXML
+    private JFXComboBox campaignDropDown;
+
+    @FXML
+    private JFXButton loadPrevious;
+
+    @FXML
+    private JFXTextField campaignName;
+
+    @FXML
+    private Label clickLogLabel;
+
+    @FXML
+    private Label impressionLogLabel;
+
+    @FXML
+    private Label serverLogLabel;
+
+    @FXML
+    //This can be changed each time the user switches to a new/different campaign
+    private Label campaignNameLabel;
+
+    @FXML
     private JFXDatePicker dFromPicker;
 
     @FXML
@@ -100,15 +145,6 @@ public class Controller {
 
     @FXML
     private JFXTimePicker timeToPicker;
-
-    @FXML
-    private Label genderTitle;
-
-    @FXML
-    private Label ageTitle;
-
-    @FXML
-    private Label incomeTitle;
 
     @FXML
     private Label numImpressions;
@@ -184,6 +220,7 @@ public class Controller {
         medIncome = true;
         highIncome = true;
 
+        //Initial state of checkboxes below the chart
         impressions = true;
         conversions = true;
         clicks = false;
@@ -193,21 +230,13 @@ public class Controller {
         highContrastMode = false;
         largeFontMode = false;
 
-        //For testing purposes
-        dFrom = LocalDate.now();
-        tFrom = LocalTime.now();
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        dTo = LocalDate.now();
-        tTo = LocalTime.now();
-
         unitsDifference = 0;
 
+        campaignHandler = new CampaignHandler(this, clickLogLabel,
+                impressionLogLabel, serverLogLabel);
+
+
+        this.metricsModel = new Metrics(clickDao, impressionDao, serverEntryDao);
     }
 
     @FXML
@@ -219,7 +248,23 @@ public class Controller {
      *
      * Do all initialization steps in this method
      */
-    public void initialize(){
+    public void initialize() {
+
+        //TODO dont think this is needed as I can toggle in scene builder, keep here for now
+        //lineChart.setAnimated(false);
+
+        //Initially the date spinners will be from week ago until now
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime weekAgo = now.minus(1, ChronoUnit.WEEKS);
+        dToPicker.setValue(now.toLocalDate());
+        updateDTo();
+        timeToPicker.setValue(now.toLocalTime());
+        updateTTo();
+        dFromPicker.setValue(weekAgo.toLocalDate());
+        updateDFrom();
+        timeFromPicker.setValue(weekAgo.toLocalTime());
+        updateTFrom();
+
 
         //Setting up the look of the pie charts
         genderPie.setTitle("Gender");
@@ -234,18 +279,17 @@ public class Controller {
 
         campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
 
-
-
-        //TODO remove
-        this.reloadData();
+        campaignChooser.getItems().addAll(clickDao.getCampaigns());
 
     }
 
     /**
+
      * Update the pie charts to show that some data has changed
      *
      * All values are the number of users there are for each attribute
      *
+
      * @param men
      * @param women
      * @param lt25
@@ -257,9 +301,11 @@ public class Controller {
      * @param medIncome
      * @param highIncome
      */
-    public void updatePieCharts(int men, int women, int lt25, int btwn2534,
-                                int btwn3544, int btwn4554, int gt55, int lowIncome,
-                                int medIncome, int highIncome){
+    public void updatePieChartData(int men, int women, int lt25,
+                                   int btwn2534, int btwn3544,
+                                   int btwn4554, int gt55, int lowIncome,
+                                   int medIncome, int highIncome){
+
 
         genderPie.getData().clear();
         agePie.getData().clear();
@@ -283,37 +329,16 @@ public class Controller {
 
     }
 
-    //TODO for testing
-    private void pieChartTest(){
+    /**
+     * Used by the campaign manager to go to next page after loading/creating a campaign
+     */
+    public void goToMainPage(){
 
-        genderPie.getData().clear();
-        agePie.getData().clear();
-        incomePie.getData().clear();
-
-        Random r = new Random();
-
-        PieChart.Data gender1 = new PieChart.Data("Men", r.nextInt(50));
-        PieChart.Data gender2 = new PieChart.Data("Women", r.nextInt(50));
-        genderPie.getData().addAll(gender1, gender2);
-
-        PieChart.Data age1 = new PieChart.Data("<25", r.nextInt(30));
-        PieChart.Data age2 = new PieChart.Data("25-34", r.nextInt(30));
-        PieChart.Data age3 = new PieChart.Data("35-44", r.nextInt(30));
-        PieChart.Data age4 = new PieChart.Data("45-54", r.nextInt(30));
-        PieChart.Data age5 = new PieChart.Data(">54", r.nextInt(30));
-        agePie.getData().addAll(age1, age2, age3, age4, age5);
-        agePie.setTitle("Age");
-        agePie.setLegendVisible(false);
-
-        PieChart.Data income1 = new PieChart.Data("Low", r.nextInt(30));
-        PieChart.Data income2 = new PieChart.Data("Medium", r.nextInt(30));
-        PieChart.Data income3 = new PieChart.Data("High", r.nextInt(30));
-        incomePie.getData().addAll(income1, income2, income3);
-        incomePie.setTitle("Income");
-        incomePie.setLegendVisible(false);
-        incomePie.setStyle("-fx-font-size: " + 10 + "px;");
+        SingleSelectionModel<Tab> model = LHS.getSelectionModel();
+        model.select(1);
 
     }
+
 
     //These toggle methods will be called whenever the checkboxes are ticked/unticked
     @FXML
@@ -472,6 +497,54 @@ public class Controller {
     }
 
     @FXML
+    private void toggleTotal(){
+
+        totalCostB = !totalCostB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCTR(){
+
+        CTRB = !CTRB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCPA(){
+
+        CPAB = !CPAB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCPC(){
+
+        CPCB = !CPCB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleCPM(){
+
+        CPMB = !CPMB;
+        updateChart();
+
+    }
+
+    @FXML
+    private void toggleBounceRate(){
+
+        bounceRateB = !bounceRateB;
+        updateChart();
+
+    }
+
+    @FXML
     private void toggleHighContrast(){
 
         highContrastMode = !highContrastMode;
@@ -487,16 +560,19 @@ public class Controller {
 
     public void updateChart(){
 
+        List data = new ArrayList(10);
+
         ChartHandler handler = new ChartHandler(lineChart, lineChartXAxis,
-                lineChartYAxis, calcMetric(), unitsDifference, impressions,
-                conversions, clicks, uniqueUsers, bounces);
+                lineChartYAxis, calcMetric(), data, unitsDifference, impressions,
+                conversions, clicks, uniqueUsers, bounces, totalCostB, CTRB, CPAB,
+                CPCB, CPMB, bounceRateB);
 
     }
 
-    public void updateHistogram(){
+    public void updateHistogram(List<Integer> data){
 
         HistogramHandler handler = new HistogramHandler(barChart, barChartXAxis,
-                barChartYAxis, calcMetric());
+                barChartYAxis, calcMetric(), data);
 
     }
 
@@ -561,16 +637,69 @@ public class Controller {
 
     @FXML
     /**
+
+     * Called by the choose file for click log button
+     */
+    public void chooseClickLog(){
+
+        campaignHandler.chooseClick();
+
+    }
+
+    @FXML
+    /**
+     * Called by the choose file for impression log button
+     */
+    public void chooseImpressionLog(){
+
+        campaignHandler.chooseImpression();
+
+    }
+
+    @FXML
+    /**
+     * Called by the choose file for server log button
+     */
+    public void chooseServerLog(){
+
+        campaignHandler.chooseServer();
+
+    }
+
+    @FXML
+    /**
+     * Called by the load campaign button, loads a previous campaign from the combo box
+     */
+    public void loadCampaign() {
+        this.reloadData((String)campaignChooser.getValue());
+    }
+
+    @FXML
+    /**
+     * Called by the create campaign button
+
      * Called when the user clicks the "create campaign" button
      *
      * This method should call an appropriate method from the
      * CampaignHandler class
-     */
-    public void loadNewCampaign(){
-//        campaignHandler
 
-        System.out.println("method called");
-        campaignHandler.importCampaign();
+     */
+    public void createCampaign(){
+
+        campaignHandler.createCampaign();
+
+    }
+
+
+    public void loadNewCampaign(){
+        campaignHandler.importCampaign(campaignName.getText());
+        this.reloadData(campaignName.getText());
+        campaignChooser.getItems().add(campaignName.getText());
+        campaignName.setText("");
+        clickLabel.setText("");
+        impressionLabel.setText("");
+        serverLabel.setText("");
+
     }
 
     /**
@@ -598,25 +727,54 @@ public class Controller {
      * UI components to have the most up to date data
      */
     //TODO Replace all the random values with values from database
-    public void reloadData(){
+    public void reloadData(String campaignName){
 
+        System.out.println("Loading data for" + campaignName);
 
+        int nrImpressions = this.metricsModel.getNumImpressions(campaignName);
 
-        numImpressions.setText(random());
-        numClicks.setText(random());
-        numUnique.setText(random());
-        numBounces.setText(random());
-        numConversions.setText(random());
-        totalCost.setText(random());
-        CTR.setText(random());
-        CPA.setText(random());
-        CPC.setText(random());
-        CPM.setText(random());
-        bounceRate.setText(random());
+        numImpressions.setText(String.valueOf(nrImpressions));
+        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
+        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs(campaignName)));
+        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces(campaignName)));
+        numConversions.setText(String.valueOf(this.metricsModel.getConversions(campaignName)));
+        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost(campaignName)));
+        CTR.setText(String.valueOf(this.metricsModel.getCTR(campaignName)));
+        CPA.setText(String.valueOf(this.metricsModel.getCPA(campaignName)));
+        CPC.setText(String.valueOf(this.metricsModel.getCPC(campaignName)));
+        CPM.setText(String.valueOf(this.metricsModel.getCPM(campaignName)));
+        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
 
         updateChart();
-        updateHistogram();
-        pieChartTest();
+
+        this.histogramModel = new HistogramModel(campaignName);
+        List<Integer> data = this.histogramModel.getData();
+        updateHistogram(data);
+
+        this.pieChartModel = new PieChartModel(campaignName, nrImpressions);
+        HashMap<String, Integer> ages =  this.pieChartModel.getAgeDistributions();
+        HashMap<String, Integer> genders =  this.pieChartModel.getGenderDistributions();
+        HashMap<String, Integer> incomes =  this.pieChartModel.getIncomeDistributions();
+
+        updatePieChartData(
+                genders.get("men"), genders.get("women"),
+                ages.get("lt25"), ages.get("btwn2534"), ages.get("btwn3544"), ages.get("btwn4554"), ages.get("gt55"),
+                incomes.get("low"), incomes.get("medium"), incomes.get("high")
+        );
+
+    }
+
+    /**
+     * Displays and shows an error dialog window with the given message
+     * @param message
+     */
+    public void error(String message){
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
 
     }
 

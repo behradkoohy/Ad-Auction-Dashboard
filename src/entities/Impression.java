@@ -39,7 +39,9 @@ public class Impression implements Serializable {
 
     }
 
-    public Impression(String campaign, LocalDateTime date, long id, Gender gender, Age age, Income income, Context context, double impressionCost) {
+    public Impression(int identifier, String campaign, LocalDateTime date, long id, Gender gender, Age age,
+                      Income income, Context context, double impressionCost) {
+        this.identifier = identifier;
         this.campaign = campaign;
         this.date = date;
         this.id = id;
@@ -51,7 +53,6 @@ public class Impression implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column
     private int identifier;
 

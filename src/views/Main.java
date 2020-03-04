@@ -4,8 +4,6 @@ package views;
 import daos.ClickDao;
 import entities.Click;*/
 
-import models.ReaderCSV;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,7 +18,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
 
         FXMLLoader loader = new FXMLLoader();
-        Parent root = loader.load(getClass().getResource("./sample.fxml"));
+
+
+        Parent root = loader.load(getClass().getResource("/views/sample.fxml"));
+
         primaryStage.setTitle("Ad Auction Analytics");
 
         Scene scene = new Scene(root);
@@ -39,7 +40,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         //Testing ignore for now
         /*
-        ClickDao clickDao = new ClickDao();
+
         ImpressionDao impressionDao = new ImpressionDao();
 
         Click newClick = new Click("Second Campaign", 1234562922096180000L, LocalDateTime.now(), 1.245378 );
@@ -59,6 +60,7 @@ public class Main extends Application {
 
         impressionDao.getByAge(Impression.Age.FROM35TO44).forEach(Impression::print);;
         */
+
 
         launch(args);
 

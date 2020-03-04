@@ -1,6 +1,5 @@
 package daos;
 
-import entities.Impression;
 import entities.ServerEntry;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -25,6 +24,30 @@ public class ServerEntryDao {
         }
     }
 
+    public void save(List<ServerEntry> serverEntries) {
+        Transaction transaction = null;
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            for(int i = 0; i < serverEntries.size(); i++) {
+                try {
+                    session.persist(serverEntries.get(i));
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                if(i % 100 == 0) {
+                    session.flush();
+                    session.clear();
+                }
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
     public List<ServerEntry> getAll() {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
             return session.createQuery("from ServerEntry", ServerEntry.class).list();
@@ -37,12 +60,24 @@ public class ServerEntryDao {
         }
     }
 
-    public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime currentTime, LocalDateTime nextTime){
+    public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from ServerEntry where age=:age and entryDate between(cTime, nTime) ", ServerEntry.class)
+            return session.createQuery("from ServerEntry where age=:age and entryDate between(startDate, endDate)", ServerEntry.class)
                     .setParameter("campaign", campaign)
-                    .setParameter("cTime", currentTime)
-                    .setParameter("nTime", nextTime).list();
+                    .setParameter("startDate", startDate)
+                    .setParameter("endDate", endDate)
+                    .list();
+        }
+    }
+
+    public int getMaxIdentifier() {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            List max = session.createQuery("select MAX(identifier) from ServerEntry").list();
+            if(max.get(0) == null) {
+                return 0;
+            } else {
+                return (Integer) max.get(0);
+            }
         }
     }
 

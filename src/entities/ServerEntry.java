@@ -12,7 +12,9 @@ public class ServerEntry implements Serializable {
 
     }
 
-    public ServerEntry(String campaign, LocalDateTime entryDate, long id, LocalDateTime exitDate, int pageViews, boolean conversion) {
+    public ServerEntry(int identifier, String campaign, LocalDateTime entryDate, long id, LocalDateTime exitDate,
+                       int pageViews, boolean conversion) {
+        this.identifier = identifier;
         this.campaign = campaign;
         this.entryDate = entryDate;
         this.id = id;
@@ -22,7 +24,6 @@ public class ServerEntry implements Serializable {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column
     private int identifier;
 

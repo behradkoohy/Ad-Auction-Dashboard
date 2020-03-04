@@ -1,19 +1,21 @@
 package views;
 
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
+import models.ReaderCSV;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import models.ReaderCSV;
 
 /**
  * Class for selecting which campaign is in use and providing the ability to load a new
  * campaign
  */
+
 public class CampaignHandler {
 
     private File clickLog;
@@ -42,11 +44,28 @@ public class CampaignHandler {
     public CampaignHandler(Controller c, Label clickLabel,
                            Label impressionLabel, Label serverLabel){
 
-        this.c = c;
 
         this.clickLabel = clickLabel;
         this.impressionLabel = impressionLabel;
         this.serverLabel = serverLabel;
+
+
+        this.c = c;
+
+    }
+
+    public void createCampaign(){
+
+        if(clickLog == null || impressionLog == null || serverLog == null){
+
+            c.error("Please make sure you have chosen all 3 of the required CSV files!");
+
+        } else {
+
+            c.goToMainPage();
+
+        }
+
 
     }
 
@@ -99,13 +118,16 @@ public class CampaignHandler {
 
             error("You cannot have the same file for two inputs! Please make sure you have chosen the unique server log csv file");
 
+            c.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique server log csv file");
+
+
         }
 
         serverLabel.setText(serverLog.getName());
         serverLoc = serverLog.getAbsolutePath();
     }
 
-    public void importCampaign(){
+    public void importCampaign(String campaignName){
         System.out.println("serverLog = " + serverLog);
         if(clickLog == null || impressionLog == null || serverLog == null){
 
@@ -120,10 +142,17 @@ public class CampaignHandler {
         if (filesSubmit.size() < 3){
             error("Please make sure all 3 CSV files are unique!");
         } else {
+            ReaderCSV.readCSV(clickLoc, campaignName);
+            ReaderCSV.readCSV(impressionLoc, campaignName);
+            ReaderCSV.readCSV(serverLoc, campaignName);
+            /*
             new Thread(() -> ReaderCSV.readCSV(clickLoc)).start();
             new Thread(() -> ReaderCSV.readCSV(impressionLoc)).start();
             new Thread(() -> ReaderCSV.readCSV(serverLoc)).start();
-            success("shdhfhdsjsjdhdjjsajsjdfhjdkaskdjf");
+
+             */
+            success("Files successfully uploaded, loading data now...");
+
         }
 
 
