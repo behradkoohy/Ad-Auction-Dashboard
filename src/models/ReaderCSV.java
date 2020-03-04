@@ -34,7 +34,6 @@ public class ReaderCSV {
 	public static void readCSV(String filename, String campaignName) {
 		// type is either : click, impression, server
 		String type = "";
-        String camp = "test"; // TODO : get current campaign
 		
 		Path pathToFile = Paths.get(filename);
 		try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
@@ -49,7 +48,6 @@ public class ReaderCSV {
 				// throws some error message
 			}
 			line = br.readLine();
-//			System.out.println(line);
 			LinkedList<String> brin = new LinkedList<>();
             // loop through all lines
 			while (line != null){
@@ -105,7 +103,7 @@ public class ReaderCSV {
 						}
 
                         int serverPageView = Integer.parseInt(contents[3]);
-                		Boolean serverConversion = (contents[4] == "Yes" ? true : false);
+                		Boolean serverConversion = (contents[4].equals("Yes") ? true : false);
 
                 		serverEntryIdentifier++;
                 		serverEntriesToAdd.add(new ServerEntry(serverEntryIdentifier, campaignName, serverEntryDate, serverId,
@@ -116,8 +114,6 @@ public class ReaderCSV {
                 		// implement some error message
                 		break;
                 }
-                
-                line = br.readLine();
 
             }
             if(clicksToAdd.size() > 0) {

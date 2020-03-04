@@ -164,11 +164,6 @@ public class ChartHandler {
 
         }
 
-        //TODO: for testing, remove this after
-        System.out.println("finished loading the data, axis values are:");
-        System.out.println("x axis:" + xAxis);
-        System.out.println("y axis:" + yAxis);
-
     }
 
     /*

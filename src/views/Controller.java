@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import models.Metrics;
+
 public class Controller {
     //Current data values, changed each time UI manipulates them:
 
-    ClickDao clickDao = new ClickDao();
-    ImpressionDao impressionDao = new ImpressionDao();
-    ServerEntryDao serverEntryDao = new ServerEntryDao();
+    private ClickDao clickDao = new ClickDao();
+    private ImpressionDao impressionDao = new ImpressionDao();
+    private ServerEntryDao serverEntryDao = new ServerEntryDao();
 
     //Gender
     private boolean male;
@@ -73,6 +75,8 @@ public class Controller {
     //Class for handling loading campaigns, this can connect to Alex' CSV reader class
 
     private CampaignHandler campaignHandler;
+
+    private Metrics metricsModel;
 
     /*
     Corresponding UI components that can be found in scene builder with these identifiers,
@@ -226,6 +230,8 @@ public class Controller {
         campaignHandler = new CampaignHandler(this, clickLogLabel,
                 impressionLogLabel, serverLogLabel);
 
+
+        this.metricsModel = new Metrics(clickDao, impressionDao, serverEntryDao);
     }
 
     @FXML
@@ -752,19 +758,18 @@ public class Controller {
     public void reloadData(String campaignName){
 
         System.out.println("Loading data for" + campaignName);
-        /*
-        numImpressions.setText(random());
-        numClicks.setText(random());
-        numUnique.setText(random());
-        numBounces.setText(random());
-        numConversions.setText(random());
-        totalCost.setText(random());
-        CTR.setText(random());
-        CPA.setText(random());
-        CPC.setText(random());
-        CPM.setText(random());
-        bounceRate.setText(random());
-         */
+
+        numImpressions.setText(String.valueOf(this.metricsModel.getNumImpressions(campaignName)));
+        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
+        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs(campaignName)));
+        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces(campaignName)));
+        numConversions.setText(String.valueOf(this.metricsModel.getConversions(campaignName)));
+        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost(campaignName)));
+        CTR.setText(String.valueOf(this.metricsModel.getCTR(campaignName)));
+        CPA.setText(String.valueOf(this.metricsModel.getCPA(campaignName)));
+        CPC.setText(String.valueOf(this.metricsModel.getCPC(campaignName)));
+        CPM.setText(String.valueOf(this.metricsModel.getCPM(campaignName)));
+        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
 
         updateChart();
         updateHistogram();
