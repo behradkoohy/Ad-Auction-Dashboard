@@ -26,11 +26,10 @@ public class ReaderCSV {
 	
 	private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-	static String CLICK_LOG_HEADER= "Date,ID,Click Cost";
-	static String SERVER_LOG_HEADER= "Entry Date,ID,Exit Date,Pages Viewed,Conversion";
-	static String IMPRESSION_LOG_HEADER= "Date,ID,Gender,Age,Income,Context,Impression Cost";
-	// TODO : see what is going to get passed from the controller and change file reading accordingly
-	
+	private static String CLICK_LOG_HEADER= "Date,ID,Click Cost";
+	private static String SERVER_LOG_HEADER= "Entry Date,ID,Exit Date,Pages Viewed,Conversion";
+	private static String IMPRESSION_LOG_HEADER= "Date,ID,Gender,Age,Income,Context,Impression Cost";
+
 	public static void readCSV(String filename, String campaignName) {
 		Path pathToFile = Paths.get(filename);
 		try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
@@ -119,7 +118,7 @@ public class ReaderCSV {
 				String[] contents = line.split(",");
 
 				LocalDateTime serverEntryDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
-				Long serverId = Long.parseLong( contents[1] );
+				long serverId = Long.parseLong( contents[1] );
 
 				LocalDateTime serverExitDate;
 				if( !contents[2].equals("n/a") ) {
@@ -146,8 +145,8 @@ public class ReaderCSV {
 		}
 	}
 	
-	public static Gender returnGender(String gender) {
-		HashMap<String, Gender> genders = new HashMap<String, Gender>();
+	private static Gender returnGender(String gender) {
+		HashMap<String, Gender> genders = new HashMap<>();
 		genders.put("Male", Gender.MALE);
 		genders.put("Female", Gender.FEMALE);
 		
@@ -155,7 +154,7 @@ public class ReaderCSV {
 	}
 	
 	private static Age returnAge(String age) {
-		HashMap<String, Age> ages = new HashMap<String, Age>();
+		HashMap<String, Age> ages = new HashMap<>();
 		ages.put("<25", Age.LESS25);
 		ages.put("25-34", Age.FROM25TO34);
 		ages.put("35-44", Age.FROM35TO44);
@@ -166,7 +165,7 @@ public class ReaderCSV {
 	}
 	
 	private static Income returnIncome(String income) {
-		HashMap<String, Income> incomes = new HashMap<String, Income>();
+		HashMap<String, Income> incomes = new HashMap<>();
 		incomes.put("Low", Income.LOW);
 		incomes.put("Medium", Income.MEDIUM);
 		incomes.put("High", Income.HIGH);
@@ -175,7 +174,7 @@ public class ReaderCSV {
 	}
 	
 	private static Context returnContext(String context) {
-		HashMap<String, Context> contexts = new HashMap<String, Context>();
+		HashMap<String, Context> contexts = new HashMap<>();
 		contexts.put("Blog", Context.BLOG);
 		contexts.put("News", Context.NEWS);
 		contexts.put("Shopping", Context.SHOPPING);
