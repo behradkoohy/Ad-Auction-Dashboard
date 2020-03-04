@@ -10,10 +10,7 @@ import entities.ServerEntry;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 import javafx.scene.chart.*;
 
@@ -44,6 +41,7 @@ public class Metrics {
     private static int CPM = 10;
     private static int BOUNCE = 11;
 
+    private List<Impression> impressions;
 
 
     public Metrics(ClickDao clickDao, ImpressionDao impressionsDao, ServerEntryDao serverEntryDao) {
@@ -54,13 +52,17 @@ public class Metrics {
         this.cacheSingle = new HashMap();
     }
 
+    public List<Impression> getImpression(){
+        return this.impressions;
+    }
+
     public Double getNumImpressions(String campaign) {
         Twople twople = new Twople(NUMIMPRESS, campaign);
         if (cacheSingle.containsKey(twople)) {
             return cacheSingle.get(twople);
         }
-
-        Double num = Double.valueOf(impressionsDao.getFromCampaign(campaign).size());
+        this.impressions = impressionsDao.getFromCampaign(campaign);
+        Double num = Double.valueOf(this.impressions.size());
         cacheSingle.put(twople, num);
 
         return num;

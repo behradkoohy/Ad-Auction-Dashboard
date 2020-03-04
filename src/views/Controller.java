@@ -4,6 +4,7 @@ import com.jfoenix.controls.*;
 import daos.ClickDao;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
+import entities.Impression;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
@@ -15,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -728,10 +730,13 @@ public class Controller {
      */
     //TODO Replace all the random values with values from database
     public void reloadData(String campaignName){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
-        System.out.println("Loading data for" + campaignName);
+        System.out.println(dtf.format(LocalDateTime.now()));
+        System.out.println("Loading data for " + campaignName);
 
         Double nrImpressions = this.metricsModel.getNumImpressions(campaignName);
+        List<Impression> impressions = this.metricsModel.getImpression();
 
         numImpressions.setText(String.valueOf(nrImpressions));
         numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
@@ -744,24 +749,28 @@ public class Controller {
         CPC.setText(String.valueOf(this.metricsModel.getCPC(campaignName)));
         CPM.setText(String.valueOf(this.metricsModel.getCPM(campaignName)));
         bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
-        
+        System.out.println(dtf.format(LocalDateTime.now()));
+        System.out.println("Loaded metrics");
 
         updateChart();
 
         this.histogramModel = new HistogramModel(campaignName);
         List<Integer> data = this.histogramModel.getData();
         updateHistogram(data);
+        System.out.println(dtf.format(LocalDateTime.now()));
+        System.out.println("Loaded histogram");
 
-        this.pieChartModel = new PieChartModel(campaignName, nrImpressions.intValue());
-        HashMap<String, Integer> ages =  this.pieChartModel.getAgeDistributions();
-        HashMap<String, Integer> genders =  this.pieChartModel.getGenderDistributions();
-        HashMap<String, Integer> incomes =  this.pieChartModel.getIncomeDistributions();
+
+        this.pieChartModel = new PieChartModel(campaignName, impressions);
+        HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
 
         updatePieChartData(
-                genders.get("men"), genders.get("women"),
-                ages.get("lt25"), ages.get("btwn2534"), ages.get("btwn3544"), ages.get("btwn4554"), ages.get("gt55"),
-                incomes.get("low"), incomes.get("medium"), incomes.get("high")
+                pieChartData.get("men"), pieChartData.get("women"),
+                pieChartData.get("lt25"), pieChartData.get("btwn2534"), pieChartData.get("btwn3544"), pieChartData.get("btwn4554"), pieChartData.get("gt55"),
+                pieChartData.get("low"), pieChartData.get("medium"), pieChartData.get("high")
         );
+        System.out.println(dtf.format(LocalDateTime.now()));
+        System.out.println("Loaded pie chart");
 
     }
 
