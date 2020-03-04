@@ -228,6 +228,12 @@ public class Controller {
         clicks = false;
         uniqueUsers = false;
         bounces = false;
+        totalCostB = false;
+        CTRB = false;
+        CPAB = false;
+        CPCB = false;
+        CPMB = false;
+        bounceRateB = false;
 
         highContrastMode = false;
         largeFontMode = false;
@@ -281,7 +287,11 @@ public class Controller {
 
         campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
 
-        campaignChooser.getItems().addAll(clickDao.getCampaigns());
+        try {
+            campaignChooser.getItems().addAll(clickDao.getCampaigns());
+        } catch (Exception e) {
+            System.out.println("No data loaded!");
+        }
 
     }
 
