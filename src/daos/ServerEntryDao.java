@@ -1,6 +1,5 @@
 package daos;
 
-import entities.Impression;
 import entities.ServerEntry;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
@@ -13,8 +12,8 @@ import java.util.List;
 
 public class ServerEntryDao {
 
-    private HashMap<String, List<Impression>> campaignCache = new HashMap<>();
-    
+    private HashMap<String, List<ServerEntry>> campaignCache = new HashMap<>();
+
     public void save(ServerEntry serverEntry) {
         Transaction transaction = null;
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
