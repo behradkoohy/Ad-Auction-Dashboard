@@ -1,16 +1,20 @@
 package daos;
 
+import entities.Impression;
 import entities.ServerEntry;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class ServerEntryDao {
 
+    private HashMap<String, List<Impression>> campaignCache = new HashMap<>();
+    
     public void save(ServerEntry serverEntry) {
         Transaction transaction = null;
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -52,8 +56,15 @@ public class ServerEntryDao {
     }
 
     public List<ServerEntry> getFromCampaign(String campaign) {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from ServerEntry where campaign=:campaign", ServerEntry.class).setParameter("campaign", campaign).list();
+        if(campaignCache.containsKey(campaign)) {
+            return campaignCache.get(campaign);
+        } else {
+            try (Session session = SessionHandler.getSessionFactory().openSession()) {
+                List<ServerEntry> serverEntries = session.createQuery("from ServerEntry where campaign=:campaign"
+                        , ServerEntry.class).setParameter("campaign", campaign).list();
+                campaignCache.put(campaign, serverEntries);
+                return serverEntries;
+            }
         }
     }
 

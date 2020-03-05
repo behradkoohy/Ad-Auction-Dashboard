@@ -9,10 +9,13 @@ import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class ImpressionDao {
+
+    private HashMap<String, List<Impression>> campaignCache = new HashMap<>();
 
     public void save(Impression impression) {
         Transaction transaction = null;
@@ -55,8 +58,15 @@ public class ImpressionDao {
     }
 
     public List<Impression> getFromCampaign(String campaign) {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where campaign=:campaign", Impression.class).setParameter("campaign", campaign).list();
+        if(campaignCache.containsKey(campaign)) {
+            return campaignCache.get(campaign);
+        } else {
+            try (Session session = SessionHandler.getSessionFactory().openSession()) {
+                List<Impression> impressions = session.createQuery("from Impression where campaign=:campaign"
+                        , Impression.class).setParameter("campaign", campaign).list();
+                campaignCache.put(campaign, impressions);
+                return impressions;
+            }
         }
     }
 

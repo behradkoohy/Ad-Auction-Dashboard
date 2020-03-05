@@ -6,10 +6,13 @@ import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 
 public class ClickDao {
+    private HashMap<String, List<Click>> campaignCache = new HashMap<>();
+
     public void save(Click click) {
         Transaction transaction = null;
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -51,8 +54,15 @@ public class ClickDao {
     }
 
     public List<Click> getFromCampaign(String campaign) {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Click where campaign=:campaign", Click.class).setParameter("campaign", campaign).list();
+        if(campaignCache.containsKey(campaign)) {
+            return campaignCache.get(campaign);
+        } else {
+            try (Session session = SessionHandler.getSessionFactory().openSession()) {
+                List<Click> clicks = session.createQuery("from Click where campaign=:campaign"
+                        , Click.class).setParameter("campaign", campaign).list();
+                campaignCache.put(campaign, clicks);
+                return clicks;
+            }
         }
     }
 
