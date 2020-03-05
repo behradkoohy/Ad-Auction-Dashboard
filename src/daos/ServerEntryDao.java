@@ -13,6 +13,7 @@ import java.util.List;
 public class ServerEntryDao {
 
     private HashMap<String, List<ServerEntry>> campaignCache = new HashMap<>();
+    private HashMap<String, List<ServerEntry>> campaignDateCache = new HashMap<>();
 
     public void save(ServerEntry serverEntry) {
         Transaction transaction = null;
@@ -56,6 +57,7 @@ public class ServerEntryDao {
 
     public List<ServerEntry> getFromCampaign(String campaign) {
         if(campaignCache.containsKey(campaign)) {
+            System.out.println("ServerEntryDao - Woo hit normal cache");
             return campaignCache.get(campaign);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -68,12 +70,21 @@ public class ServerEntryDao {
     }
 
     public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from ServerEntry where age=:age and entryDate between(startDate, endDate)", ServerEntry.class)
-                    .setParameter("campaign", campaign)
-                    .setParameter("startDate", startDate)
-                    .setParameter("endDate", endDate)
-                    .list();
+        String key = campaign + startDate.toString() + endDate.toString();
+        if(campaignDateCache.containsKey(key)) {
+            System.out.println("ServerEntryDao - hit date cache");
+            return campaignDateCache.get(key);
+        } else {
+            try (Session session = SessionHandler.getSessionFactory().openSession()) {
+                List<ServerEntry> serverEntries = session.createQuery("from ServerEntry where campaign=:campaign and entryDate between :startDate and :endDate"
+                        , ServerEntry.class)
+                        .setParameter("campaign", campaign)
+                        .setParameter("startDate", startDate)
+                        .setParameter("endDate", endDate)
+                        .list();
+                campaignDateCache.put(key, serverEntries);
+                return serverEntries;
+            }
         }
     }
 

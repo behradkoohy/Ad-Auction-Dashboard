@@ -12,6 +12,7 @@ import java.util.List;
 
 public class ClickDao {
     private HashMap<String, List<Click>> campaignCache = new HashMap<>();
+    private HashMap<String, List<Click>> campaignDateCache = new HashMap<>();
 
     public void save(Click click) {
         Transaction transaction = null;
@@ -55,6 +56,7 @@ public class ClickDao {
 
     public List<Click> getFromCampaign(String campaign) {
         if(campaignCache.containsKey(campaign)) {
+            System.out.println("ClickDao - hit normal cache");
             return campaignCache.get(campaign);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -67,12 +69,21 @@ public class ClickDao {
     }
 
     public List<Click> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate){
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Click where campaign=:campaign and date between(startDate, endDate)", Click.class)
-                    .setParameter("campaign", campaign)
-                    .setParameter("startDate", startDate)
-                    .setParameter("endDate", endDate)
-                    .list();
+        String key = campaign + startDate.toString() + endDate.toString();
+        if(campaignDateCache.containsKey(key)) {
+            System.out.println("ClickDao - hit date cache");
+            return campaignDateCache.get(key);
+        } else {
+            try (Session session = SessionHandler.getSessionFactory().openSession()) {
+                List<Click> clicks = session.createQuery("from Click where campaign=:campaign and date between :startDate and :endDate"
+                        , Click.class)
+                        .setParameter("campaign", campaign)
+                        .setParameter("startDate", startDate)
+                        .setParameter("endDate", endDate)
+                        .list();
+                campaignDateCache.put(key, clicks);
+                return clicks;
+            }
         }
     }
 

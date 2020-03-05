@@ -1,9 +1,6 @@
 package daos;
 
 import entities.Impression;
-import entities.Impression.Age;
-import entities.Impression.Income;
-import entities.Impression.Gender;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -16,6 +13,7 @@ import java.util.List;
 public class ImpressionDao {
 
     private HashMap<String, List<Impression>> campaignCache = new HashMap<>();
+    private HashMap<String, List<Impression>> campaignDateCache = new HashMap<>();
 
     public void save(Impression impression) {
         Transaction transaction = null;
@@ -58,7 +56,8 @@ public class ImpressionDao {
     }
 
     public List<Impression> getFromCampaign(String campaign) {
-        if(campaignCache.containsKey(campaign)) {
+        if (campaignCache.containsKey(campaign)) {
+            System.out.println("ImpressionDao - hit normal cache");
             return campaignCache.get(campaign);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -70,42 +69,23 @@ public class ImpressionDao {
         }
     }
 
-    public List<Impression> getByAge(String campaign, Age age) {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where campaign=:campaign and age=:age", Impression.class)
-                    .setParameter("campaign", campaign)
-                    .setParameter("age", age)
-                    .list();
-        }
-    }
-
-    public List<Impression> getByIncome(String campaign, Income income) {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where campaign=:campaign and income=:income", Impression.class)
-                    .setParameter("campaign", campaign)
-                    .setParameter("income", income)
-                    .list();
-        }
-    }
-
-    public List<Impression> getByGender(String campaign, Gender gender) {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where campaign=:campaign and gender=:gender", Impression.class)
-                    .setParameter("campaign", campaign)
-                    .setParameter("gender", gender)
-                    .list();
-        }
-    }
-
     public List<Impression> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Impression where campaign=:campaign and date between(startDate, endDate)", Impression.class)
-                    .setParameter("campaign", campaign)
-                    .setParameter("startDate", startDate)
-                    .setParameter("endDate", endDate)
-                    .list();
+        String key = campaign + startDate.toString() + endDate.toString();
+        if(campaignDateCache.containsKey(key)) {
+            System.out.println("ImpressionDao - hit date cache");
+            return campaignDateCache.get(key);
+        } else {
+            try (Session session = SessionHandler.getSessionFactory().openSession()) {
+                List<Impression> impressions = session.createQuery("from Impression where campaign=:campaign and date between :startDate and :endDate"
+                        , Impression.class)
+                        .setParameter("campaign", campaign)
+                        .setParameter("startDate", startDate)
+                        .setParameter("endDate", endDate)
+                        .list();
+                campaignDateCache.put(key, impressions);
+                return impressions;
+            }
         }
-
     }
 
     public int getMaxIdentifier() {
