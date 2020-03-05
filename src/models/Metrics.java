@@ -21,9 +21,9 @@ public class Metrics {
     private int bouncePages = 1;
     private Duration bounceTime = Duration.ofSeconds(5);
 
-    private ClickDao clickDao = new ClickDao();
-    private ImpressionDao impressionDao = new ImpressionDao();
-    private ServerEntryDao serverDao = new ServerEntryDao();
+    private ClickDao clickDao;
+    private ImpressionDao impressionDao;
+    private ServerEntryDao serverEntryDao;
 
     private HashMap<Twople, Double> cacheSingle;
 
@@ -40,16 +40,12 @@ public class Metrics {
     private static int CPM = 10;
     private static int BOUNCE = 11;
 
-    private HashMap<String, List<Impression>> impressionsCache = new HashMap<>();
 
-
-    public Metrics() {
+    public Metrics(ClickDao clickDao, ImpressionDao impressionDao, ServerEntryDao serverEntryDao) {
+        this.clickDao = clickDao;
+        this.impressionDao = impressionDao;
+        this.serverEntryDao = serverEntryDao;
         this.cacheSingle = new HashMap<>();
-    }
-
-
-    public List<Impression> getImpressions(String campaign) {
-        return this.impressionsCache.get(campaign);
     }
 
     public Double getNumImpressions(String campaign) {
@@ -58,11 +54,7 @@ public class Metrics {
             return cacheSingle.get(twople);
         }
 
-        if(!this.impressionsCache.containsKey(campaign)) {
-            this.impressionsCache.put(campaign, impressionDao.getFromCampaign(campaign));
-        }
-
-        Double num = (double) this.impressionsCache.get(campaign).size();
+        Double num = (double) impressionDao.getFromCampaign(campaign).size();
         cacheSingle.put(twople, num);
 
         return num;
@@ -119,7 +111,7 @@ public class Metrics {
         //time spent defines bounce
         if (bounceDef) {
 
-            for (ServerEntry server : serverDao.getFromCampaign(campaign)) {
+            for (ServerEntry server : serverEntryDao.getFromCampaign(campaign)) {
 
                 if (server.getExitDate() != null) {
                     Duration duration = Duration.between(server.getEntryDate(), server.getExitDate());
@@ -134,7 +126,7 @@ public class Metrics {
         }
         //pages viewed defines bounce
         else {
-            for (ServerEntry server : serverDao.getFromCampaign(campaign)) {
+            for (ServerEntry server : serverEntryDao.getFromCampaign(campaign)) {
                 if (server.getPageViews() <= bouncePages) {
                     num ++;
                 }
@@ -150,7 +142,7 @@ public class Metrics {
             return cacheSingle.get(twople);
         }
         Double num = 0.0;
-        for (ServerEntry server : serverDao.getFromCampaign(campaign)) {
+        for (ServerEntry server : serverEntryDao.getFromCampaign(campaign)) {
             if (server.getConversion()) {
                 num++;
             }
@@ -249,11 +241,7 @@ public class Metrics {
         }
         double cost = 0;
 
-        if(!this.impressionsCache.containsKey(campaign)) {
-            this.impressionsCache.put(campaign, impressionDao.getFromCampaign(campaign));
-        }
-
-        for (Impression impression : this.impressionsCache.get(campaign)) {
+        for (Impression impression : impressionDao.getFromCampaign(campaign)) {
             cost += impression.getImpressionCost();
         }
         cacheSingle.put(twople, cost);
@@ -416,7 +404,7 @@ public class Metrics {
             //time spent defines bounce
             if (bounceDef) {
 
-                for (ServerEntry server : serverDao.getByDateAndCampaign(campaign, current, nextTime)) {
+                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
                     //exitDate can be null!!!! - check if this actually works
                     if (server.getExitDate() != null) {
                         Duration timeSpent = Duration.between(server.getEntryDate(), server.getExitDate());
@@ -432,7 +420,7 @@ public class Metrics {
             }
             //pages viewed defines bounce
             else {
-                for (ServerEntry server : serverDao.getByDateAndCampaign(campaign, current, nextTime)) {
+                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
                     if (server.getPageViews() < bouncePages) {
                         num ++;
                     }
@@ -458,7 +446,7 @@ public class Metrics {
             //time spent defines bounce
             if (bounceDef) {
 
-                for (ServerEntry server : serverDao.getByDateAndCampaign(campaign, current, nextTime)) {
+                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
 
                     if (server.getExitDate() != null) {
                         Duration timeSpent = Duration.between(server.getEntryDate(), server.getExitDate());
@@ -473,7 +461,7 @@ public class Metrics {
             }
             //pages viewed defines bounce
             else {
-                for (ServerEntry server : serverDao.getByDateAndCampaign(campaign, current, nextTime)) {
+                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
                     if (server.getPageViews() < bouncePages) {
                         num ++;
                     }
@@ -496,7 +484,7 @@ public class Metrics {
             LocalDateTime nextTime = current.plus(duration);
 
             int num = 0;
-            for (ServerEntry server : serverDao.getByDateAndCampaign(campaign, current, nextTime)) {
+            for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
                 if (server.getConversion()) {
                     num++;
                 }

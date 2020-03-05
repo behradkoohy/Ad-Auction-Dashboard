@@ -4,7 +4,6 @@ import com.jfoenix.controls.*;
 import daos.ClickDao;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
-import entities.Impression;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
@@ -24,11 +23,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 public class Controller {
     //Current data values, changed each time UI manipulates them:
 
+    //TODO don't want controller accessing dao, but currently need same instance of dao to cache
+    //TODO autowire dao into each model so same instance but preserve MVC
     private ClickDao clickDao = new ClickDao();
     private ImpressionDao impressionDao = new ImpressionDao();
     private ServerEntryDao serverEntryDao = new ServerEntryDao();
@@ -77,7 +77,6 @@ public class Controller {
 
 
     //Class for handling loading campaigns, this can connect to Alex' CSV reader class
-
     private CampaignHandler campaignHandler;
 
     private Metrics metricsModel;
@@ -242,11 +241,7 @@ public class Controller {
 
         unitsDifference = 0;
 
-        campaignHandler = new CampaignHandler(this, clickLogLabel,
-                impressionLogLabel, serverLogLabel);
-
-
-        //this.metricsModel = new Metrics(clickDao, impressionDao, serverEntryDao);
+        campaignHandler = new CampaignHandler(this, clickLogLabel, impressionLogLabel, serverLogLabel);
     }
 
     @FXML
@@ -263,7 +258,7 @@ public class Controller {
         //TODO dont think this is needed as I can toggle in scene builder, keep here for now
         //lineChart.setAnimated(false);
 
-        //Initially the date spinners will be from week ago until now
+        //Intitialise date spinners - Initially the date spinners will be from week ago until now
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime weekAgo = now.minus(1, ChronoUnit.WEEKS);
         dToPicker.setValue(now.toLocalDate());
@@ -274,7 +269,6 @@ public class Controller {
         updateDFrom();
         timeFromPicker.setValue(weekAgo.toLocalTime());
         updateTFrom();
-
 
         //Setting up the look of the pie charts
         genderPie.setTitle("Gender");
@@ -294,9 +288,6 @@ public class Controller {
         } catch (Exception e) {
             System.out.println("No data loaded!");
         }
-
-        this.metricsModel = new Metrics();
-
     }
 
     /**
@@ -317,12 +308,8 @@ public class Controller {
      * @param medIncome
      * @param highIncome
      */
-    public void updatePieChartData(int men, int women, int lt25,
-                                   int btwn2534, int btwn3544,
-                                   int btwn4554, int gt55, int lowIncome,
-                                   int medIncome, int highIncome){
-
-
+    private void updatePieChartData(int men, int women, int lt25, int btwn2534, int btwn3544, int btwn4554,
+                                   int gt55, int lowIncome, int medIncome, int highIncome) {
         genderPie.getData().clear();
         agePie.getData().clear();
         incomePie.getData().clear();
@@ -342,6 +329,23 @@ public class Controller {
         PieChart.Data income2 = new PieChart.Data("Medium", medIncome);
         PieChart.Data income3 = new PieChart.Data("High", highIncome);
         incomePie.getData().addAll(income1, income2, income3);
+    }
+
+    private void updateChart(){
+
+        List data = new ArrayList(10);
+
+        ChartHandler handler = new ChartHandler(lineChart, lineChartXAxis,
+                lineChartYAxis, calcMetric(), data, unitsDifference, impressions,
+                conversions, clicks, uniqueUsers, bounces, totalCostB, CTRB, CPAB,
+                CPCB, CPMB, bounceRateB);
+
+    }
+
+    private void updateHistogram(List<Integer> data){
+
+        HistogramHandler handler = new HistogramHandler(barChart, barChartXAxis,
+                barChartYAxis, calcMetric(), data);
 
     }
 
@@ -349,9 +353,106 @@ public class Controller {
      * Used by the campaign manager to go to next page after loading/creating a campaign
      */
     public void goToMainPage(){
-
         SingleSelectionModel<Tab> model = LHS.getSelectionModel();
         model.select(1);
+    }
+
+    @FXML
+    /**
+     * Called by the load campaign button, loads a previous campaign from the combo box
+     */
+    public void loadCampaign() {
+        this.reloadData((String)campaignChooser.getValue());
+    }
+
+    @FXML
+    /**
+     * Called by the create campaign button
+
+     * Called when the user clicks the "create campaign" button
+     *
+     * This method should call an appropriate method from the
+     * CampaignHandler class
+
+     */
+
+    public void loadNewCampaign() {
+        campaignHandler.importCampaign(campaignName.getText());
+        this.reloadData(campaignName.getText());
+        campaignChooser.getItems().add(campaignName.getText());
+        campaignName.setText("");
+        clickLabel.setText("");
+        impressionLabel.setText("");
+        serverLabel.setText("");
+
+    }
+
+    @FXML
+    /**
+     * Called by the reload data button, updates all
+     * UI components to have the most up to date data
+     */
+    public void reloadData(String campaignName) {
+        statsCampaignNameLabel.setText(campaignName);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+
+        System.out.println(dtf.format(LocalDateTime.now()));
+        System.out.println("Loading data for " + campaignName);
+
+        //TODO Consistency between models - constructor with campaign name or as method param?
+        //TODO will not passthrough daos as params once autowire configured
+        this.metricsModel = new Metrics(clickDao, impressionDao, serverEntryDao);
+        numImpressions.setText(String.valueOf(this.metricsModel.getNumImpressions(campaignName)));
+        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
+        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs(campaignName)));
+        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces(campaignName)));
+        numConversions.setText(String.valueOf(this.metricsModel.getConversions(campaignName)));
+        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost(campaignName)));
+        CTR.setText(String.valueOf(this.metricsModel.getCTR(campaignName)));
+        CPA.setText(String.valueOf(this.metricsModel.getCPA(campaignName)));
+        CPC.setText(String.valueOf(this.metricsModel.getCPC(campaignName)));
+        CPM.setText(String.valueOf(this.metricsModel.getCPM(campaignName)));
+        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
+        System.out.println(dtf.format(LocalDateTime.now()));
+        System.out.println("Loaded metrics");
+
+        updateChart();
+
+        this.histogramModel = new HistogramModel(campaignName, clickDao, impressionDao, serverEntryDao);
+        List<Integer> data = this.histogramModel.getData();
+        updateHistogram(data);
+        System.out.println(dtf.format(LocalDateTime.now()));
+        System.out.println("Loaded histogram");
+
+
+        this.pieChartModel = new PieChartModel(campaignName, clickDao, impressionDao, serverEntryDao);
+        HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
+
+        updatePieChartData(
+                pieChartData.get("men"), pieChartData.get("women"),
+                pieChartData.get("lt25"), pieChartData.get("btwn2534"), pieChartData.get("btwn3544"), pieChartData.get("btwn4554"), pieChartData.get("gt55"),
+                pieChartData.get("low"), pieChartData.get("medium"), pieChartData.get("high")
+        );
+
+        System.out.println(dtf.format(LocalDateTime.now()));
+        System.out.println("Loaded pie chart");
+
+        //TODO update charts with non-random data
+        System.out.println("Loaded charts/graphs with random data");
+
+    }
+
+    /**
+     * Displays and shows an error dialog window with the given message
+     * @param message
+     */
+    public void error(String message){
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
 
     }
 
@@ -574,24 +675,6 @@ public class Controller {
 
     }
 
-    public void updateChart(){
-
-        List data = new ArrayList(10);
-
-        ChartHandler handler = new ChartHandler(lineChart, lineChartXAxis,
-                lineChartYAxis, calcMetric(), data, unitsDifference, impressions,
-                conversions, clicks, uniqueUsers, bounces, totalCostB, CTRB, CPAB,
-                CPCB, CPMB, bounceRateB);
-
-    }
-
-    public void updateHistogram(List<Integer> data){
-
-        HistogramHandler handler = new HistogramHandler(barChart, barChartXAxis,
-                barChartYAxis, calcMetric(), data);
-
-    }
-
     /**
      * Calculates the time and date difference specified by the user,
      * and returns the string of the unit that should be used as a metric
@@ -599,7 +682,6 @@ public class Controller {
      * @return metric whether the metric is minutes, hours, days or weeks
      */
     public String calcMetric(){
-
         LocalDateTime before = LocalDateTime.of(dFrom, tFrom);
         LocalDateTime after = LocalDateTime.of(dTo, tTo);
 
@@ -627,7 +709,6 @@ public class Controller {
             return "Minutes";
 
         }
-
     }
 
     @FXML
@@ -679,128 +760,6 @@ public class Controller {
     public void chooseServerLog(){
 
         campaignHandler.chooseServer();
-
-    }
-
-    @FXML
-    /**
-     * Called by the load campaign button, loads a previous campaign from the combo box
-     */
-    public void loadCampaign() {
-        this.reloadData((String)campaignChooser.getValue());
-    }
-
-    @FXML
-    /**
-     * Called by the create campaign button
-
-     * Called when the user clicks the "create campaign" button
-     *
-     * This method should call an appropriate method from the
-     * CampaignHandler class
-
-     */
-    public void createCampaign(){
-
-        campaignHandler.createCampaign();
-
-    }
-
-
-    public void loadNewCampaign(){
-        campaignHandler.importCampaign(campaignName.getText());
-        this.reloadData(campaignName.getText());
-        campaignChooser.getItems().add(campaignName.getText());
-        campaignName.setText("");
-        clickLabel.setText("");
-        impressionLabel.setText("");
-        serverLabel.setText("");
-
-    }
-
-    /**
-     * Sets the LHS tab pane to index 1 (the second tab as starts from 0)
-     */
-    public void goToMain(){
-
-        SingleSelectionModel<Tab> selectionModel = LHS.getSelectionModel();
-        selectionModel.select(1);
-
-    }
-
-    //TODO Generates a random string to populate UI for testing
-    private String random(){
-
-        Random r = new Random();
-        return String.valueOf(r.nextInt(1000));
-
-    }
-
-
-    @FXML
-    /**
-     * Called by the reload data button, updates all
-     * UI components to have the most up to date data
-     */
-    //TODO Replace all the random values with values from database
-    public void reloadData(String campaignName) {
-        statsCampaignNameLabel.setText(campaignName);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-
-        System.out.println(dtf.format(LocalDateTime.now()));
-        System.out.println("Loading data for " + campaignName);
-
-        Double nrImpressions = this.metricsModel.getNumImpressions(campaignName);
-        //TODO very messy, just have each model fetch the data once
-        List<Impression> impressions = this.metricsModel.getImpressions(campaignName);
-
-        numImpressions.setText(String.valueOf(nrImpressions));
-        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
-        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs(campaignName)));
-        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces(campaignName)));
-        numConversions.setText(String.valueOf(this.metricsModel.getConversions(campaignName)));
-        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost(campaignName)));
-        CTR.setText(String.valueOf(this.metricsModel.getCTR(campaignName)));
-        CPA.setText(String.valueOf(this.metricsModel.getCPA(campaignName)));
-        CPC.setText(String.valueOf(this.metricsModel.getCPC(campaignName)));
-        CPM.setText(String.valueOf(this.metricsModel.getCPM(campaignName)));
-        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
-        System.out.println(dtf.format(LocalDateTime.now()));
-        System.out.println("Loaded metrics");
-
-        updateChart();
-
-        this.histogramModel = new HistogramModel(campaignName);
-        List<Integer> data = this.histogramModel.getData();
-        updateHistogram(data);
-        System.out.println(dtf.format(LocalDateTime.now()));
-        System.out.println("Loaded histogram");
-
-
-        this.pieChartModel = new PieChartModel(campaignName, impressions);
-        HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
-
-        updatePieChartData(
-                pieChartData.get("men"), pieChartData.get("women"),
-                pieChartData.get("lt25"), pieChartData.get("btwn2534"), pieChartData.get("btwn3544"), pieChartData.get("btwn4554"), pieChartData.get("gt55"),
-                pieChartData.get("low"), pieChartData.get("medium"), pieChartData.get("high")
-        );
-        System.out.println(dtf.format(LocalDateTime.now()));
-        System.out.println("Loaded pie chart");
-
-    }
-
-    /**
-     * Displays and shows an error dialog window with the given message
-     * @param message
-     */
-    public void error(String message){
-
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
 
     }
 

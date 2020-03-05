@@ -13,9 +13,9 @@ import static org.junit.Assert.assertTrue;
 
 public class MetricTests {
 
-    private static ClickDao clickDao;
-    private static ImpressionDao impressionsDao;
-    private static ServerEntryDao serverDao;
+    private static ClickDao clickDao = new ClickDao();
+    private static ImpressionDao impressionDao = new ImpressionDao();
+    private static ServerEntryDao serverEntryDao = new ServerEntryDao();
     private static Metrics metrics;
 
     @BeforeClass
@@ -27,7 +27,7 @@ public class MetricTests {
 
         System.out.println("Setup");
 
-        metrics = new Metrics();
+        metrics = new Metrics(clickDao, impressionDao, serverEntryDao);
 
     }
 
