@@ -14,6 +14,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -130,9 +133,26 @@ public class CampaignHandler {
         if (filesSubmit.size() < 3){
             error("Please make sure all 3 CSV files are unique!");
         } else {
+            //Concurrency offers small benefit for this test set but may have much better improvements for other sets
+            //TODO technically daos not thread safe but since atm each executes on different dao alright
+            ExecutorService readerService = Executors.newCachedThreadPool();
+            readerService.execute(() -> ReaderCSV.readCSV(clickLoc, campaignName, clickDao, impressionDao, serverEntryDao));
+            readerService.execute(() -> ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao));
+            readerService.execute(() -> ReaderCSV.readCSV(serverLoc, campaignName, clickDao, impressionDao, serverEntryDao));
+            readerService.shutdown();
+            try {
+                if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {
+                    readerService.shutdownNow();
+                }
+            } catch (InterruptedException ex) {
+                readerService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+            /*
             ReaderCSV.readCSV(clickLoc, campaignName, clickDao, impressionDao, serverEntryDao);
             ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao);
             ReaderCSV.readCSV(serverLoc, campaignName, clickDao, impressionDao, serverEntryDao);
+             */
             System.out.println(dtf.format(LocalDateTime.now()));
             System.out.println("Finished importing data for new campaign: " + campaignName);
             success("Files successfully uploaded, please click \"OK\" to begin populating data");
@@ -161,6 +181,5 @@ public class CampaignHandler {
         alert.showAndWait();
 
     }
-
 
 }
