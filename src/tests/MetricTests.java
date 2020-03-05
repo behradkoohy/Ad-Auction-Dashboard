@@ -13,21 +13,24 @@ import static org.junit.Assert.assertTrue;
 
 public class MetricTests {
 
-    private static ClickDao clickDao;
-    private static ImpressionDao impressionsDao;
-    private static ServerEntryDao serverDao;
+    private static ClickDao clickDao = new ClickDao();
+    private static ImpressionDao impressionDao = new ImpressionDao();
+    private static ServerEntryDao serverEntryDao = new ServerEntryDao();
     private static Metrics metrics;
 
     @BeforeClass
     public static void setupThis(){
 
-        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv", "test");
-        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "test");
-        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "test");
+        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv", "test",
+                clickDao, impressionDao, serverEntryDao);
+        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "test",
+                clickDao, impressionDao, serverEntryDao);
+        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "test",
+                clickDao, impressionDao, serverEntryDao);
 
         System.out.println("Setup");
 
-        metrics = new Metrics();
+        metrics = new Metrics(clickDao, impressionDao, serverEntryDao);
 
     }
 

@@ -1,6 +1,8 @@
 package models;
 
 import daos.ClickDao;
+import daos.ImpressionDao;
+import daos.ServerEntryDao;
 import entities.Click;
 
 import java.util.ArrayList;
@@ -8,12 +10,14 @@ import java.util.List;
 
 public class HistogramModel {
     private String campaign;
-    private ClickDao clickDao = new ClickDao();
+    private ClickDao clickDao;
 
     // for testing purposes
     private int band_length = 1;
 
-    public HistogramModel(String campaign){
+    public HistogramModel(String campaign, ClickDao clickDao, ImpressionDao impressionDao, ServerEntryDao serverEntryDao) {
+        //Not using other two daos atm
+        this.clickDao = clickDao;
         this.campaign = campaign;
     }
 
