@@ -241,7 +241,6 @@ public class Controller {
 
         unitsDifference = 0;
 
-        campaignHandler = new CampaignHandler(this, clickLogLabel, impressionLogLabel, serverLogLabel);
     }
 
     @FXML
@@ -281,7 +280,9 @@ public class Controller {
         incomePie.setLegendVisible(false);
         incomePie.setStyle("-fx-font-size: " + 10 + "px;");
 
-        campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
+        //TODO again dont wanna pass dao as param but will fix when implement autowiring
+        campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel,
+                clickDao, impressionDao, serverEntryDao);
 
         try {
             campaignChooser.getItems().addAll(clickDao.getCampaigns());
@@ -440,6 +441,7 @@ public class Controller {
         //TODO update charts with non-random data
         System.out.println("Loaded charts/graphs with random data");
 
+        success("Successfully loaded data for " + campaignName);
     }
 
     /**
@@ -454,6 +456,14 @@ public class Controller {
         alert.setContentText(message);
         alert.showAndWait();
 
+    }
+
+    public void success(String message){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 

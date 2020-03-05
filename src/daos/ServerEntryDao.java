@@ -30,6 +30,10 @@ public class ServerEntryDao {
     }
 
     public void save(List<ServerEntry> serverEntries) {
+        //TODO currently hacky cache when new load campaign - can't technically be sure all entities are from same campaign
+        //Fine for now as we only save a list of entities from a single campaign
+        //Get campaign name from first entity then cache
+        campaignCache.put(serverEntries.get(0).getCampaign(), serverEntries);
         Transaction transaction = null;
         try (StatelessSession session = SessionHandler.getSessionFactory().openStatelessSession()) {
             transaction = session.beginTransaction();

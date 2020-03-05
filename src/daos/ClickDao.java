@@ -29,6 +29,10 @@ public class ClickDao {
     }
 
     public void save(List<Click> clicks) {
+        //TODO currently hacky cache when new load campaign - can't technically be sure all entities are from same campaign
+        //Fine for now as we only save a list of entities from a single campaign
+        //Get campaign name from first entity then cache
+        campaignCache.put(clicks.get(0).getCampaign(), clicks);
         Transaction transaction = null;
         try (StatelessSession session = SessionHandler.getSessionFactory().openStatelessSession()) {
             transaction = session.beginTransaction();

@@ -21,9 +21,12 @@ public class MetricTests {
     @BeforeClass
     public static void setupThis(){
 
-        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv", "test");
-        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "test");
-        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "test");
+        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv", "test",
+                clickDao, impressionDao, serverEntryDao);
+        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "test",
+                clickDao, impressionDao, serverEntryDao);
+        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "test",
+                clickDao, impressionDao, serverEntryDao);
 
         System.out.println("Setup");
 

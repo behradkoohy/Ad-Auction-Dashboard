@@ -1,12 +1,17 @@
 package views;
 
 
+import daos.ClickDao;
+import daos.ImpressionDao;
+import daos.ServerEntryDao;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import models.ReaderCSV;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,21 +38,22 @@ public class CampaignHandler {
     private Controller controller;
     private ReaderCSV rcsv = new ReaderCSV();
 
-    public CampaignHandler(Controller controller, Label clickLabel, Label impressionLabel, Label serverLabel) {
+    private ClickDao clickDao;
+    private ImpressionDao impressionDao;
+    private ServerEntryDao serverEntryDao;
+
+    public CampaignHandler(Controller controller, Label clickLabel, Label impressionLabel, Label serverLabel
+            , ClickDao clickDao, ImpressionDao impressionDao, ServerEntryDao serverEntryDao) {
         this.clickLabel = clickLabel;
         this.impressionLabel = impressionLabel;
         this.serverLabel = serverLabel;
         this.controller = controller;
+        this.clickDao = clickDao;
+        this.impressionDao = impressionDao;
+        this.serverEntryDao = serverEntryDao;
 
     }
 
-    public void createCampaign(){
-        if(clickLog == null || impressionLog == null || serverLog == null){
-            controller.error("Please make sure you have chosen all 3 of the required CSV files!");
-        } else {
-            controller.goToMainPage();
-        }
-    }
 
     /**
      * Initiates the file chooser to choose the click log file
@@ -62,10 +68,14 @@ public class CampaignHandler {
             error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
             clickLog = null;
 
+        } else {
+            clickLabel.setText("");
+            clickLog.getName();
+            clickLabel.setText(clickLog.getName());
+            clickLoc = clickLog.getAbsolutePath();
         }
 
-        clickLabel.setText(clickLog.getName());
-        clickLoc = clickLog.getAbsolutePath();
+
     }
 
     /**
@@ -79,10 +89,12 @@ public class CampaignHandler {
         if(impressionLog.equals(clickLog) || impressionLog.equals(serverLog)){
             error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
             impressionLog = null;
+        } else {
+            impressionLabel.setText(impressionLog.getName());
+            impressionLoc = impressionLog.getAbsolutePath();
         }
 
-        impressionLabel.setText(impressionLog.getName());
-        impressionLoc = impressionLog.getAbsolutePath();
+
     }
 
     /**
@@ -95,14 +107,18 @@ public class CampaignHandler {
         if(serverLog.equals(clickLog) || serverLog.equals(impressionLog)){
             error("You cannot have the same file for two inputs! Please make sure you have chosen the unique server log csv file");
             serverLog = null;
+        } else {
+            serverLabel.setText(serverLog.getName());
+            serverLoc = serverLog.getAbsolutePath();
         }
 
-        serverLabel.setText(serverLog.getName());
-        serverLoc = serverLog.getAbsolutePath();
     }
 
     public void importCampaign(String campaignName){
-        System.out.println("serverLog = " + serverLog);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        System.out.println(dtf.format(LocalDateTime.now()));
+        System.out.println("Importing data for new campaign: " + campaignName);
+
         if(clickLog == null || impressionLog == null || serverLog == null){
             error("Please make sure you have selected the 3 unique csv log files!");
         }
@@ -114,10 +130,12 @@ public class CampaignHandler {
         if (filesSubmit.size() < 3){
             error("Please make sure all 3 CSV files are unique!");
         } else {
-            ReaderCSV.readCSV(clickLoc, campaignName);
-            ReaderCSV.readCSV(impressionLoc, campaignName);
-            ReaderCSV.readCSV(serverLoc, campaignName);
-            success("Files successfully uploaded, please click \"OK\" to begin loading data");
+            ReaderCSV.readCSV(clickLoc, campaignName, clickDao, impressionDao, serverEntryDao);
+            ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao);
+            ReaderCSV.readCSV(serverLoc, campaignName, clickDao, impressionDao, serverEntryDao);
+            System.out.println(dtf.format(LocalDateTime.now()));
+            System.out.println("Finished importing data for new campaign: " + campaignName);
+            success("Files successfully uploaded, please click \"OK\" to begin populating data");
         }
     }
 

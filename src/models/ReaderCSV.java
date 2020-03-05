@@ -30,16 +30,16 @@ public class ReaderCSV {
 	private static String SERVER_LOG_HEADER= "Entry Date,ID,Exit Date,Pages Viewed,Conversion";
 	private static String IMPRESSION_LOG_HEADER= "Date,ID,Gender,Age,Income,Context,Impression Cost";
 
-	public static void readCSV(String filename, String campaignName) {
+	public static void readCSV(String filename, String campaignName, ClickDao clickDao, ImpressionDao impressionDao, ServerEntryDao serverEntryDao) {
 		Path pathToFile = Paths.get(filename);
 		try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
 			String line = br.readLine();
 			if (line.equals(CLICK_LOG_HEADER)){
-				readClickCSV(br, campaignName);
+				readClickCSV(br, campaignName, clickDao);
 			} else if (line.equals(SERVER_LOG_HEADER)){
-				readServerEntryCSV(br, campaignName);
+				readServerEntryCSV(br, campaignName, serverEntryDao);
 			} else if (line.equals(IMPRESSION_LOG_HEADER)){
-				readImpressionCSV(br, campaignName);
+				readImpressionCSV(br, campaignName, impressionDao);
 			} else {
 				// throws some error message
 			}
@@ -48,9 +48,8 @@ public class ReaderCSV {
         }
 	}
 
-	private static void readClickCSV(BufferedReader br, String campaignName) {
+	private static void readClickCSV(BufferedReader br, String campaignName, ClickDao clickDao) {
 		try {
-			ClickDao clickDao = new ClickDao();
 			List<Click> clicksToAdd = new ArrayList<>();
 			int clickIdentifer = clickDao.getMaxIdentifier();
 
@@ -75,9 +74,8 @@ public class ReaderCSV {
 		}
 	}
 
-	private static void readImpressionCSV(BufferedReader br, String campaignName) {
+	private static void readImpressionCSV(BufferedReader br, String campaignName, ImpressionDao impressionDao) {
 		try {
-			ImpressionDao impressionDao = new ImpressionDao();
 			List<Impression> impressionsToAdd = new ArrayList<>();
 			int impressionIdentifier = impressionDao.getMaxIdentifier();
 
@@ -107,9 +105,8 @@ public class ReaderCSV {
 		}
 	}
 
-	private static void readServerEntryCSV(BufferedReader br, String campaignName) {
+	private static void readServerEntryCSV(BufferedReader br, String campaignName, ServerEntryDao serverEntryDao) {
 		try {
-			ServerEntryDao serverEntryDao = new ServerEntryDao();
 			List<ServerEntry> serverEntriesToAdd = new ArrayList<>();
 			int serverEntryIdentifier = serverEntryDao.getMaxIdentifier();
 
