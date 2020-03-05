@@ -246,7 +246,7 @@ public class Controller {
                 impressionLogLabel, serverLogLabel);
 
 
-        this.metricsModel = new Metrics(clickDao, impressionDao, serverEntryDao);
+        //this.metricsModel = new Metrics(clickDao, impressionDao, serverEntryDao);
     }
 
     @FXML
@@ -294,6 +294,8 @@ public class Controller {
         } catch (Exception e) {
             System.out.println("No data loaded!");
         }
+
+        this.metricsModel = new Metrics();
 
     }
 
@@ -741,7 +743,7 @@ public class Controller {
      * UI components to have the most up to date data
      */
     //TODO Replace all the random values with values from database
-    public void reloadData(String campaignName){
+    public void reloadData(String campaignName) {
         statsCampaignNameLabel.setText(campaignName);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
@@ -749,7 +751,8 @@ public class Controller {
         System.out.println("Loading data for " + campaignName);
 
         Double nrImpressions = this.metricsModel.getNumImpressions(campaignName);
-        List<Impression> impressions = this.metricsModel.getImpression();
+        //TODO very messy, just have each model fetch the data once
+        List<Impression> impressions = this.metricsModel.getImpressions(campaignName);
 
         numImpressions.setText(String.valueOf(nrImpressions));
         numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));

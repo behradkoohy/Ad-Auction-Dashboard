@@ -6,11 +6,8 @@ import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import models.Metrics;
 import models.ReaderCSV;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.File;
 
 import static org.junit.Assert.assertTrue;
 
@@ -28,15 +25,9 @@ public class MetricTests {
         ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "test");
         ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "test");
 
-        clickDao = new ClickDao();
-        impressionsDao = new ImpressionDao();
-        serverDao = new ServerEntryDao();
         System.out.println("Setup");
 
-
-
-
-        metrics = new Metrics(clickDao, impressionsDao, serverDao);
+        metrics = new Metrics();
 
     }
 

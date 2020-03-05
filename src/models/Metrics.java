@@ -7,12 +7,11 @@ import daos.ServerEntryDao;
 import entities.Click;
 import entities.Impression;
 import entities.ServerEntry;
+import javafx.scene.chart.XYChart;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
-
-import javafx.scene.chart.*;
 
 
 public class Metrics {
@@ -22,9 +21,9 @@ public class Metrics {
     private int bouncePages = 1;
     private Duration bounceTime = Duration.ofSeconds(5);
 
-    private ClickDao clickDao;
-    private ImpressionDao impressionsDao;
-    private ServerEntryDao serverDao;
+    private ClickDao clickDao = new ClickDao();
+    private ImpressionDao impressionDao = new ImpressionDao();
+    private ServerEntryDao serverDao = new ServerEntryDao();
 
     private HashMap<Twople, Double> cacheSingle;
 
@@ -41,19 +40,16 @@ public class Metrics {
     private static int CPM = 10;
     private static int BOUNCE = 11;
 
-    private List<Impression> impressions;
+    private HashMap<String, List<Impression>> impressionsCache = new HashMap<>();
 
 
-    public Metrics(ClickDao clickDao, ImpressionDao impressionsDao, ServerEntryDao serverEntryDao) {
-        this.clickDao = clickDao;
-        this.impressionsDao = impressionsDao;
-        this.serverDao = serverEntryDao;
-
-        this.cacheSingle = new HashMap();
+    public Metrics() {
+        this.cacheSingle = new HashMap<>();
     }
 
-    public List<Impression> getImpression(){
-        return this.impressions;
+
+    public List<Impression> getImpressions(String campaign) {
+        return this.impressionsCache.get(campaign);
     }
 
     public Double getNumImpressions(String campaign) {
@@ -61,8 +57,12 @@ public class Metrics {
         if (cacheSingle.containsKey(twople)) {
             return cacheSingle.get(twople);
         }
-        this.impressions = impressionsDao.getFromCampaign(campaign);
-        Double num = Double.valueOf(this.impressions.size());
+
+        if(!this.impressionsCache.containsKey(campaign)) {
+            this.impressionsCache.put(campaign, impressionDao.getFromCampaign(campaign));
+        }
+
+        Double num = (double) this.impressionsCache.get(campaign).size();
         cacheSingle.put(twople, num);
 
         return num;
@@ -73,7 +73,7 @@ public class Metrics {
         if (cacheSingle.containsKey(twople)) {
             return cacheSingle.get(twople);
         }
-        Double num =Double.valueOf(clickDao.getFromCampaign(campaign).size());
+        Double num = (double) clickDao.getFromCampaign(campaign).size();
         cacheSingle.put(twople, num);
         return num;
     }
@@ -90,10 +90,10 @@ public class Metrics {
         for (Click click : clickDao.getFromCampaign(campaign)) {
             set.add(click.getId());
         }
-        Double num = Double.valueOf(set.size());
+        Double num = (double) set.size();
         cacheSingle.put(twople, num);
 
-        return Double.valueOf(set.size());
+        return (double) set.size();
 
     }
 
@@ -248,7 +248,12 @@ public class Metrics {
             return cacheSingle.get(twople);
         }
         double cost = 0;
-        for (Impression impression : impressionsDao.getFromCampaign(campaign)) {
+
+        if(!this.impressionsCache.containsKey(campaign)) {
+            this.impressionsCache.put(campaign, impressionDao.getFromCampaign(campaign));
+        }
+
+        for (Impression impression : this.impressionsCache.get(campaign)) {
             cost += impression.getImpressionCost();
         }
         cacheSingle.put(twople, cost);
@@ -265,7 +270,7 @@ public class Metrics {
             LocalDateTime nextTime = current.plus(duration);
 
             double total = 0;
-            for (Impression impression : impressionsDao.getByDateAndCampaign(campaign, current, nextTime)) {
+            for (Impression impression : impressionDao.getByDateAndCampaign(campaign, current, nextTime)) {
                 total += impression.getImpressionCost();
             }
 
@@ -324,7 +329,7 @@ public class Metrics {
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            series.getData().add(new XYChart.Data(current.toString(), impressionsDao.getByDateAndCampaign(campaign, current, nextTime).size()));
+            series.getData().add(new XYChart.Data(current.toString(), impressionDao.getByDateAndCampaign(campaign, current, nextTime).size()));
             current = nextTime;
         }
 
@@ -337,7 +342,7 @@ public class Metrics {
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            impress.add(impressionsDao.getByDateAndCampaign(campaign, current, nextTime).size());
+            impress.add(impressionDao.getByDateAndCampaign(campaign, current, nextTime).size());
             current = nextTime;
         }
 
@@ -536,7 +541,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.toString(), clickDao.getByDateAndCampaign(campaign, current, nextTime).size()/impressionsDao.getByDateAndCampaign(campaign, current, nextTime).size()));
+            series.getData().add(new XYChart.Data(current.toString(), clickDao.getByDateAndCampaign(campaign, current, nextTime).size()/impressionDao.getByDateAndCampaign(campaign, current, nextTime).size()));
 
             current = nextTime;
         }
