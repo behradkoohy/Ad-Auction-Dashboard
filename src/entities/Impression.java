@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "impression")
+@Table(name = "Impression")
 public class Impression implements Serializable {
 
     //DON'T CHANGE ORDER OF ENUMS

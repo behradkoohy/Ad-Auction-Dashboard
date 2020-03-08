@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "click")
+@Table(name = "Click")
 public class Click implements Serializable {
 
     public Click() {

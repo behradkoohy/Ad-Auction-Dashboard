@@ -12,6 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.BorderPane;
+import models.HistogramModel;
+import models.Metrics;
+import models.PieChartModel;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,10 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-
-import models.Metrics;
-import models.PieChartModel;
-import models.HistogramModel;
 
 public class Controller {
     //Current data values, changed each time UI manipulates them:
@@ -208,6 +207,9 @@ public class Controller {
     @FXML
     private NumberAxis barChartYAxis;
 
+    @FXML
+    public Label statsCampaignNameLabel;
+
     public Controller(){
 
         //True/false assignments correspond to whether the checkboxes are selected
@@ -244,7 +246,7 @@ public class Controller {
                 impressionLogLabel, serverLogLabel);
 
 
-        this.metricsModel = new Metrics(clickDao, impressionDao, serverEntryDao);
+        //this.metricsModel = new Metrics(clickDao, impressionDao, serverEntryDao);
     }
 
     @FXML
@@ -292,6 +294,8 @@ public class Controller {
         } catch (Exception e) {
             System.out.println("No data loaded!");
         }
+
+        this.metricsModel = new Metrics();
 
     }
 
@@ -739,14 +743,16 @@ public class Controller {
      * UI components to have the most up to date data
      */
     //TODO Replace all the random values with values from database
-    public void reloadData(String campaignName){
+    public void reloadData(String campaignName) {
+        statsCampaignNameLabel.setText(campaignName);
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
         System.out.println(dtf.format(LocalDateTime.now()));
         System.out.println("Loading data for " + campaignName);
 
         Double nrImpressions = this.metricsModel.getNumImpressions(campaignName);
-        List<Impression> impressions = this.metricsModel.getImpression();
+        //TODO very messy, just have each model fetch the data once
+        List<Impression> impressions = this.metricsModel.getImpressions(campaignName);
 
         numImpressions.setText(String.valueOf(nrImpressions));
         numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));

@@ -32,8 +32,9 @@ public class SessionHandler {
                 settings.put(Environment.SHOW_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
                 settings.put(Environment.HBM2DDL_AUTO, "update");
-                settings.put("hibernate.jdbc.batch_size", "100");
+                settings.put("hibernate.jdbc.batch_size", "50");
                 settings.put("hibernate.show_sql", "false");
+                settings.put("hibernate.order_inserts", "true");
 
                 configuration.setProperties(settings);
 
