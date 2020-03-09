@@ -1,10 +1,7 @@
 package views;
 
 import com.jfoenix.controls.*;
-import daos.ClickDao;
 import daos.DaoInjector;
-import daos.ImpressionDao;
-import daos.ServerEntryDao;
 import javafx.fxml.FXML;
 import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
@@ -74,9 +71,9 @@ public class Controller {
     //Class for handling loading campaigns, this can connect to Alex' CSV reader class
     private CampaignHandler campaignHandler;
 
-    private Metrics metricsModel;
-    private PieChartModel pieChartModel;
-    private HistogramModel histogramModel;
+    private Metrics metricsModel = new Metrics();
+    private PieChartModel pieChartModel = new PieChartModel();
+    private HistogramModel histogramModel = new HistogramModel();
 
     /*
     Corresponding UI components that can be found in scene builder with these identifiers,
@@ -379,7 +376,6 @@ public class Controller {
         clickLabel.setText("");
         impressionLabel.setText("");
         serverLabel.setText("");
-
     }
 
     @FXML
@@ -388,39 +384,37 @@ public class Controller {
      * UI components to have the most up to date data
      */
     public void reloadData(String campaignName) {
+        metricsModel.setCampaign(campaignName);
+        histogramModel.setCampaign(campaignName);
+        pieChartModel.setCampaign(campaignName);
         statsCampaignNameLabel.setText(campaignName);
+
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 
         System.out.println(dtf.format(LocalDateTime.now()));
         System.out.println("Loading data for " + campaignName);
 
-        //TODO Consistency between models - constructor with campaign name or as method param?
-        //TODO will not passthrough daos as params once autowire configured
-        this.metricsModel = new Metrics();
-        numImpressions.setText(String.valueOf(this.metricsModel.getNumImpressions(campaignName)));
-        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
-        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs(campaignName)));
-        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces(campaignName)));
-        numConversions.setText(String.valueOf(this.metricsModel.getConversions(campaignName)));
-        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost(campaignName)));
-        CTR.setText(String.valueOf(this.metricsModel.getCTR(campaignName)));
-        CPA.setText(String.valueOf(this.metricsModel.getCPA(campaignName)));
-        CPC.setText(String.valueOf(this.metricsModel.getCPC(campaignName)));
-        CPM.setText(String.valueOf(this.metricsModel.getCPM(campaignName)));
-        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
+        numImpressions.setText(String.valueOf(this.metricsModel.getNumImpressions()));
+        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks()));
+        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs()));
+        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces()));
+        numConversions.setText(String.valueOf(this.metricsModel.getConversions()));
+        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost()));
+        CTR.setText(String.valueOf(this.metricsModel.getCTR()));
+        CPA.setText(String.valueOf(this.metricsModel.getCPA()));
+        CPC.setText(String.valueOf(this.metricsModel.getCPC()));
+        CPM.setText(String.valueOf(this.metricsModel.getCPM()));
+        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate()));
         System.out.println(dtf.format(LocalDateTime.now()));
         System.out.println("Loaded metrics");
 
         updateChart();
 
-        this.histogramModel = new HistogramModel(campaignName);
         List<Integer> data = this.histogramModel.getData();
         updateHistogram(data);
         System.out.println(dtf.format(LocalDateTime.now()));
         System.out.println("Loaded histogram");
 
-
-        this.pieChartModel = new PieChartModel(campaignName);
         HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
 
         updatePieChartData(

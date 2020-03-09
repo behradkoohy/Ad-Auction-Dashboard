@@ -18,6 +18,8 @@ import java.util.*;
 public class Metrics {
 
     //false = pages -- true = time spent -- change
+    private String campaign = null;
+
     private boolean bounceDef = false;
     private int bouncePages = 1;
     private Duration bounceTime = Duration.ofSeconds(5);
@@ -26,7 +28,8 @@ public class Metrics {
     private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
     private ServerEntryDao serverEntryDao = DaoInjector.newServerEntryDao();
 
-    private HashMap<Twople, Double> cacheSingle;
+    //Potentially dont need to cache at this point since implemented dao caching
+    private HashMap<Tuple, Double> cacheSingle = new HashMap<>();
 
     private static int NUMIMPRESS = 0;
     private static int NUMCLICKS = 1;
@@ -41,38 +44,37 @@ public class Metrics {
     private static int CPM = 10;
     private static int BOUNCE = 11;
 
-
-    public Metrics() {
-        this.cacheSingle = new HashMap<>();
+    public void setCampaign(String campaign) {
+        this.campaign = campaign;
     }
 
-    public Double getNumImpressions(String campaign) {
-        Twople twople = new Twople(NUMIMPRESS, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getNumImpressions() {
+        Tuple tuple = new Tuple(NUMIMPRESS, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
 
         Double num = (double) impressionDao.getFromCampaign(campaign).size();
-        cacheSingle.put(twople, num);
+        cacheSingle.put(tuple, num);
 
         return num;
     }
 
-    public Double getNumClicks(String campaign) {
-        Twople twople = new Twople(NUMCLICKS, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getNumClicks() {
+        Tuple tuple = new Tuple(NUMCLICKS, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
         Double num = (double) clickDao.getFromCampaign(campaign).size();
-        cacheSingle.put(twople, num);
+        cacheSingle.put(tuple, num);
         return num;
     }
 
 
-    public Double getNumUniqs(String campaign) {
-        Twople twople = new Twople(NUMUNIQ, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getNumUniqs() {
+        Tuple tuple = new Tuple(NUMUNIQ, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
 
         HashSet set = new HashSet<>();
@@ -81,7 +83,7 @@ public class Metrics {
             set.add(click.getId());
         }
         Double num = (double) set.size();
-        cacheSingle.put(twople, num);
+        cacheSingle.put(tuple, num);
 
         return (double) set.size();
 
@@ -99,10 +101,10 @@ public class Metrics {
     }
 
 
-    public Double getNumBounces(String campaign) {
-        Twople twople = new Twople(BOUNCE, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getNumBounces() {
+        Tuple tuple = new Tuple(BOUNCE, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
 
         Double num = 0.0;
@@ -130,14 +132,14 @@ public class Metrics {
                 }
             }
         }
-        cacheSingle.put(twople, num);
+        cacheSingle.put(tuple, num);
         return num;
     }
 
-    public Double getConversions(String campaign) {
-        Twople twople = new Twople(CONVER, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getConversions() {
+        Tuple tuple = new Tuple(CONVER, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
         Double num = 0.0;
         for (ServerEntry server : serverEntryDao.getFromCampaign(campaign)) {
@@ -145,49 +147,49 @@ public class Metrics {
                 num++;
             }
         }
-        cacheSingle.put(twople, num);
+        cacheSingle.put(tuple, num);
         return num;
     }
 
-    public Double getCTR(String campaign) {
-        Twople twople = new Twople(CTR, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getCTR() {
+        Tuple tuple = new Tuple(CTR, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
-        Double num = this.getNumClicks(campaign)/this.getNumImpressions(campaign);
-        cacheSingle.put(twople, num);
+        Double num = this.getNumClicks()/this.getNumImpressions();
+        cacheSingle.put(tuple, num);
         return num;
 
     }
 
     //TODO do we use total cost or just click cost or just impressions cost
-    public Double getCPA(String campaign) {
-        Twople twople = new Twople(CPA, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getCPA() {
+        Tuple tuple = new Tuple(CPA, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
-        Double num = this.getTotalCost(campaign) / this.getConversions(campaign);
-        cacheSingle.put(twople, num);
+        Double num = this.getTotalCost() / this.getConversions();
+        cacheSingle.put(tuple, num);
         return num;
     }
 
 
-    public Double getTotalCost(String campaign) {
-        Twople twople = new Twople(TOTALCOST, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getTotalCost() {
+        Tuple tuple = new Tuple(TOTALCOST, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
-        Double num = this.getTotalClickCost(campaign) + this.getTotalImpressionsCost(campaign);
-        cacheSingle.put(twople, num);
+        Double num = this.getTotalClickCost() + this.getTotalImpressionsCost();
+        cacheSingle.put(tuple, num);
 
         return num;
 
     }
 
-    private ArrayList getTotalCostPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList getTotalCostPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
-        ArrayList<Double> clickCosts = this.getTotalClickCostPerTime(campaign, start, end, duration);
-        ArrayList<Double> impressionCosts = this.getTotalImpressionsCostPerTime(campaign, start, end, duration);
+        ArrayList<Double> clickCosts = this.getTotalClickCostPerTime(start, end, duration);
+        ArrayList<Double> impressionCosts = this.getTotalImpressionsCostPerTime(start, end, duration);
         ArrayList totalCosts = new ArrayList();
 
         for (int i = 0; i < clickCosts.size(); i++) {
@@ -197,20 +199,20 @@ public class Metrics {
         return totalCosts;
     }
 
-    private Double getTotalClickCost(String campaign) {
-        Twople twople = new Twople(TOTALCLICK, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    private Double getTotalClickCost() {
+        Tuple tuple = new Tuple(TOTALCLICK, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
         double cost = 0;
         for (Click click : clickDao.getFromCampaign(campaign)) {
             cost += click.getClickCost();
         }
-        cacheSingle.put(twople, cost);
+        cacheSingle.put(tuple, cost);
         return cost;
     }
 
-    private ArrayList<Double> getTotalClickCostPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList<Double> getTotalClickCostPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         ArrayList costs = new ArrayList();
 
@@ -232,21 +234,21 @@ public class Metrics {
 
     }
 
-    private Double getTotalImpressionsCost(String campaign) {
-        Twople twople = new Twople(TOTALIMPRESS, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    private Double getTotalImpressionsCost() {
+        Tuple tuple = new Tuple(TOTALIMPRESS, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
         double cost = 0;
 
         for (Impression impression : impressionDao.getFromCampaign(campaign)) {
             cost += impression.getImpressionCost();
         }
-        cacheSingle.put(twople, cost);
+        cacheSingle.put(tuple, cost);
         return cost;
     }
 
-    private ArrayList<Double> getTotalImpressionsCostPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList<Double> getTotalImpressionsCostPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         ArrayList costs = new ArrayList();
 
@@ -268,45 +270,44 @@ public class Metrics {
     }
 
 
-    public Double getCPC(String campaign) {
-        Twople twople = new Twople(CPC, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getCPC() {
+        Tuple tuple = new Tuple(CPC, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
-        Double num = this.getTotalClickCost(campaign) / this.getNumClicks(campaign);
-        cacheSingle.put(twople, num);
+        Double num = this.getTotalClickCost() / this.getNumClicks();
+        cacheSingle.put(tuple, num);
         return num;
     }
 
-    public Double getCPM(String campaign) {
-        Twople twople = new Twople(CPM, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getCPM() {
+        Tuple tuple = new Tuple(CPM, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
-        Double num = this.getTotalCost(campaign) / (this.getNumImpressions(campaign)/1000);
-        cacheSingle.put(twople, num);
+        Double num = this.getTotalCost() / (this.getNumImpressions()/1000);
+        cacheSingle.put(tuple, num);
         return num;
     }
 
-    public Double getBounceRate(String campaign) {
-        Twople twople = new Twople(BOUNCE, campaign);
-        if (cacheSingle.containsKey(twople)) {
-            return cacheSingle.get(twople);
+    public Double getBounceRate() {
+        Tuple tuple = new Tuple(BOUNCE, campaign);
+        if (cacheSingle.containsKey(tuple)) {
+            return cacheSingle.get(tuple);
         }
-        Double num = this.getNumBounces(campaign)/this.getNumClicks(campaign);
-        cacheSingle.put(twople, num);
+        Double num = this.getNumBounces()/this.getNumClicks();
+        cacheSingle.put(tuple, num);
         return num;
     }
 
     /**
      *
-     * @param campaign which campaign to select data from
      * @param start the start date
      * @param end the end date
      * @param duration the time interval for each data point e.g. 1 hour
      * @return
      */
-    public XYChart.Series getImpressionsPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getImpressionsPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("Impressions");
@@ -322,7 +323,7 @@ public class Metrics {
         return series;
     }
 
-    private ArrayList getImpressionsPerTimeList(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList getImpressionsPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
         ArrayList impress = new ArrayList();
         LocalDateTime current = start;
 
@@ -335,7 +336,7 @@ public class Metrics {
         return impress;
     }
 
-    public XYChart.Series getClicksPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getClicksPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("Clicks");
@@ -351,7 +352,7 @@ public class Metrics {
         return series;
     }
 
-    private ArrayList getClicksPerTimeList(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList getClicksPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
         LocalDateTime current = start;
         ArrayList<Integer> clicks = new ArrayList<>();
 
@@ -364,7 +365,7 @@ public class Metrics {
         return clicks;
     }
 
-    public XYChart.Series getUniquesPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getUniquesPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("Uniques");
@@ -388,7 +389,7 @@ public class Metrics {
         return series;
     }
 
-    public XYChart.Series getBouncesPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getBouncesPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("Bounces");
@@ -433,7 +434,7 @@ public class Metrics {
         return series;
     }
 
-    private ArrayList getBouncesPerTimeList (String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList getBouncesPerTimeList (LocalDateTime start, LocalDateTime end, Duration duration) {
         LocalDateTime current = start;
         ArrayList bounces = new ArrayList();
 
@@ -474,7 +475,7 @@ public class Metrics {
         return bounces;
     }
 
-    private ArrayList getConversionsPerTimeList(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList getConversionsPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
         ArrayList conversions = new ArrayList();
         LocalDateTime current = start;
 
@@ -496,12 +497,12 @@ public class Metrics {
         return conversions;
     }
 
-    public XYChart.Series getConversionsPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getConversionsPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("Conversions");
 
-        ArrayList con = this.getConversionsPerTimeList(campaign, start, end, duration);
+        ArrayList con = this.getConversionsPerTimeList(start, end, duration);
         LocalDateTime current = start;
         int index = 0;
 
@@ -517,7 +518,7 @@ public class Metrics {
         return series;
     }
 
-    public XYChart.Series getCTRPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getCTRPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("CTR");
@@ -536,13 +537,13 @@ public class Metrics {
 
     }
 
-    public XYChart.Series getCPAPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getCPAPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("CPA");
 
-        ArrayList<Double> costs = this.getTotalCostPerTime(campaign, start, end, duration);
-        ArrayList<Integer> cons = this.getConversionsPerTimeList(campaign, start, end, duration);
+        ArrayList<Double> costs = this.getTotalCostPerTime(start, end, duration);
+        ArrayList<Integer> cons = this.getConversionsPerTimeList(start, end, duration);
 
         LocalDateTime current = start;
         int index = 0;
@@ -560,13 +561,13 @@ public class Metrics {
 
     }
 
-    public XYChart.Series getCPCPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getCPCPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("CPC");
 
-        ArrayList<Double> costs = this.getTotalCostPerTime(campaign, start, end, duration);
-        ArrayList<Integer> clicks = this.getClicksPerTimeList(campaign, start, end, duration);
+        ArrayList<Double> costs = this.getTotalCostPerTime(start, end, duration);
+        ArrayList<Integer> clicks = this.getClicksPerTimeList(start, end, duration);
 
         LocalDateTime current = start;
         int index = 0;
@@ -584,13 +585,13 @@ public class Metrics {
 
     }
 
-    public XYChart.Series getCPMPerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getCPMPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("CPM");
 
-        ArrayList<Double> costs = this.getTotalCostPerTime(campaign, start, end, duration);
-        ArrayList<Integer> impress = this.getImpressionsPerTimeList(campaign, start, end, duration);
+        ArrayList<Double> costs = this.getTotalCostPerTime(start, end, duration);
+        ArrayList<Integer> impress = this.getImpressionsPerTimeList(start, end, duration);
 
         LocalDateTime current = start;
         int index = 0;
@@ -608,13 +609,13 @@ public class Metrics {
 
     }
 
-    public XYChart.Series getBouncePerTime(String campaign, LocalDateTime start, LocalDateTime end, Duration duration) {
+    public XYChart.Series getBouncePerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("Bounce");
 
-        ArrayList<Integer> bounces = this.getBouncesPerTimeList(campaign, start, end, duration);
-        ArrayList<Integer> clicks = this.getClicksPerTimeList(campaign, start, end, duration);
+        ArrayList<Integer> bounces = this.getBouncesPerTimeList(start, end, duration);
+        ArrayList<Integer> clicks = this.getClicksPerTimeList(start, end, duration);
 
         LocalDateTime current = start;
         int index = 0;
@@ -632,11 +633,11 @@ public class Metrics {
 
     }
 
-    public class Twople {
+    private static class Tuple {
         private int name;
         private String camp;
 
-        public Twople(int name, String camp) {
+        private Tuple(int name, String camp) {
             this.name = name;
             this.camp = camp;
         }
@@ -645,9 +646,9 @@ public class Metrics {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Twople twople = (Twople) o;
-            return name == twople.name &&
-                    camp.equals(twople.camp);
+            Tuple tuple = (Tuple) o;
+            return name == tuple.name &&
+                    camp.equals(tuple.camp);
         }
 
         @Override

@@ -8,17 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistogramModel {
-    private String campaign;
+    private String campaign = null;
     private ClickDao clickDao = DaoInjector.newClickDao();
-
-    // for testing purposes
+    //For testing purposes
     private int band_length = 1;
 
-    public HistogramModel(String campaign) {
+    public void setCampaign(String campaign) {
         this.campaign = campaign;
     }
 
-    public List<Integer> getData(){
+    public List<Integer> getData() {
         List<Integer> chartData = new ArrayList<Integer>();
         chartData.add(0);
 
