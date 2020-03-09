@@ -2,6 +2,7 @@ package models;
 
 
 import daos.ClickDao;
+import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import entities.Click;
@@ -21,9 +22,9 @@ public class Metrics {
     private int bouncePages = 1;
     private Duration bounceTime = Duration.ofSeconds(5);
 
-    private ClickDao clickDao;
-    private ImpressionDao impressionDao;
-    private ServerEntryDao serverEntryDao;
+    private ClickDao clickDao = DaoInjector.newClickDao();
+    private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
+    private ServerEntryDao serverEntryDao = DaoInjector.newServerEntryDao();
 
     private HashMap<Twople, Double> cacheSingle;
 
@@ -41,10 +42,7 @@ public class Metrics {
     private static int BOUNCE = 11;
 
 
-    public Metrics(ClickDao clickDao, ImpressionDao impressionDao, ServerEntryDao serverEntryDao) {
-        this.clickDao = clickDao;
-        this.impressionDao = impressionDao;
-        this.serverEntryDao = serverEntryDao;
+    public Metrics() {
         this.cacheSingle = new HashMap<>();
     }
 

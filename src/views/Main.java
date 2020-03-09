@@ -1,9 +1,5 @@
 package views;
 
-/*
-import daos.ClickDao;
-import entities.Click;*/
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -38,26 +34,30 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         //Testing ignore for now
-        /*
 
+
+
+        /*
         ImpressionDao impressionDao = new ImpressionDao();
 
-        Click newClick = new Click("Second Campaign", 1234562922096180000L, LocalDateTime.now(), 1.245378 );
-        clickDao.save(newClick);
-        clickDao.getFromCampaign("First Campaign").forEach(Click::print);
+        long startTime = System.nanoTime();
+        impressionDao.getFromCampaign("First Campaign");
+        long endTime = System.nanoTime();
 
-
-        Impression newImpression = new Impression("Another Campaign", LocalDateTime.now(), 1234562922096180000L,
+        long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+        System.out.println(duration);
+        /*
+        Impression newImpression = new Impression(1, "Another Campaign", LocalDateTime.now(), 1234562922096180000L,
                 Impression.Gender.MALE, Impression.Age.FROM35TO44, Impression.Income.MEDIUM, Impression.Context.NEWS,
                 1.245378);
-        Impression anotherImpression = new Impression("Another Campaign", LocalDateTime.now(), 1234564922096183300L,
+        Impression anotherImpression = new Impression(2, "Another Campaign", LocalDateTime.now(), 1234564922096183300L,
                 Impression.Gender.MALE, Impression.Age.OVER54, Impression.Income.LOW, Impression.Context.NEWS,
                 0.448778);
 
         impressionDao.save(newImpression);
         impressionDao.save(anotherImpression);
 
-        impressionDao.getByAge(Impression.Age.FROM35TO44).forEach(Impression::print);;
+        impressionDao.getByAge("Another Campaign", Impression.Age.FROM35TO44).forEach(Impression::print);;
         */
 
 

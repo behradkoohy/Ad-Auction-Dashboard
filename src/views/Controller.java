@@ -2,6 +2,7 @@ package views;
 
 import com.jfoenix.controls.*;
 import daos.ClickDao;
+import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import javafx.fxml.FXML;
@@ -26,12 +27,6 @@ import java.util.List;
 
 public class Controller {
     //Current data values, changed each time UI manipulates them:
-
-    //TODO don't want controller accessing dao, but currently need same instance of dao to cache
-    //TODO autowire dao into each model so same instance but preserve MVC
-    private ClickDao clickDao = new ClickDao();
-    private ImpressionDao impressionDao = new ImpressionDao();
-    private ServerEntryDao serverEntryDao = new ServerEntryDao();
 
     //Gender
     private boolean male;
@@ -281,11 +276,10 @@ public class Controller {
         incomePie.setStyle("-fx-font-size: " + 10 + "px;");
 
         //TODO again dont wanna pass dao as param but will fix when implement autowiring
-        campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel,
-                clickDao, impressionDao, serverEntryDao);
+        campaignHandler = new CampaignHandler(this, clickLabel, impressionLabel, serverLabel);
 
         try {
-            campaignChooser.getItems().addAll(clickDao.getCampaigns());
+            campaignChooser.getItems().addAll(DaoInjector.newClickDao().getCampaigns());
         } catch (Exception e) {
             System.out.println("No data loaded!");
         }
@@ -402,7 +396,7 @@ public class Controller {
 
         //TODO Consistency between models - constructor with campaign name or as method param?
         //TODO will not passthrough daos as params once autowire configured
-        this.metricsModel = new Metrics(clickDao, impressionDao, serverEntryDao);
+        this.metricsModel = new Metrics();
         numImpressions.setText(String.valueOf(this.metricsModel.getNumImpressions(campaignName)));
         numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
         numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs(campaignName)));
@@ -419,14 +413,14 @@ public class Controller {
 
         updateChart();
 
-        this.histogramModel = new HistogramModel(campaignName, clickDao, impressionDao, serverEntryDao);
+        this.histogramModel = new HistogramModel(campaignName);
         List<Integer> data = this.histogramModel.getData();
         updateHistogram(data);
         System.out.println(dtf.format(LocalDateTime.now()));
         System.out.println("Loaded histogram");
 
 
-        this.pieChartModel = new PieChartModel(campaignName, clickDao, impressionDao, serverEntryDao);
+        this.pieChartModel = new PieChartModel(campaignName);
         HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
 
         updatePieChartData(

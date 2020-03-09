@@ -1,9 +1,6 @@
 package tests;
 
 
-import daos.ClickDao;
-import daos.ImpressionDao;
-import daos.ServerEntryDao;
 import models.Metrics;
 import models.ReaderCSV;
 import org.junit.BeforeClass;
@@ -13,24 +10,18 @@ import static org.junit.Assert.assertTrue;
 
 public class MetricTests {
 
-    private static ClickDao clickDao = new ClickDao();
-    private static ImpressionDao impressionDao = new ImpressionDao();
-    private static ServerEntryDao serverEntryDao = new ServerEntryDao();
     private static Metrics metrics;
 
     @BeforeClass
     public static void setupThis(){
 
-        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv", "test",
-                clickDao, impressionDao, serverEntryDao);
-        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "test",
-                clickDao, impressionDao, serverEntryDao);
-        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "test",
-                clickDao, impressionDao, serverEntryDao);
+        ReaderCSV.readCSV("src/tests/testFiles/testClick.csv", "test");
+        ReaderCSV.readCSV("src/tests/testFiles/testImpression.csv", "test");
+        ReaderCSV.readCSV("src/tests/testFiles/testServer.csv", "test");
 
         System.out.println("Setup");
 
-        metrics = new Metrics(clickDao, impressionDao, serverEntryDao);
+        metrics = new Metrics();
 
     }
 

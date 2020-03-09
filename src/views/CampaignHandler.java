@@ -1,9 +1,6 @@
 package views;
 
 
-import daos.ClickDao;
-import daos.ImpressionDao;
-import daos.ServerEntryDao;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
@@ -41,20 +38,11 @@ public class CampaignHandler {
     private Controller controller;
     private ReaderCSV rcsv = new ReaderCSV();
 
-    private ClickDao clickDao;
-    private ImpressionDao impressionDao;
-    private ServerEntryDao serverEntryDao;
-
-    public CampaignHandler(Controller controller, Label clickLabel, Label impressionLabel, Label serverLabel
-            , ClickDao clickDao, ImpressionDao impressionDao, ServerEntryDao serverEntryDao) {
+    public CampaignHandler(Controller controller, Label clickLabel, Label impressionLabel, Label serverLabel) {
         this.clickLabel = clickLabel;
         this.impressionLabel = impressionLabel;
         this.serverLabel = serverLabel;
         this.controller = controller;
-        this.clickDao = clickDao;
-        this.impressionDao = impressionDao;
-        this.serverEntryDao = serverEntryDao;
-
     }
 
 
@@ -136,9 +124,9 @@ public class CampaignHandler {
             //Concurrency offers small benefit for this test set but may have much better improvements for other sets
             //TODO technically daos not thread safe but since atm each executes on different dao alright
             ExecutorService readerService = Executors.newCachedThreadPool();
-            readerService.execute(() -> ReaderCSV.readCSV(clickLoc, campaignName, clickDao, impressionDao, serverEntryDao));
-            readerService.execute(() -> ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao));
-            readerService.execute(() -> ReaderCSV.readCSV(serverLoc, campaignName, clickDao, impressionDao, serverEntryDao));
+            readerService.execute(() -> ReaderCSV.readCSV(clickLoc, campaignName));
+            readerService.execute(() -> ReaderCSV.readCSV(impressionLoc, campaignName));
+            readerService.execute(() -> ReaderCSV.readCSV(serverLoc, campaignName));
             readerService.shutdown();
             try {
                 if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {

@@ -2,6 +2,7 @@ package models;
 
 
 import daos.ClickDao;
+import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import entities.Click;
@@ -30,16 +31,16 @@ public class ReaderCSV {
 	private static String SERVER_LOG_HEADER= "Entry Date,ID,Exit Date,Pages Viewed,Conversion";
 	private static String IMPRESSION_LOG_HEADER= "Date,ID,Gender,Age,Income,Context,Impression Cost";
 
-	public static void readCSV(String filename, String campaignName, ClickDao clickDao, ImpressionDao impressionDao, ServerEntryDao serverEntryDao) {
+	public static void readCSV(String filename, String campaignName) {
 		Path pathToFile = Paths.get(filename);
 		try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
 			String line = br.readLine();
 			if (line.equals(CLICK_LOG_HEADER)){
-				readClickCSV(br, campaignName, clickDao);
+				readClickCSV(br, campaignName, DaoInjector.newClickDao());
 			} else if (line.equals(SERVER_LOG_HEADER)){
-				readServerEntryCSV(br, campaignName, serverEntryDao);
+				readServerEntryCSV(br, campaignName, DaoInjector.newServerEntryDao());
 			} else if (line.equals(IMPRESSION_LOG_HEADER)){
-				readImpressionCSV(br, campaignName, impressionDao);
+				readImpressionCSV(br, campaignName, DaoInjector.newImpressionDao());
 			} else {
 				// throws some error message
 			}

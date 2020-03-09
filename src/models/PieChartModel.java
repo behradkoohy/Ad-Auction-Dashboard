@@ -1,8 +1,7 @@
 package models;
 
-import daos.ClickDao;
+import daos.DaoInjector;
 import daos.ImpressionDao;
-import daos.ServerEntryDao;
 import entities.Impression;
 import entities.Impression.Age;
 import entities.Impression.Gender;
@@ -14,7 +13,7 @@ import java.util.List;
 
 public class PieChartModel {
     private String campaign;
-    private ImpressionDao impressionDao;
+    private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
     private List<Impression> impressions;
     private Integer nrImpressions;
 
@@ -22,10 +21,8 @@ public class PieChartModel {
     private Gender[] GENDERS = {Gender.MALE, Gender.FEMALE};
     private Income[] INCOMES = {Income.LOW, Income.MEDIUM, Income.HIGH};
 
-    public PieChartModel(String campaign, ClickDao clickDao, ImpressionDao impressionDao, ServerEntryDao serverEntryDao){
+    public PieChartModel(String campaign) {
         this.campaign = campaign;
-        //Not using other daos atm
-        this.impressionDao = impressionDao;
         this.impressions = this.impressionDao.getFromCampaign(campaign);
         this.nrImpressions = this.impressions.size();
     }
