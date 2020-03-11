@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.chart.PieChart?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
+            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.StatisticsTabController" >
+    <children>
+                <VBox prefHeight="551.0" prefWidth="700.0">
+                    <children>
+                        <FlowPane>
+                            <VBox.margin>
+                                <Insets left="40.0" top="40.0" />
+                            </VBox.margin>
+                            <children>
+                                <Label text="Current campaign:" underline="true">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="statsCampaignNameLabel" prefHeight="23.0" prefWidth="196.0" text="Campaign Name">
+                                    <FlowPane.margin>
+                                        <Insets left="20.0" />
+                                    </FlowPane.margin>
+                                </Label>
+                            </children>
+                        </FlowPane>
+                        <FlowPane>
+                            <children>
+                                <GridPane>
+                                    <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="184.0" minWidth="10.0" prefWidth="171.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="134.0" minWidth="10.0" prefWidth="77.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="233.0" minWidth="10.0" prefWidth="108.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="277.0" minWidth="10.0" prefWidth="215.0" />
+                                    </columnConstraints>
+                                    <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    </rowConstraints>
+                                    <children>
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of Impressions:">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of clicks:" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Number of unique users:" GridPane.rowIndex="2">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of bounces:" GridPane.rowIndex="3">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of conversions:" GridPane.rowIndex="4">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total cost of campaign:" GridPane.rowIndex="5">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CTR:" GridPane.columnIndex="2" />
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPA:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPC:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPM:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Bounce Rate:" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                                        <Label fx:id="numImpressions" GridPane.columnIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="numClicks" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="numUnique" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="numBounces" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="numConversions" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="totalCost" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="CTR" GridPane.columnIndex="3">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="CPA" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="CPC" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="CPM" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                        <Label fx:id="bounceRate" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                                            <GridPane.margin>
+                                                <Insets left="10.0" />
+                                            </GridPane.margin>
+                                        </Label>
+                                    </children>
+                                </GridPane>
+                            </children>
+                            <VBox.margin>
+                                <Insets left="70.0" top="50.0" />
+                            </VBox.margin>
+                        </FlowPane>
+                        <FlowPane>
+                            <VBox.margin>
+                                <Insets left="20.0" top="30.0" />
+                            </VBox.margin>
+                            <children>
+                                <PieChart fx:id="agePie" prefHeight="220.0" prefWidth="220.0" />
+                                <PieChart fx:id="incomePie" prefHeight="220.0" prefWidth="220.0" />
+                                <PieChart fx:id="genderPie" prefHeight="220.0" prefWidth="220.0" />
+                            </children>
+                        </FlowPane>
+                    </children>
+                </VBox>
+        </children>
+</AnchorPane>
