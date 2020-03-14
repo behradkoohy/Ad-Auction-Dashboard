@@ -27,7 +27,8 @@ public class HistogramTabController {
     }
 
     public void loadData( String campaignName ){
-        this.histogramModel = new HistogramModel(campaignName);
+        this.histogramModel = new HistogramModel();
+        this.histogramModel.setCampaign(campaignName);
         List<Integer> data = this.histogramModel.getData();
         updateHistogram(data);
     }

@@ -12,11 +12,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/views/layout.fxml"));
-        Parent root = loader.load();
+        Parent root = loader.load(getClass().getResource("/views/layout.fxml"));
 
         primaryStage.setScene(new Scene(root));
         primaryStage.setTitle("Ad Auction Dashboard");
+        //Not needed later
+        //primaryStage.setResizable(false);
         primaryStage.show();
     }
 

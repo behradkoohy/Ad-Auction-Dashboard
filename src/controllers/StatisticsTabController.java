@@ -55,22 +55,25 @@ public class StatisticsTabController{
     public void loadData(String campaignName) {
         //TODO very messy, just have each model fetch the data once
 
-        statsCampaignNameLabel.setText(campaignName);
-        Double nrImpressions = this.metricsModel.getNumImpressions(campaignName);
-        List<Impression> impressions = this.metricsModel.getImpressions(campaignName);
-        numImpressions.setText(String.valueOf(nrImpressions));
-        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(campaignName)));
-        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs(campaignName)));
-        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces(campaignName)));
-        numConversions.setText(String.valueOf(this.metricsModel.getConversions(campaignName)));
-        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost(campaignName)));
-        CTR.setText(String.valueOf(this.metricsModel.getCTR(campaignName)));
-        CPA.setText(String.valueOf(this.metricsModel.getCPA(campaignName)));
-        CPC.setText(String.valueOf(this.metricsModel.getCPC(campaignName)));
-        CPM.setText(String.valueOf(this.metricsModel.getCPM(campaignName)));
-        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(campaignName)));
+        this.metricsModel.setCampaign(campaignName);
 
-        this.pieChartModel = new PieChartModel(campaignName, impressions);
+        statsCampaignNameLabel.setText(campaignName);
+        Double nrImpressions = this.metricsModel.getNumImpressions();
+
+        numImpressions.setText(String.valueOf(nrImpressions));
+        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks()));
+        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs()));
+        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces()));
+        numConversions.setText(String.valueOf(this.metricsModel.getConversions()));
+        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost()));
+        CTR.setText(String.valueOf(this.metricsModel.getCTR()));
+        CPA.setText(String.valueOf(this.metricsModel.getCPA()));
+        CPC.setText(String.valueOf(this.metricsModel.getCPC()));
+        CPM.setText(String.valueOf(this.metricsModel.getCPM()));
+        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate()));
+
+        this.pieChartModel = new PieChartModel();
+        this.pieChartModel.setCampaign(campaignName);
         HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
 
         updatePieChartData(

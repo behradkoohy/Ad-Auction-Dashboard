@@ -1,6 +1,10 @@
 package controllers;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javafx.fxml.FXML;
 import com.jfoenix.controls.*;
@@ -8,7 +12,7 @@ import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 
 import daos.*;
-//import models.ReaderCSV;
+import models.ReaderCSV;
 
 
 public class CampaignTabController{
@@ -51,8 +55,6 @@ public class CampaignTabController{
         String campaignName = (String)campaignChooser.getValue();
         if( campaignName != null ){
             this.controller.success("Selected campaign " + campaignName + ". Importing data..." );
-            // TODO : import data
-            // TODO : add loader
             this.controller.loadCampaignData(campaignName);
             this.controller.goToMainPage();
         }else{
@@ -130,10 +132,27 @@ public class CampaignTabController{
 
         // if it reaches this point, there is a name and files are loaded
         try{
-            // TODO : uncomment
-//            ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName);
-//            ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName);
-//            ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName);
+            //Concurrency offers small benefit for this test set but may have much better improvements for other sets
+            //TODO technically daos not thread safe but since atm each executes on different dao alright
+            ExecutorService readerService = Executors.newCachedThreadPool();
+            readerService.execute(() -> ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName));
+            readerService.execute(() -> ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName));
+            readerService.execute(() -> ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName));
+            readerService.shutdown();
+            try {
+                if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {
+                    readerService.shutdownNow();
+                }
+            } catch (InterruptedException ex) {
+                readerService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+            /*
+            ReaderCSV.readCSV(clickLoc, campaignName, clickDao, impressionDao, serverEntryDao);
+            ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao);
+            ReaderCSV.readCSV(serverLoc, campaignName, clickDao, impressionDao, serverEntryDao);
+             */
+            System.out.println("Finished importing data for new campaign: " + campaignName);
 
             this.controller.success("Files successfully uploaded, please click \"OK\" to begin loading data");
 
@@ -145,8 +164,8 @@ public class CampaignTabController{
             impressionLabel.setText("");
             serverLabel.setText("");
 
-            // TODO : import data
-            // TODO : add loader
+            this.controller.loadCampaignData(newCampaignName);
+            this.controller.goToMainPage();
 
         }catch (Exception e) {
             this.controller.error("Error reading files...");
