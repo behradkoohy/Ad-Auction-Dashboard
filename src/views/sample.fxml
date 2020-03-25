@@ -276,27 +276,27 @@
                                     </Label>
                                     <FlowPane prefHeight="38.0" prefWidth="508.0">
                                        <children>
-                                          <JFXCheckBox onAction="#toggleImpressions" selected="true" text="Impressions">
+                                          <JFXCheckBox id="impressionsToggle" onAction="#toggleImpressions" selected="true" text="Impressions">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox onAction="#toggleConversions" selected="true" text="Conversions">
+                                          <JFXCheckBox id="conversationsToggle" onAction="#toggleConversions" selected="true" text="Conversions">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox onAction="#toggleClicks" text="Clicks">
+                                          <JFXCheckBox id="clicksToggle" onAction="#toggleClicks" text="Clicks">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox onAction="#toggleUnique" text="Unique users">
+                                          <JFXCheckBox id="uniqueToggle" onAction="#toggleUnique" text="Unique users">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox onAction="#toggleBounces" text="Bounces">
+                                          <JFXCheckBox id="bounceToggle" onAction="#toggleBounces" text="Bounces">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
@@ -305,27 +305,27 @@
                                     </FlowPane>
                                     <FlowPane prefHeight="38.0" prefWidth="508.0">
                                        <children>
-                                          <JFXCheckBox onAction="#toggleCTR" text="CTR">
+                                          <JFXCheckBox id="ctrToggle" onAction="#toggleCTR" text="CTR">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox onAction="#toggleCPA" text="CPA">
+                                          <JFXCheckBox id="cpaToggle" onAction="#toggleCPA" text="CPA">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox onAction="#toggleCPC" text="CPC">
+                                          <JFXCheckBox id="cpcToggle" onAction="#toggleCPC" text="CPC">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox onAction="#toggleCPM" text="CPM">
+                                          <JFXCheckBox id="cpmToggle" onAction="#toggleCPM" text="CPM">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox onAction="#toggleBounceRate" text="Bounce rate">
+                                          <JFXCheckBox id="bounceRateToggle" onAction="#toggleBounceRate" text="Bounce rate">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>

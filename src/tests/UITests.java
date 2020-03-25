@@ -13,12 +13,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.testfx.api.FxAssert;
+import org.testfx.api.FxRobot;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 
 import static org.junit.Assert.*;
 
@@ -62,9 +65,48 @@ public class UITests extends ApplicationTest{
         press(KeyCode.ENTER);
     }
 
-    @Test
-    public void testTabPane() {
 
+    @Test
+    public void testStatisticsTab() {
+        // Get to Graph tab
+        press(KeyCode.RIGHT);
+        // TODO: when the stats tab finally works
+    }
+
+
+    @Test
+    public void testGraphTab() {
+        // Get to Graph tab
+        ArrayList<String> tags = new ArrayList<>(Arrays.asList(
+                "#bounceRateToggle",
+                "#cpmToggle",
+                "#cpcToggle",
+                "#cpaToggle",
+                "#ctrToggle",
+                "#bounceToggle",
+                "#uniqueToggle",
+                "#clicksToggle",
+                "#conversationsToggle",
+                "#impressionsToggle",
+                "#conversationsToggle",
+                "#impressionsToggle"
+        ));
+        new FxRobot().press(KeyCode.RIGHT);
+        new FxRobot().press(KeyCode.RIGHT);
+        try {
+            Thread.sleep(1000);
+        } catch ( InterruptedException e){
+            System.out.println(e.getMessage());
+        }
+        Collections.shuffle(tags);
+        for (String s : tags){
+            clickOn(s);
+        }
+        try {
+            Thread.sleep(1000);
+        } catch ( InterruptedException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     public void alert_dialog_has_header_and_content(final String expectedHeader, final String expectedContent) {

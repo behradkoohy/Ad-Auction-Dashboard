@@ -708,6 +708,7 @@ public class Controller {
 
 
     public void loadNewCampaign(){
+        //TODO: ADD TEST FOR EMPTY CAMPAIGN
         campaignHandler.importCampaign(campaignName.getText());
         this.reloadData(campaignName.getText());
         campaignChooser.getItems().add(campaignName.getText());
