@@ -1,18 +1,20 @@
 package controllers;
 
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextField;
+import daos.ClickDao;
+import daos.DaoInjector;
+import daos.ImpressionDao;
+import daos.ServerEntryDao;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.stage.FileChooser;
+import models.ReaderCSV;
+
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import javafx.fxml.FXML;
-import com.jfoenix.controls.*;
-import javafx.scene.control.Label;
-import javafx.stage.FileChooser;
-
-import daos.*;
-import models.ReaderCSV;
 
 
 public class CampaignTabController{
@@ -28,9 +30,9 @@ public class CampaignTabController{
     private File impressionLog;
     private File serverLog;
 
-    private ClickDao clickDao = new ClickDao();
-    private ImpressionDao impressionDao = new ImpressionDao();
-    private ServerEntryDao serverEntryDao = new ServerEntryDao();
+    private ClickDao clickDao = DaoInjector.newClickDao();
+    private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
+    private ServerEntryDao serverEntryDao = DaoInjector.newServerEntryDao();
 
     public void init(Controller controller){
         this.controller = controller;
