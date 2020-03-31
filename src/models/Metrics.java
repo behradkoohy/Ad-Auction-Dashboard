@@ -644,8 +644,8 @@ public class Metrics {
 
         @Override
         public boolean equals(Object o) {
-            if (this.equals(o)) return true;
-            if (o == null || !getClass().equals(o.getClass())) return false;
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
             Tuple tuple = (Tuple) o;
             return name == tuple.name &&
                     camp.equals(tuple.camp);
