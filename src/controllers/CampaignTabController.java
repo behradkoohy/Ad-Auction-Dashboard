@@ -68,15 +68,33 @@ public class CampaignTabController{
      * Initiates the file chooser to choose the click log file
      */
     public void chooseClick(){
+
         FileChooser chooser = new FileChooser();
         clickLog = chooser.showOpenDialog(null);
 
-        if(clickLog.equals(impressionLog) || clickLog.equals(serverLog)){
+        //The file choosing was cancelled so do nothing
+        if(clickLog == null){
+
+            return;
+
+        } else if((impressionLog != null && clickLog.equals(impressionLog)) || (serverLog != null && clickLog.equals(serverLog))){
+
+            this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
+            clickLog = null;
+
+        } else {
+
+            clickLabel.setText(clickLog.getName());
+
+        }
+
+        /*
+        if((impressionLog != null && serverLog != null) && clickLog.equals(impressionLog) || clickLog.equals(serverLog)){
             this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
             clickLog = null;
         }
 
-        clickLabel.setText(clickLog.getName());
+        clickLabel.setText(clickLog.getName());*/
     }
 
     /**
@@ -86,12 +104,29 @@ public class CampaignTabController{
         FileChooser chooser = new FileChooser();
         impressionLog = chooser.showOpenDialog(null);
 
+        //The file choosing was cancelled so do nothing
+        if(impressionLog == null){
+
+            return;
+
+        } else if((clickLog != null && impressionLog.equals(clickLog)) || (serverLog != null && impressionLog.equals(serverLog))){
+
+            this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
+            impressionLog = null;
+
+        } else {
+
+            impressionLabel.setText(impressionLog.getName());
+
+        }
+
+        /*
         if(impressionLog.equals(clickLog) || impressionLog.equals(serverLog)){
             this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
             impressionLog = null;
         }
 
-        impressionLabel.setText(impressionLog.getName());
+        impressionLabel.setText(impressionLog.getName());*/
     }
 
     /**
@@ -101,12 +136,29 @@ public class CampaignTabController{
         FileChooser chooser = new FileChooser();
         serverLog = chooser.showOpenDialog(null);
 
+        //The file choosing was cancelled so do nothing
+        if(serverLog == null){
+
+            return;
+
+        } else if((impressionLog != null && serverLog.equals(impressionLog)) || (clickLog != null && serverLog.equals(clickLog))){
+
+            this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
+            serverLog = null;
+
+        } else {
+
+            serverLabel.setText(serverLog.getName());
+
+        }
+
+        /*
         if(serverLog.equals(clickLog) || serverLog.equals(impressionLog)){
             this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique server log csv file");
             serverLog = null;
         }
 
-        serverLabel.setText(serverLog.getName());
+        serverLabel.setText(serverLog.getName());*/
     }
 
     /**
