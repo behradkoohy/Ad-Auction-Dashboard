@@ -90,14 +90,17 @@ public class Metrics {
     }
 
     public void setBounceTime(Duration duration) {
-        bounceDef = true;
 
+        bounceDef = true;
         bounceTime = duration;
+
     }
 
     public void setBouncePages(int bouncePages) {
+
         bounceDef = false;
         this.bouncePages = bouncePages;
+
     }
 
 

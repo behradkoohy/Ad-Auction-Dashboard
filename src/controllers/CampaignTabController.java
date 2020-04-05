@@ -38,6 +38,7 @@ public class CampaignTabController{
         this.controller = controller;
     }
 
+    @FXML
     public void initialize() {
         // load previous campaigns
         // TODO : change method to use a campaign Entity and DAO

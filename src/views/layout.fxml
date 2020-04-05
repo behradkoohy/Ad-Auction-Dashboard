@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="586.0"
-            prefWidth="932.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.Controller" >
+<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="586.0" prefWidth="932.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
     <top>
         <GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="586.0" prefWidth="911.0" BorderPane.alignment="CENTER">
             <columnConstraints>
@@ -21,7 +27,7 @@
                 <JFXTabPane fx:id="LHS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="586.0" prefWidth="661.0">
                     <tabs>
                         <Tab text="Campaign Management">
-                            <fx:include fx:id="campaignTab"  source="tabs/CampaignTab.fxml" />
+                            <fx:include fx:id="campaignTab" source="tabs/CampaignTab.fxml" />
                         </Tab>
                         <Tab text="Statistics">
                             <fx:include fx:id="statisticsTab" source="tabs/StatisticsTab.fxml" />
@@ -32,6 +38,67 @@
                         <Tab text="Histogram">
                             <fx:include fx:id="histogramTab" source="tabs/HistogramTab.fxml" />
                         </Tab>
+                  <Tab text="Bounces">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <VBox prefHeight="554.0" prefWidth="704.0">
+                                 <children>
+                                    <Label text="Configure the settings of how a bounce is defined:" underline="true">
+                                       <VBox.margin>
+                                          <Insets left="40.0" top="40.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <GridPane>
+                                      <columnConstraints>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="420.0" minWidth="10.0" prefWidth="360.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="308.0" minWidth="10.0" prefWidth="142.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="308.0" minWidth="10.0" prefWidth="125.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <VBox.margin>
+                                          <Insets left="20.0" right="20.0" top="20.0" />
+                                       </VBox.margin>
+                                       <children>
+                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="358.0" text="Minimum number of pages visited to denote no bounce:" GridPane.halignment="CENTER" />
+                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="366.0" text="Minimum duration of visit on site to denote no bounce (minutes):" GridPane.rowIndex="1" />
+                                          <JFXSlider fx:id="bouncePageSlider" blockIncrement="1.0" majorTickUnit="1.0" max="30.0" minorTickCount="1" onMouseReleased="#updateBouncePageLabel" snapToTicks="true" value="2.0" GridPane.columnIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </JFXSlider>
+                                          <JFXSlider fx:id="bounceDurationSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minorTickCount="1" onMouseReleased="#updateBounceDurationLabel" snapToTicks="true" value="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </JFXSlider>
+                                          <Label fx:id="bouncePagesLabel" text="2" GridPane.columnIndex="2">
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding>
+                                          </Label>
+                                          <Label fx:id="bounceDurationLabel" text="2" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                             <padding>
+                                                <Insets left="20.0" />
+                                             </padding>
+                                          </Label>
+                                       </children>
+                                    </GridPane>
+                                    <Label alignment="CENTER" prefHeight="17.0" prefWidth="369.0" text="Any visit below these parameters will be recorded as a bounce.">
+                                       <VBox.margin>
+                                          <Insets left="20.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
                     </tabs>
                 </JFXTabPane>
                 <VBox GridPane.columnIndex="1">

@@ -15,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import models.HistogramModel;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,6 +28,7 @@ import java.util.Random;
 
 
 import controllers.*;
+import models.Metrics;
 
 public class Controller {
     /*
@@ -55,6 +57,15 @@ public class Controller {
     //The number of "units" that will be displayed along the x axis
     public int unitsDifference;
 
+    //BOUNCE CONTROLLER
+    @FXML private Label bouncePagesLabel;
+    @FXML private Label bounceDurationLabel;
+    @FXML private JFXSlider bouncePageSlider;
+    @FXML private JFXSlider bounceDurationSlider;
+    //BOUNCE CONTROLLER
+
+    private Metrics metrics;
+
     @FXML
     /**
      * This method is called when the FXML loader has finished injecting
@@ -69,6 +80,8 @@ public class Controller {
     public void initialize(){
         //TODO dont think this is needed as I can toggle in scene builder, keep here for now
         //lineChart.setAnimated(false);
+
+        metrics = new Metrics();
 
         campaignTabController.init(this);
         statisticsTabController.init(this);
@@ -162,5 +175,23 @@ public class Controller {
         }
 
     }
+
+    //BOUNCE CONTROLLER
+    @FXML
+    public void updateBouncePageLabel(){
+
+        bouncePagesLabel.setText(String.valueOf(Math.round(bouncePageSlider.getValue())));
+        metrics.setBouncePages((int) Math.round(bouncePageSlider.getValue()));
+
+    }
+
+    @FXML
+    public void updateBounceDurationLabel(){
+
+        bounceDurationLabel.setText(String.valueOf(Math.round(bounceDurationSlider.getValue())));
+        metrics.setBounceTime(Duration.ofSeconds(Math.round(bounceDurationSlider.getValue())));
+
+    }
+    //BOUNCE CONTROLLER
 
 }

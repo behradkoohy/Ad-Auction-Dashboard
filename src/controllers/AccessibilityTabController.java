@@ -3,6 +3,7 @@ package controllers;
 import javafx.fxml.FXML;
 
 public class AccessibilityTabController {
+
     private Controller controller;
 
     //Accessibility settings
@@ -10,9 +11,11 @@ public class AccessibilityTabController {
     private boolean largeFontMode;
 
     public void init(Controller controller){
+
         this.controller = controller;
         this.highContrastMode = false;
         this.largeFontMode = false;
+
     }
 
     @FXML
@@ -28,4 +31,5 @@ public class AccessibilityTabController {
         largeFontMode = !largeFontMode;
 
     }
+
 }

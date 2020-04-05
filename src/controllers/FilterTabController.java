@@ -40,6 +40,7 @@ public class FilterTabController {
     public LocalTime tTo;
 
     public void init(Controller controller){
+
         this.controller = controller;
         //Initially the date spinners will be from week ago until now
         LocalDateTime now = LocalDateTime.now();
@@ -62,6 +63,7 @@ public class FilterTabController {
         lowIncome = true;
         medIncome = true;
         highIncome = true;
+
     }
 
     //These toggle methods will be called whenever the checkboxes are ticked/unticked
