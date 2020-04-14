@@ -173,8 +173,8 @@ public class CampaignTabController{
     public void loadNewCampaign(){
         // check that the campaign has a name
         String newCampaignName = campaignName.getText();
-        if( newCampaignName.equals("")){
-            this.controller.error("Please specify a campaign name");
+        if( newCampaignName.trim().equals("")){
+            this.controller.error("Please specify a campaign name, or make sure the campaign name is not empty");
             return;
         }
 
