@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<?import com.jfoenix.controls.JFXButton?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="486.0" prefWidth="233.0"
+            xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.FilterTabController" >
+    <children>
+        <VBox layoutX="-6.0" layoutY="1.0" minHeight="506.0" minWidth="244.0" prefHeight="552.0" prefWidth="250.0" spacing="10.0">
+            <children>
+                <Label fx:id="genderTitle" text="Gender" underline="true">
+                    <padding>
+                        <Insets left="10.0" />
+                    </padding>
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <FlowPane prefHeight="23.0" prefWidth="268.0">
+                    <children>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleMale" selected="true" text="Male     ">
+                            <FlowPane.margin>
+                                <Insets left="10.0" />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleFemale" selected="true" text="Female">
+                            <FlowPane.margin>
+                                <Insets />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets top="5.0" />
+                    </VBox.margin>
+                </FlowPane>
+                <Label fx:id="ageTitle" text="Age Range" underline="true">
+                    <padding>
+                        <Insets left="10.0" />
+                    </padding>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <FlowPane prefHeight="25.0" prefWidth="248.0">
+                    <children>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleLt25" selected="true" text="&lt;25  ">
+                            <FlowPane.margin>
+                                <Insets left="10.0" />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBtwn2534" selected="true" text="25-34">
+                            <FlowPane.margin>
+                                <Insets left="10.0" />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBtwn3544" selected="true" text="35 - 44">
+                            <FlowPane.margin>
+                                <Insets left="10.0" />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </FlowPane>
+                <FlowPane prefHeight="25.0" prefWidth="248.0">
+                    <children>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBtwn4554" selected="true" text="45 - 54">
+                            <FlowPane.margin>
+                                <Insets left="10.0" />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleGt55" selected="true" text="&gt;54">
+                            <FlowPane.margin>
+                                <Insets left="10.0" />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                    </children>
+                </FlowPane>
+                <Label fx:id="incomeTitle" text="Income Range" underline="true">
+                    <padding>
+                        <Insets left="10.0" />
+                    </padding>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <FlowPane prefHeight="26.0" prefWidth="248.0">
+                    <children>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleLow" selected="true" text="Low">
+                            <FlowPane.margin>
+                                <Insets left="10.0" />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleMed" selected="true" text="Medium">
+                            <FlowPane.margin>
+                                <Insets left="10.0" />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleHigh" selected="true" text="High">
+                            <FlowPane.margin>
+                                <Insets left="10.0" />
+                            </FlowPane.margin>
+                        </JFXCheckBox>
+                    </children>
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </FlowPane>
+                <JFXDatePicker fx:id="dFromPicker" onAction="#updateDFrom" promptText="Date From">
+                    <VBox.margin>
+                        <Insets left="10.0" top="10.0" />
+                    </VBox.margin>
+                </JFXDatePicker>
+                <JFXDatePicker fx:id="dToPicker" onAction="#updateDTo" promptText="Date To">
+                    <VBox.margin>
+                        <Insets left="10.0" />
+                    </VBox.margin>
+                </JFXDatePicker>
+                <JFXTimePicker fx:id="timeFromPicker" onAction="#updateTFrom" promptText="Time From">
+                    <VBox.margin>
+                        <Insets left="10.0" />
+                    </VBox.margin>
+                </JFXTimePicker>
+                <JFXTimePicker fx:id="timeToPicker" onAction="#updateTTo" promptText="Time To">
+                    <VBox.margin>
+                        <Insets left="10.0" />
+                    </VBox.margin>
+                </JFXTimePicker>
+                <JFXButton style="-fx-background-color: #9575cd#9575cd;" text="RELOAD DATA" textFill="WHITE">
+                    <VBox.margin>
+                        <Insets left="10.0" top="30.0" />
+                    </VBox.margin>
+                </JFXButton>
+            </children>
+            <padding>
+                <Insets left="10.0" />
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>

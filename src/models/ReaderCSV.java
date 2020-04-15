@@ -2,6 +2,7 @@ package models;
 
 
 import daos.ClickDao;
+import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import entities.Click;
@@ -35,11 +36,11 @@ public class ReaderCSV {
 		try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
 			String line = br.readLine();
 			if (line.equals(CLICK_LOG_HEADER)){
-				readClickCSV(br, campaignName);
+				readClickCSV(br, campaignName, DaoInjector.newClickDao());
 			} else if (line.equals(SERVER_LOG_HEADER)){
-				readServerEntryCSV(br, campaignName);
+				readServerEntryCSV(br, campaignName, DaoInjector.newServerEntryDao());
 			} else if (line.equals(IMPRESSION_LOG_HEADER)){
-				readImpressionCSV(br, campaignName);
+				readImpressionCSV(br, campaignName, DaoInjector.newImpressionDao());
 			} else {
 				// throws some error message
 			}
@@ -48,9 +49,8 @@ public class ReaderCSV {
         }
 	}
 
-	private static void readClickCSV(BufferedReader br, String campaignName) {
+	private static void readClickCSV(BufferedReader br, String campaignName, ClickDao clickDao) {
 		try {
-			ClickDao clickDao = new ClickDao();
 			List<Click> clicksToAdd = new ArrayList<>();
 			int clickIdentifer = clickDao.getMaxIdentifier();
 
@@ -75,9 +75,8 @@ public class ReaderCSV {
 		}
 	}
 
-	private static void readImpressionCSV(BufferedReader br, String campaignName) {
+	private static void readImpressionCSV(BufferedReader br, String campaignName, ImpressionDao impressionDao) {
 		try {
-			ImpressionDao impressionDao = new ImpressionDao();
 			List<Impression> impressionsToAdd = new ArrayList<>();
 			int impressionIdentifier = impressionDao.getMaxIdentifier();
 
@@ -107,9 +106,8 @@ public class ReaderCSV {
 		}
 	}
 
-	private static void readServerEntryCSV(BufferedReader br, String campaignName) {
+	private static void readServerEntryCSV(BufferedReader br, String campaignName, ServerEntryDao serverEntryDao) {
 		try {
-			ServerEntryDao serverEntryDao = new ServerEntryDao();
 			List<ServerEntry> serverEntriesToAdd = new ArrayList<>();
 			int serverEntryIdentifier = serverEntryDao.getMaxIdentifier();
 
