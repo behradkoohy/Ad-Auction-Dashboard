@@ -2,6 +2,8 @@ package models;
 
 import javafx.scene.chart.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 
@@ -37,14 +39,22 @@ public class ChartHandler {
     private boolean CPM;
     private boolean bounceRate;
 
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private Duration duration;
+
+    private String campaignName;
+    private Metrics metricsModel;
     //TODO remove this it is just for testing
     private Random r;
 
-    public ChartHandler(LineChart chart, CategoryAxis xAxis, NumberAxis yAxis, String metric,
+    public ChartHandler(String campaignName, LineChart chart, CategoryAxis xAxis, NumberAxis yAxis, String metric,
                         List<Integer> data, int unitDifference, boolean impressions, boolean conversions,
                         boolean clicks, boolean unique, boolean bounces, boolean totalCost, boolean CTR,
-                        boolean CPA, boolean CPC, boolean CPM, boolean bounceRate){
+                        boolean CPA, boolean CPC, boolean CPM, boolean bounceRate,
+                        LocalDateTime start, LocalDateTime end, Duration duration){
 
+        this.campaignName = campaignName;
         this.chart = chart;
         this.xAxis = xAxis;
         this.yAxis = yAxis;
@@ -64,6 +74,12 @@ public class ChartHandler {
         this.CPM = CPM;
         this.bounceRate = bounceRate;
 
+        this.start = start;
+        this.end = end;
+        this.duration = duration;
+
+        this.metricsModel = new Metrics();
+        this.metricsModel.setCampaign(campaignName);
         r = new Random();
 
         //TODO remove
@@ -167,14 +183,7 @@ public class ChartHandler {
     */
     private void addImpressions(){
 
-        XYChart.Series series = new XYChart.Series();
-        series.setName("Impressions");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getImpressionsPerTime(start, end, duration);
 
         chart.getData().add(series);
 
@@ -182,14 +191,7 @@ public class ChartHandler {
 
     private void addConversions(){
 
-        XYChart.Series series = new XYChart.Series();
-        series.setName("Conversions");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getConversionsPerTime(start, end, duration);
 
         chart.getData().add(series);
 
@@ -197,14 +199,7 @@ public class ChartHandler {
 
     private void addClicks(){
 
-        XYChart.Series series = new XYChart.Series();
-        series.setName("Clicks");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getClicksPerTime(start, end, duration);
 
         chart.getData().add(series);
 
@@ -212,14 +207,7 @@ public class ChartHandler {
 
     private void addUniques(){
 
-        XYChart.Series series = new XYChart.Series();
-        series.setName("Unique users");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getUniquesPerTime(start, end, duration);
 
         chart.getData().add(series);
 
@@ -227,14 +215,7 @@ public class ChartHandler {
 
     private void addBounces(){
 
-        XYChart.Series series = new XYChart.Series();
-        series.setName("Bounces");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getBouncesPerTime(start, end, duration);
 
         chart.getData().add(series);
 
@@ -242,66 +223,31 @@ public class ChartHandler {
 
 
     private void addCTR(){
-        XYChart.Series series = new XYChart.Series();
-        series.setName("CTR");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getCTRPerTime(start, end, duration);
 
         chart.getData().add(series);
     }
 
     private void addCPA(){
-        XYChart.Series series = new XYChart.Series();
-        series.setName("CPA");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getCPAPerTime(start, end, duration);
 
         chart.getData().add(series);
     }
 
     private void addCPC(){
-        XYChart.Series series = new XYChart.Series();
-        series.setName("CPC");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getCPCPerTime(start, end, duration);
 
         chart.getData().add(series);
     }
 
     private void addCPM(){
-        XYChart.Series series = new XYChart.Series();
-        series.setName("CPM");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getCPMPerTime(start, end, duration);
 
         chart.getData().add(series);
     }
 
     private void addBounceRate(){
-        XYChart.Series series = new XYChart.Series();
-        series.setName("Bounce Rate");
-
-        for(int x = 1; x <= unitDifference; x++){
-
-            series.getData().add(new XYChart.Data(String.valueOf(x), r.nextInt(100)));
-
-        }
+        XYChart.Series series = metricsModel.getBouncePerTime(start, end, duration);
 
         chart.getData().add(series);
     }

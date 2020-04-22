@@ -125,6 +125,8 @@ public class Controller {
         graphsTabController.loadData(campaignName);
     }
 
+
+
     /**
      * Used by the campaign manager to go to next page after loading/creating a campaign
      */
@@ -174,6 +176,25 @@ public class Controller {
 
         }
 
+    }
+
+    /**
+     *
+     * @return gives current start date
+     */
+    public LocalDateTime getStart(){
+        LocalDateTime before = LocalDateTime.of(filterTabController.dFrom, filterTabController.tFrom);
+        return before;
+
+    }
+
+    /**
+     *
+     * @return gives current end date
+     */
+    public LocalDateTime getEnd(){
+        LocalDateTime after = LocalDateTime.of(filterTabController.dTo, filterTabController.tTo);
+        return after;
     }
 
     //BOUNCE CONTROLLER
