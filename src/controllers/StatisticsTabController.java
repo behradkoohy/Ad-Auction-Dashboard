@@ -13,6 +13,7 @@ import models.PieChartModel;
 
 
 public class StatisticsTabController{
+
     private Controller controller;
     private Metrics metricsModel;
     private PieChartModel pieChartModel;
@@ -39,7 +40,10 @@ public class StatisticsTabController{
         this.metricsModel = new Metrics();
     }
 
-    public void initialize(){
+    public void initialize(Metrics metricsModel){
+
+        this.metricsModel = metricsModel;
+
         //Setting up the look of the pie charts
         genderPie.setTitle("Gender");
         genderPie.setLegendVisible(false);
