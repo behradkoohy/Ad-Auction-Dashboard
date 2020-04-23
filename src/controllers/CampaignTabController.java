@@ -197,6 +197,11 @@ public class CampaignTabController{
             try {
                 if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {
                     readerService.shutdownNow();
+                    controller.error("The CSV reader timed out! Please try again");
+                } else {
+
+                    controller.success("CSV files successfully loaded");
+
                 }
             } catch (InterruptedException ex) {
                 readerService.shutdownNow();
