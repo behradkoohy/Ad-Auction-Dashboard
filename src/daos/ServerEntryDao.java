@@ -61,7 +61,6 @@ public class ServerEntryDao {
 
     public List<ServerEntry> getFromCampaign(String campaign) {
         if(campaignCache.containsKey(campaign)) {
-            System.out.println("ServerEntryDao - Woo hit normal cache");
             return campaignCache.get(campaign);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -76,7 +75,6 @@ public class ServerEntryDao {
     public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
         String key = campaign + startDate.toString() + endDate.toString();
         if(campaignDateCache.containsKey(key)) {
-            System.out.println("ServerEntryDao - hit date cache");
             return campaignDateCache.get(key);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {

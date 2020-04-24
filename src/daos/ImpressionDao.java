@@ -61,7 +61,6 @@ public class ImpressionDao {
 
     public List<Impression> getFromCampaign(String campaign) {
         if (campaignCache.containsKey(campaign)) {
-            System.out.println("ImpressionDao - hit normal cache");
             return campaignCache.get(campaign);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -76,7 +75,6 @@ public class ImpressionDao {
     public List<Impression> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
         String key = campaign + startDate.toString() + endDate.toString();
         if(campaignDateCache.containsKey(key)) {
-            System.out.println("ImpressionDao - hit date cache");
             return campaignDateCache.get(key);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
