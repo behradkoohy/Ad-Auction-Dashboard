@@ -176,4 +176,18 @@ public class FilterTabController {
         tTo = timeToPicker.getValue();
 
     }
+
+    public void setDateTimeFrom(LocalDateTime from) {
+        dFromPicker.setValue(from.toLocalDate());
+        timeFromPicker.setValue(from.toLocalTime());
+        this.updateDFrom();
+        this.updateTFrom();
+    }
+
+    public void setDateTimeTo(LocalDateTime to) {
+        dToPicker.setValue(to.toLocalDate());
+        timeToPicker.setValue(to.toLocalTime());
+        this.updateDTo();
+        this.updateTTo();
+    }
 }

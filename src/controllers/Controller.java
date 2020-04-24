@@ -1,34 +1,24 @@
 package controllers;
 
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXSlider;
+import com.jfoenix.controls.JFXTabPane;
 import daos.ClickDao;
+import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
-import entities.Impression;
 import javafx.fxml.FXML;
-import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import models.HistogramModel;
+import models.Metrics;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-
-
-import controllers.*;
-import models.Metrics;
+import java.util.Collections;
 
 public class Controller {
     /*
@@ -65,6 +55,11 @@ public class Controller {
     //BOUNCE CONTROLLER
 
     private Metrics metrics;
+
+    //Should I do this - or put in in campaign tab controller???
+    ClickDao clickDao = DaoInjector.newClickDao();
+    ImpressionDao impressionDao = DaoInjector.newImpressionDao();
+    ServerEntryDao serverEntryDao = DaoInjector.newServerEntryDao();
 
     @FXML
     /**
@@ -120,12 +115,31 @@ public class Controller {
      *
      * */
     public void loadCampaignData(String campaignName){
+        filterTabController.setDateTimeFrom(getFromDateForCampaign(campaignName));
+        filterTabController.setDateTimeTo(getToDateForCampaign(campaignName));
         statisticsTabController.loadData(campaignName);
         histogramTabController.loadData(campaignName);
         graphsTabController.loadData(campaignName);
     }
 
 
+    public LocalDateTime getFromDateForCampaign(String campaignName) {
+        ArrayList<LocalDateTime> mins = new ArrayList<>();
+        mins.add(clickDao.getMinDateFromCampaign(campaignName));
+        mins.add(impressionDao.getMinDateFromCampaign(campaignName));
+        mins.add(serverEntryDao.getMinDateFromCampaign(campaignName));
+        Collections.sort(mins);
+        return mins.get(0);
+    }
+
+    public LocalDateTime getToDateForCampaign(String campaignName) {
+        ArrayList<LocalDateTime> maxs = new ArrayList<>();
+        maxs.add(clickDao.getMaxDateFromCampaign(campaignName));
+        maxs.add(impressionDao.getMaxDateFromCampaign(campaignName));
+        maxs.add(serverEntryDao.getMaxDateFromCampaign(campaignName));
+        Collections.sort(maxs);
+        return maxs.get(maxs.size() - 1);
+    }
 
     /**
      * Used by the campaign manager to go to next page after loading/creating a campaign
