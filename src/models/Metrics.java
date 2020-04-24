@@ -368,8 +368,7 @@ public class Metrics {
         return clicks;
     }
 
-
-    //TODO does the same as clicks, needs to be fixed
+    
     public XYChart.Series getUniquesPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
