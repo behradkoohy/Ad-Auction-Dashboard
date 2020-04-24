@@ -92,6 +92,22 @@ public class ImpressionDao {
         }
     }
 
+    public LocalDateTime getMaxDateFromCampaign(String campaign) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            LocalDateTime maxDate = session.createQuery("select max(i.date) from Impression i where campaign=:campaign"
+                    , LocalDateTime.class).setParameter("campaign", campaign).uniqueResult();
+            return maxDate;
+        }
+    }
+
+    public LocalDateTime getMinDateFromCampaign(String campaign) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            LocalDateTime maxDate = session.createQuery("select min(i.date) from Impression i where campaign=:campaign"
+                    , LocalDateTime.class).setParameter("campaign", campaign).uniqueResult();
+            return maxDate;
+        }
+    }
+
     public int getMaxIdentifier() {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
             List max = session.createQuery("select MAX(identifier) from Impression ").list();

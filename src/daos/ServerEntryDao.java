@@ -92,6 +92,22 @@ public class ServerEntryDao {
         }
     }
 
+    public LocalDateTime getMaxDateFromCampaign(String campaign) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            LocalDateTime maxDate = session.createQuery("select max(s.exitDate) from ServerEntry s where campaign=:campaign"
+                    , LocalDateTime.class).setParameter("campaign", campaign).uniqueResult();
+            return maxDate;
+        }
+    }
+
+    public LocalDateTime getMinDateFromCampaign(String campaign) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            LocalDateTime maxDate = session.createQuery("select min(s.entryDate) from ServerEntry s where campaign=:campaign"
+                    , LocalDateTime.class).setParameter("campaign", campaign).uniqueResult();
+            return maxDate;
+        }
+    }
+
     public int getMaxIdentifier() {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
             List max = session.createQuery("select MAX(identifier) from ServerEntry").list();
