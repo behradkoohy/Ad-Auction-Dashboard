@@ -1,6 +1,7 @@
 package daos;
 
 import entities.ServerEntry;
+import entities.User;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -8,26 +9,14 @@ import org.hibernate.Transaction;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class ServerEntryDao {
 
     private HashMap<String, List<ServerEntry>> campaignCache = new HashMap<>();
     private HashMap<String, List<ServerEntry>> campaignDateCache = new HashMap<>();
-
-    public void save(ServerEntry serverEntry) {
-        Transaction transaction = null;
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.save(serverEntry);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
-    }
 
     public void save(List<ServerEntry> serverEntries) {
         //TODO currently hacky cache when new load campaign - can't technically be sure all entities are from same campaign
@@ -53,11 +42,6 @@ public class ServerEntryDao {
         }
     }
 
-    public List<ServerEntry> getAll() {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from ServerEntry", ServerEntry.class).list();
-        }
-    }
 
     public List<ServerEntry> getFromCampaign(String campaign) {
         if(campaignCache.containsKey(campaign)) {
@@ -66,29 +50,28 @@ public class ServerEntryDao {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
                 List<ServerEntry> serverEntries = session.createQuery("from ServerEntry where campaign=:campaign"
                         , ServerEntry.class).setParameter("campaign", campaign).list();
-                campaignCache.put(campaign, serverEntries);
-                return serverEntries;
+
+                List<User> users = DaoInjector.newImpressionDao().getUsersFromCampaign(campaign);
+                Map<Long, User> usersById = users.stream().collect(Collectors.toMap(User::getId, k -> k));
+                List<ServerEntry> results = serverEntries.stream().map(serverEntry -> new ServerEntry(serverEntry, usersById.get(serverEntry.getId()))).collect(Collectors.toList());
+
+                campaignCache.put(campaign, results);
+                return results;
             }
         }
     }
 
     public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
-        String key = campaign + startDate.toString() + endDate.toString();
-        if(campaignDateCache.containsKey(key)) {
-            return campaignDateCache.get(key);
-        } else {
-            try (Session session = SessionHandler.getSessionFactory().openSession()) {
-                List<ServerEntry> serverEntries = session.createQuery("from ServerEntry where campaign=:campaign and entryDate between :startDate and :endDate"
-                        , ServerEntry.class)
-                        .setParameter("campaign", campaign)
-                        .setParameter("startDate", startDate)
-                        .setParameter("endDate", endDate)
-                        .list();
-                campaignDateCache.put(key, serverEntries);
-                return serverEntries;
-            }
-        }
+        List<ServerEntry> serverEntries = this.getFromCampaign(campaign);
+
+        List<ServerEntry> serverEntriesByDate = serverEntries
+                .stream()
+                .filter(c -> c.getEntryDate().isBefore(endDate) && c.getEntryDate().isAfter(startDate.minusSeconds(1)))
+                .collect(Collectors.toList());
+
+        return serverEntries;
     }
+
 
     public LocalDateTime getMaxDateFromCampaign(String campaign) {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -116,5 +99,26 @@ public class ServerEntryDao {
             }
         }
     }
+
+    //DEPRECATED - use stream filter now
+    /*
+    public List<ServerEntry> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
+        String key = campaign + startDate.toString() + endDate.toString();
+        if(campaignDateCache.containsKey(key)) {
+            return campaignDateCache.get(key);
+        } else {
+            try (Session session = SessionHandler.getSessionFactory().openSession()) {
+                List<ServerEntry> serverEntries = session.createQuery("from ServerEntry where campaign=:campaign and entryDate between :startDate and :endDate"
+                        , ServerEntry.class)
+                        .setParameter("campaign", campaign)
+                        .setParameter("startDate", startDate)
+                        .setParameter("endDate", endDate)
+                        .list();
+                campaignDateCache.put(key, serverEntries);
+                return serverEntries;
+            }
+        }
+    }
+     */
 
 }

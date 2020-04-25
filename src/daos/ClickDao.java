@@ -1,6 +1,7 @@
 package daos;
 
 import entities.Click;
+import entities.User;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -8,31 +9,19 @@ import org.hibernate.Transaction;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class ClickDao {
     private HashMap<String, List<Click>> campaignCache = new HashMap<>();
     private HashMap<String, List<Click>> campaignDateCache = new HashMap<>();
 
-    public void save(Click click) {
-        Transaction transaction = null;
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.save(click);
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            e.printStackTrace();
-        }
-    }
-
     public void save(List<Click> clicks) {
         //TODO currently hacky cache when new load campaign - can't technically be sure all entities are from same campaign
         //Fine for now as we only save a list of entities from a single campaign
         //Get campaign name from first entity then cache
-        campaignCache.put(clicks.get(0).getCampaign(), clicks);
+        //campaignCache.put(clicks.get(0).getCampaign(), clicks);
         Transaction transaction = null;
         try (StatelessSession session = SessionHandler.getSessionFactory().openStatelessSession()) {
             transaction = session.beginTransaction();
@@ -52,12 +41,6 @@ public class ClickDao {
         }
     }
 
-    public List<Click> getAll() {
-        try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            return session.createQuery("from Click", Click.class).list();
-        }
-    }
-
     public List<Click> getFromCampaign(String campaign) {
         if(campaignCache.containsKey(campaign)) {
             return campaignCache.get(campaign);
@@ -65,28 +48,26 @@ public class ClickDao {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
                 List<Click> clicks = session.createQuery("from Click where campaign=:campaign"
                         , Click.class).setParameter("campaign", campaign).list();
-                campaignCache.put(campaign, clicks);
-                return clicks;
+
+                List<User> users = DaoInjector.newImpressionDao().getUsersFromCampaign(campaign);
+                Map<Long, User> usersById = users.stream().collect(Collectors.toMap(User::getId, k -> k));
+                List<Click> results = clicks.stream().map(click -> new Click(click, usersById.get(click.getId()))).collect(Collectors.toList());
+
+                campaignCache.put(campaign, results);
+                return results;
             }
         }
     }
 
-    public List<Click> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate){
-        String key = campaign + startDate.toString() + endDate.toString();
-        if(campaignDateCache.containsKey(key)) {
-            return campaignDateCache.get(key);
-        } else {
-            try (Session session = SessionHandler.getSessionFactory().openSession()) {
-                List<Click> clicks = session.createQuery("from Click where campaign=:campaign and date between :startDate and :endDate"
-                        , Click.class)
-                        .setParameter("campaign", campaign)
-                        .setParameter("startDate", startDate)
-                        .setParameter("endDate", endDate)
-                        .list();
-                campaignDateCache.put(key, clicks);
-                return clicks;
-            }
-        }
+    public List<Click> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Click> clicks = this.getFromCampaign(campaign);
+
+        List<Click> clicksByDate = clicks
+                .stream()
+                .filter(c -> c.getDate().isBefore(endDate) && c.getDate().isAfter(startDate.minusSeconds(1)))
+                .collect(Collectors.toList());
+
+        return clicksByDate;
     }
 
     public LocalDateTime getMaxDateFromCampaign(String campaign) {
@@ -122,5 +103,34 @@ public class ClickDao {
             return session.createQuery("select distinct campaign from Click ", String.class).list();
         }
     }
+
+    //DEPRECATED - use local stream filter now
+    /*
+    public List<Click> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
+        String key = campaign + startDate.toString() + endDate.toString();
+        if(campaignDateCache.containsKey(key)) {
+            System.out.println("hit cache");
+            return campaignDateCache.get(key);
+        } else {
+            System.out.println("no hit cache");
+            try (Session session = SessionHandler.getSessionFactory().openSession()) {
+                List<Click> clicks = session.createQuery("from Click where campaign=:campaign and date between :startDate and :endDate"
+                        , Click.class)
+                        .setParameter("campaign", campaign)
+                        .setParameter("startDate", startDate)
+                        .setParameter("endDate", endDate)
+                        .list();
+
+                List<User> users = DaoInjector.newImpressionDao().getUsersFromCampaign(campaign);
+
+                Map<Long, User> usersById = users.stream().collect(Collectors.toMap(User::getId, k -> k));
+                List<Click> results = clicks.stream().map(click -> new Click(click, usersById.get(click.getId()))).collect(Collectors.toList());
+
+                campaignDateCache.put(key, results);
+                return clicks;
+            }
+        }
+    }
+     */
 
 }
