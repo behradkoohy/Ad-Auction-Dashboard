@@ -6,6 +6,7 @@ import daos.ClickDao;
 import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
+import com.jfoenix.controls.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -19,6 +20,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+
+
+import models.Metrics;
 
 public class Controller {
     /*
@@ -36,6 +40,7 @@ public class Controller {
     @FXML AnchorPane graphsTab;
     @FXML AnchorPane filterTab;
     @FXML AnchorPane accessibilityTab;
+    @FXML AnchorPane printTab;
 
     @FXML private CampaignTabController campaignTabController;
     @FXML private StatisticsTabController statisticsTabController;
@@ -43,6 +48,7 @@ public class Controller {
     @FXML private GraphsTabController graphsTabController;
     @FXML private FilterTabController filterTabController;
     @FXML private AccessibilityTabController accessibilityTabController;
+    @FXML private PrintTabController printTabController;
 
     //The number of "units" that will be displayed along the x axis
     public int unitsDifference;
@@ -86,6 +92,7 @@ public class Controller {
         graphsTabController.init(this);
         filterTabController.init(this);
         accessibilityTabController.init(this);
+        printTabController.init(this);
 
     }
 
@@ -238,5 +245,9 @@ public class Controller {
 
     }
     //BOUNCE CONTROLLER
+
+    public JFXTabPane getLHS(){
+        return this.LHS;
+    }
 
 }
