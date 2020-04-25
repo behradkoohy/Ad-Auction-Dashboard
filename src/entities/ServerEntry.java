@@ -22,6 +22,17 @@ public class ServerEntry implements Serializable {
         this.pageViews = pageViews;
         this.conversion = conversion;
     }
+    public ServerEntry(ServerEntry serverEntry, User user) {
+        this.identifier = serverEntry.getIdentifier();
+        this.campaign = serverEntry.getCampaign();
+        this.entryDate = serverEntry.getEntryDate();
+        this.id = serverEntry.getId();
+        this.exitDate = serverEntry.getExitDate();
+        this.pageViews = serverEntry.getPageViews();
+        this.conversion = serverEntry.getConversion();
+        this.user = user;
+    }
+
 
     @Id
     @Column
@@ -45,6 +56,9 @@ public class ServerEntry implements Serializable {
     @Column
     private boolean conversion;
 
+    @Transient
+    private User user;
+
     public int getIdentifier() {
         return identifier;
     }
@@ -62,5 +76,19 @@ public class ServerEntry implements Serializable {
     public int getPageViews() { return pageViews; }
 
     public boolean getConversion() { return conversion; }
+
+    public User getUser() { return user; }
+
+    //For testing
+    public void print() {
+        System.out.println("Identifier: " + identifier);
+        System.out.println("Campaign: " + campaign );
+        System.out.println("ID: " + id);
+        System.out.println("Entry Date: " + entryDate);
+        System.out.println("Exit Date: " + exitDate);
+        System.out.println("Page Views: " + pageViews);
+        System.out.println("Conversion: " + conversion);
+        user.print();
+    }
 
 }

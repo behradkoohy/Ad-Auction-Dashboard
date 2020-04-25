@@ -1,6 +1,9 @@
 package entities;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -8,39 +11,12 @@ import java.time.LocalDateTime;
 @Table(name = "Impression")
 public class Impression implements Serializable {
 
-    //DON'T CHANGE ORDER OF ENUMS
-    public enum Income {
-        LOW, //0
-        MEDIUM, //1
-        HIGH, //2
-    }
-
-    public enum Age  {
-        LESS25, //0
-        FROM25TO34, //1
-        FROM35TO44, //2
-        FROM45TO54, //3
-        OVER54 //4
-    }
-
-    public enum Context {
-        BLOG, //0
-        NEWS, //1
-        SOCIALMEDIA, //2
-        SHOPPING //3
-    }
-
-    public enum Gender {
-        MALE, //0
-        FEMALE //1
-    }
-
     public Impression() {
 
     }
 
-    public Impression(int identifier, String campaign, LocalDateTime date, long id, Gender gender, Age age,
-                      Income income, Context context, double impressionCost) {
+    public Impression(int identifier, String campaign, LocalDateTime date, long id, User.Gender gender, User.Age age,
+                      User.Income income, User.Context context, double impressionCost) {
         this.identifier = identifier;
         this.campaign = campaign;
         this.date = date;
@@ -66,16 +42,16 @@ public class Impression implements Serializable {
     private long id;
 
     @Column
-    private Gender gender;
+    private User.Gender gender;
 
     @Column
-    private Age age;
+    private User.Age age;
 
     @Column
-    private Income income;
+    private User.Income income;
 
     @Column
-    private Context context;
+    private User.Context context;
 
     @Column
     private double impressionCost;
@@ -94,13 +70,13 @@ public class Impression implements Serializable {
         return id;
     }
 
-    public Gender getGender() { return gender; }
+    public User.Gender getGender() { return gender; }
 
-    public Age getAge() { return age; }
+    public User.Age getAge() { return age; }
 
-    public Income getIncome() { return income; }
+    public User.Income getIncome() { return income; }
 
-    public Context getContext() { return  context; }
+    public User.Context getContext() { return  context; }
 
     public double getImpressionCost() { return impressionCost; }
 

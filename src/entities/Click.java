@@ -20,6 +20,15 @@ public class Click implements Serializable {
         this.clickCost = clickCost;
     }
 
+    public Click(Click click, User user) {
+        this.identifier = click.getIdentifier();
+        this.campaign = click.getCampaign();
+        this.id = click.getId();
+        this.date = click.getDate();
+        this.clickCost = click.getClickCost();
+        this.user = user;
+    }
+
     @Id
     @Column
     private int identifier;
@@ -35,6 +44,9 @@ public class Click implements Serializable {
 
     @Column
     private double clickCost;
+
+    @Transient
+    private User user;
 
     public int getIdentifier() {
         return identifier;
@@ -52,6 +64,9 @@ public class Click implements Serializable {
         return clickCost;
     }
 
+    public User getUser() { return user; }
+
+
     //For testing
     public void print() {
         System.out.println("Identifier: " + identifier);
@@ -59,5 +74,6 @@ public class Click implements Serializable {
         System.out.println("ID: " + id);
         System.out.println("Date: " + date);
         System.out.println("Click cost: " + clickCost);
+        user.print();
     }
 }
