@@ -61,7 +61,6 @@ public class ImpressionDao {
 
     public List<Impression> getFromCampaign(String campaign) {
         if (campaignCache.containsKey(campaign)) {
-            System.out.println("ImpressionDao - hit normal cache");
             return campaignCache.get(campaign);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -76,7 +75,6 @@ public class ImpressionDao {
     public List<Impression> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate) {
         String key = campaign + startDate.toString() + endDate.toString();
         if(campaignDateCache.containsKey(key)) {
-            System.out.println("ImpressionDao - hit date cache");
             return campaignDateCache.get(key);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -89,6 +87,22 @@ public class ImpressionDao {
                 campaignDateCache.put(key, impressions);
                 return impressions;
             }
+        }
+    }
+
+    public LocalDateTime getMaxDateFromCampaign(String campaign) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            LocalDateTime maxDate = session.createQuery("select max(i.date) from Impression i where campaign=:campaign"
+                    , LocalDateTime.class).setParameter("campaign", campaign).uniqueResult();
+            return maxDate;
+        }
+    }
+
+    public LocalDateTime getMinDateFromCampaign(String campaign) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            LocalDateTime maxDate = session.createQuery("select min(i.date) from Impression i where campaign=:campaign"
+                    , LocalDateTime.class).setParameter("campaign", campaign).uniqueResult();
+            return maxDate;
         }
     }
 

@@ -60,7 +60,6 @@ public class ClickDao {
 
     public List<Click> getFromCampaign(String campaign) {
         if(campaignCache.containsKey(campaign)) {
-            System.out.println("ClickDao - hit normal cache");
             return campaignCache.get(campaign);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -75,7 +74,6 @@ public class ClickDao {
     public List<Click> getByDateAndCampaign(String campaign, LocalDateTime startDate, LocalDateTime endDate){
         String key = campaign + startDate.toString() + endDate.toString();
         if(campaignDateCache.containsKey(key)) {
-            System.out.println("ClickDao - hit date cache");
             return campaignDateCache.get(key);
         } else {
             try (Session session = SessionHandler.getSessionFactory().openSession()) {
@@ -88,6 +86,22 @@ public class ClickDao {
                 campaignDateCache.put(key, clicks);
                 return clicks;
             }
+        }
+    }
+
+    public LocalDateTime getMaxDateFromCampaign(String campaign) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            LocalDateTime maxDate = session.createQuery("select max(c.date) from Click c where campaign=:campaign"
+                    , LocalDateTime.class).setParameter("campaign", campaign).uniqueResult();
+            return maxDate;
+        }
+    }
+
+    public LocalDateTime getMinDateFromCampaign(String campaign) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            LocalDateTime maxDate = session.createQuery("select min(c.date) from Click c where campaign=:campaign"
+                    , LocalDateTime.class).setParameter("campaign", campaign).uniqueResult();
+            return maxDate;
         }
     }
 

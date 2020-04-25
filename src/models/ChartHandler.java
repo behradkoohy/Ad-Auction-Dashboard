@@ -49,7 +49,8 @@ public class ChartHandler {
     private Random r;
 
     public ChartHandler(String campaignName, LineChart chart, CategoryAxis xAxis, NumberAxis yAxis, String metric,
-                        List<Integer> data, int unitDifference, boolean impressions, boolean conversions,
+                        List<Integer> data, int unitDifference,
+                        boolean impressions, boolean conversions,
                         boolean clicks, boolean unique, boolean bounces, boolean totalCost, boolean CTR,
                         boolean CPA, boolean CPC, boolean CPM, boolean bounceRate,
                         LocalDateTime start, LocalDateTime end, Duration duration){
@@ -82,11 +83,7 @@ public class ChartHandler {
         this.metricsModel.setCampaign(campaignName);
         r = new Random();
 
-        //TODO remove
-        System.out.println("unit difference is: " + unitDifference);
-
         this.init();
-
     }
 
     /**

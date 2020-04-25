@@ -39,6 +39,7 @@ public class GraphsTabController {
     private List<String> campaigns = new ArrayList<String>(4);
 
     public void init(Controller controller){
+        lineChart.setAnimated(false);
         this.controller = controller;
         //Initial state of checkboxes below the chart
         impressions = true;
@@ -160,12 +161,10 @@ public class GraphsTabController {
         //TODO let user decide granularity
         this.duration = Duration.between(start, end).dividedBy(10);
         for (String campaignName : campaigns) {
-            ChartHandler handler = new ChartHandler(campaignName, lineChart, lineChartXAxis,
-                    lineChartYAxis, this.controller.calcMetric(), this.data, this.controller.unitsDifference, impressions,
-                    conversions, clicks, uniqueUsers, bounces, totalCostB, CTRB, CPAB,
-                    CPCB, CPMB, bounceRateB, start, end, duration);
+            new ChartHandler(campaignName, lineChart, lineChartXAxis, lineChartYAxis, this.controller.calcMetric(),
+                            this.data, this.controller.unitsDifference, impressions, conversions, clicks, uniqueUsers,
+                            bounces, totalCostB, CTRB, CPAB, CPCB, CPMB, bounceRateB, start, end, duration);
         }
-
     }
 
 }

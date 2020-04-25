@@ -4,20 +4,25 @@ import daos.DaoInjector;
 import daos.ImpressionDao;
 import entities.Impression;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
 
 public class PieChartModel {
     private String campaign = null;
+    private LocalDateTime start;
+    private LocalDateTime end;
     private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
 
     public void setCampaign(String campaign) {
         this.campaign = campaign;
     }
+    public void setStart(LocalDateTime start) { this.start = start; }
+    public void setEnd(LocalDateTime end) { this.end = end; }
 
     public HashMap<String, Integer> getDistributions() {
-        List<Impression> impressions = this.impressionDao.getFromCampaign(campaign);
+        List<Impression> impressions = this.impressionDao. getByDateAndCampaign(campaign, start, end);
         int nrImpressions = impressions.size();
         HashMap<String, Integer> distr = new HashMap<String, Integer>();
 

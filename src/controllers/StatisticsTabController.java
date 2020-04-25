@@ -1,15 +1,12 @@
 package controllers;
-import java.util.HashMap;
-import java.util.List;
 
-import entities.Impression;
 import javafx.fxml.FXML;
-import javafx.scene.chart.*;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Label;
-
-
 import models.Metrics;
 import models.PieChartModel;
+
+import java.util.HashMap;
 
 
 public class StatisticsTabController{
@@ -38,6 +35,7 @@ public class StatisticsTabController{
     public void init(Controller controller){
         this.controller = controller;
         this.metricsModel = new Metrics();
+        this.pieChartModel = new PieChartModel();
     }
 
     public void initialize(Metrics metricsModel){
@@ -76,8 +74,10 @@ public class StatisticsTabController{
         CPM.setText(String.valueOf(this.metricsModel.getCPM()));
         bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate()));
 
-        this.pieChartModel = new PieChartModel();
+
         this.pieChartModel.setCampaign(campaignName);
+        this.pieChartModel.setStart(this.controller.getStart());
+        this.pieChartModel.setEnd(this.controller.getStart());
         HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
 
         updatePieChartData(
