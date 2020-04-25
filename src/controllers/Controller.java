@@ -1,33 +1,18 @@
 package controllers;
 
 import com.jfoenix.controls.*;
-import daos.ClickDao;
-import daos.ImpressionDao;
-import daos.ServerEntryDao;
-import entities.Impression;
 import javafx.fxml.FXML;
-import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import models.HistogramModel;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 
 
-import controllers.*;
 import models.Metrics;
 
 public class Controller {
@@ -46,6 +31,7 @@ public class Controller {
     @FXML AnchorPane graphsTab;
     @FXML AnchorPane filterTab;
     @FXML AnchorPane accessibilityTab;
+    @FXML AnchorPane printTab;
 
     @FXML private CampaignTabController campaignTabController;
     @FXML private StatisticsTabController statisticsTabController;
@@ -53,6 +39,7 @@ public class Controller {
     @FXML private GraphsTabController graphsTabController;
     @FXML private FilterTabController filterTabController;
     @FXML private AccessibilityTabController accessibilityTabController;
+    @FXML private PrintTabController printTabController;
 
     //The number of "units" that will be displayed along the x axis
     public int unitsDifference;
@@ -89,6 +76,7 @@ public class Controller {
         graphsTabController.init(this);
         filterTabController.init(this);
         accessibilityTabController.init(this);
+        printTabController.init(this);
 
     }
 
@@ -214,5 +202,9 @@ public class Controller {
 
     }
     //BOUNCE CONTROLLER
+
+    public JFXTabPane getLHS(){
+        return this.LHS;
+    }
 
 }
