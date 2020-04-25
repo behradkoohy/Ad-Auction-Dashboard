@@ -7,10 +7,10 @@ import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import entities.Click;
 import entities.Impression;
-import entities.Impression.Age;
-import entities.Impression.Context;
-import entities.Impression.Gender;
-import entities.Impression.Income;
+import entities.User.Age;
+import entities.User.Context;
+import entities.User.Gender;
+import entities.User.Income;
 import entities.ServerEntry;
 
 import java.io.BufferedReader;
