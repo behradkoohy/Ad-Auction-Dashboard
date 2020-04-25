@@ -12,7 +12,9 @@ import javafx.scene.chart.XYChart;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.function.Predicate;
 
 
 public class Metrics {
@@ -23,6 +25,9 @@ public class Metrics {
     private boolean bounceDef = false;
     private int bouncePages = 1;
     private Duration bounceTime = Duration.ofSeconds(5);
+
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yy");
+
 
     private ClickDao clickDao = DaoInjector.newClickDao();
     private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
@@ -316,13 +321,28 @@ public class Metrics {
         XYChart.Series series = new XYChart.Series();
         series.setName("Impressions");
 
+//        LocalDateTime current = start;
+//
+//        while (current.isBefore(end)) {
+//            LocalDateTime nextTime = current.plus(duration);
+//            series.getData().add(new XYChart.Data(current.format(formatter), impressionDao.getByDateAndCampaign(campaign, current, nextTime).size()));
+//            current = nextTime;
+//        }
+//
+        List impress = impressionDao.getByDateAndCampaign(campaign, start, end);
+
         LocalDateTime current = start;
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), impressionDao.getByDateAndCampaign(campaign, current, nextTime).size()));
+
+            LocalDateTime finalCurrent = current;
+            Predicate<Impression> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
+
+            series.getData().add(new XYChart.Data(current.format(formatter), (impress.stream().filter(pred).count())));
             current = nextTime;
         }
+
 
         return series;
     }
@@ -349,7 +369,7 @@ public class Metrics {
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), clickDao.getByDateAndCampaign(campaign, current, nextTime).size()));
+            series.getData().add(new XYChart.Data(current.format(formatter), clickDao.getByDateAndCampaign(campaign, current, nextTime).size()));
             current = nextTime;
         }
 
@@ -386,7 +406,7 @@ public class Metrics {
                 set.add(click.getId());
             }
 
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), set.size()));
+            series.getData().add(new XYChart.Data(current.format(formatter), set.size()));
 
             current = nextTime;
         }
@@ -445,7 +465,7 @@ public class Metrics {
                 }
             }
 
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), num));
+            series.getData().add(new XYChart.Data(current.format(formatter), num));
 
             current = nextTime;
         }
@@ -528,7 +548,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), con.get(index)));
+            series.getData().add(new XYChart.Data(current.format(formatter), con.get(index)));
 
             current = nextTime;
             index ++;
@@ -547,7 +567,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), clickDao.getByDateAndCampaign(campaign, current, nextTime).size()/impressionDao.getByDateAndCampaign(campaign, current, nextTime).size()));
+            series.getData().add(new XYChart.Data(current.format(formatter), clickDao.getByDateAndCampaign(campaign, current, nextTime).size()/impressionDao.getByDateAndCampaign(campaign, current, nextTime).size()));
 
             current = nextTime;
         }
@@ -570,7 +590,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), costs.get(index)/cons.get(index)));
+            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index)/cons.get(index)));
 
             index ++;
             current = nextTime;
@@ -594,7 +614,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), costs.get(index)/clicks.get(index)));
+            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index)/clicks.get(index)));
 
             index ++;
             current = nextTime;
@@ -618,7 +638,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), costs.get(index)/impress.get(index)));
+            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index)/impress.get(index)));
 
             index ++;
             current = nextTime;
@@ -649,7 +669,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.toString(), bounces.get(index)/(clicks.get(index))+1));
+            series.getData().add(new XYChart.Data(current.format(formatter), bounces.get(index)/(clicks.get(index))+1));
 
             index ++;
             current = nextTime;
