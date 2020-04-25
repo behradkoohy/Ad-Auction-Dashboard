@@ -65,7 +65,7 @@
                                        </VBox.margin>
                                        <children>
                                           <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="358.0" text="Minimum number of pages visited to denote no bounce:" GridPane.halignment="CENTER" />
-                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="366.0" text="Minimum duration of visit on site to denote no bounce (minutes):" GridPane.rowIndex="1" />
+                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="366.0" text="Minimum duration of visit on site to denote no bounce (seconds):" GridPane.rowIndex="1" />
                                           <JFXSlider fx:id="bouncePageSlider" blockIncrement="1.0" majorTickUnit="1.0" max="30.0" minorTickCount="1" onMouseReleased="#updateBouncePageLabel" snapToTicks="true" value="2.0" GridPane.columnIndex="1">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />

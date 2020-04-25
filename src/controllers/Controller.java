@@ -1,33 +1,18 @@
 package controllers;
 
 import com.jfoenix.controls.*;
-import daos.ClickDao;
-import daos.ImpressionDao;
-import daos.ServerEntryDao;
-import entities.Impression;
 import javafx.fxml.FXML;
-import javafx.scene.chart.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import models.HistogramModel;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 
 
-import controllers.*;
 import models.Metrics;
 
 public class Controller {
@@ -90,6 +75,10 @@ public class Controller {
         filterTabController.init(this);
         accessibilityTabController.init(this);
 
+    }
+
+    public Metrics getMetrics() {
+        return this.metrics;
     }
 
     /**
@@ -201,6 +190,8 @@ public class Controller {
     @FXML
     public void updateBouncePageLabel(){
 
+        System.out.println("Setting page bounce limit to: " + String.valueOf(Math.round(bouncePageSlider.getValue())));
+
         bouncePagesLabel.setText(String.valueOf(Math.round(bouncePageSlider.getValue())));
         metrics.setBouncePages((int) Math.round(bouncePageSlider.getValue()));
 
@@ -215,4 +206,12 @@ public class Controller {
     }
     //BOUNCE CONTROLLER
 
+
+    public int getGranDigits() {
+        return filterTabController.getGranDigit();
+    }
+
+    public ChronoUnit getGranUnit() {
+        return filterTabController.getGranTimeUnit();
+    }
 }

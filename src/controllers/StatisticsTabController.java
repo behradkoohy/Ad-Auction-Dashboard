@@ -37,7 +37,7 @@ public class StatisticsTabController{
 
     public void init(Controller controller){
         this.controller = controller;
-        this.metricsModel = new Metrics();
+        this.metricsModel = this.controller.getMetrics();
     }
 
     public void initialize(Metrics metricsModel){

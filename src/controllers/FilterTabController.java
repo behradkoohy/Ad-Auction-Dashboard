@@ -2,7 +2,12 @@ package controllers;
 
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTimePicker;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,6 +19,8 @@ public class FilterTabController {
     @FXML private JFXDatePicker dToPicker;
     @FXML private JFXTimePicker timeFromPicker;
     @FXML private JFXTimePicker timeToPicker;
+    @FXML private Spinner granSpinner;
+    @FXML private ComboBox granCombo;
 
     private Controller controller;
 
@@ -39,6 +46,11 @@ public class FilterTabController {
     public LocalTime tFrom;
     public LocalTime tTo;
 
+    //Time granularity
+    public int granDigit;
+    public ChronoUnit granTimeUnit;
+
+
     public void init(Controller controller){
 
         this.controller = controller;
@@ -63,6 +75,15 @@ public class FilterTabController {
         lowIncome = true;
         medIncome = true;
         highIncome = true;
+
+        granDigit = 1;
+        granTimeUnit = ChronoUnit.DAYS;
+
+        ObservableList<String> timeUnits = FXCollections.observableArrayList("Hours", "Days", "Weeks");
+        granCombo.setItems(timeUnits);
+
+        granSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,100) {
+        });
 
     }
 
@@ -175,5 +196,47 @@ public class FilterTabController {
 
         tTo = timeToPicker.getValue();
 
+    }
+
+    @FXML
+    /**
+     * called when spinner changes
+     */
+    public void updateGranSpin(){
+        System.out.println("HI?");
+        granDigit = (int) granSpinner.getValue();
+    }
+
+    @FXML
+    /**
+     * called when combobox changes
+     */
+    public void updateGranCombo(){
+        System.out.println("COMBO");
+        switch (String.valueOf(granCombo.getValue())) {
+            case "Hours":
+                granTimeUnit = ChronoUnit.HOURS;
+                break;
+
+            case "Days":
+                granTimeUnit = ChronoUnit.DAYS;
+                break;
+
+            case "Weeks":
+                granTimeUnit = ChronoUnit.WEEKS;
+                break;
+
+            default:
+                granTimeUnit = ChronoUnit.DAYS;
+
+        }
+    }
+
+    public int getGranDigit() {
+        return granDigit;
+    }
+
+    public ChronoUnit getGranTimeUnit() {
+        return granTimeUnit;
     }
 }

@@ -100,6 +100,7 @@ public class Metrics {
 
         bounceDef = false;
         this.bouncePages = bouncePages;
+        System.out.println("Bounce pages is now: " + this.bouncePages);
 
     }
 
@@ -392,6 +393,13 @@ public class Metrics {
         return series;
     }
 
+    /**
+     * gives number of bounces
+     * @param start
+     * @param end
+     * @param duration
+     * @return
+     */
     public XYChart.Series getBouncesPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
@@ -422,9 +430,16 @@ public class Metrics {
             }
             //pages viewed defines bounce
             else {
+                System.out.println("###################Pages viewed##################");
                 for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
+                    System.out.println("Pages viewed: " +server.getPageViews() + "   bounce limit: " + bouncePages);
                     if (server.getPageViews() < bouncePages) {
+                        System.out.println("bounce");
                         num ++;
+
+                    }
+                    else {
+                        System.out.println("no bounce");
                     }
                 }
             }
@@ -612,6 +627,13 @@ public class Metrics {
 
     }
 
+    /**
+     * bounce RATE
+     * @param start
+     * @param end
+     * @param duration
+     * @return
+     */
     public XYChart.Series getBouncePerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
@@ -626,7 +648,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.toString(), bounces.get(index)/clicks.get(index)));
+            series.getData().add(new XYChart.Data(current.toString(), bounces.get(index)/(clicks.get(index))+1));
 
             index ++;
             current = nextTime;
