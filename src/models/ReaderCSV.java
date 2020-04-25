@@ -12,6 +12,7 @@ import entities.Impression.Context;
 import entities.Impression.Gender;
 import entities.Impression.Income;
 import entities.ServerEntry;
+import javafx.concurrent.Task;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,6 +50,79 @@ public class ReaderCSV {
         }
 	}
 
+	public static Task getReaderTask(String filename, String campaignName){
+
+		Path pathToFile = Paths.get(filename);
+		try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
+			String line = br.readLine();
+			if (line.equals(CLICK_LOG_HEADER)){
+				return getClickTask(br, campaignName, DaoInjector.newClickDao());
+			} else if (line.equals(SERVER_LOG_HEADER)){
+				return getServerTask(br, campaignName, DaoInjector.newServerEntryDao());
+			} else if (line.equals(IMPRESSION_LOG_HEADER)){
+				return getImpressionTask(br, campaignName, DaoInjector.newImpressionDao());
+			} else {
+				// throws some error message
+
+
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+
+		//failed, throw some error message
+		return null;
+
+	}
+
+	public static Task getClickTask(BufferedReader br, String campaignName, ClickDao clickDao){
+
+		return new Task(){
+
+			public Task<Void> call(){
+
+				try {
+					List<Click> clicksToAdd = new ArrayList<>();
+					int clickIdentifer = clickDao.getMaxIdentifier();
+
+					String line = br.readLine();
+
+					int numLines = (int) br.lines().count();
+					int currentLine = 1;
+
+					while (line != null) {
+						String[] contents = line.split(",");
+
+						LocalDateTime clickDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
+						long clickId = Long.parseLong( contents[1] );
+						double clickCost = Double.parseDouble(contents[2]);
+						clickIdentifer++;
+						clicksToAdd.add(new Click(clickIdentifer, campaignName, clickId, clickDate, clickCost));
+
+						line = br.readLine();
+						currentLine++;
+
+						//Used to communicated with the progress bar
+						updateProgress(currentLine, numLines);
+
+					}
+
+					if(clicksToAdd.size() > 0) {
+						clickDao.save(clicksToAdd);
+					}
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
+
+				//Void tasks have to return null
+				return null;
+
+			}
+
+		};
+
+	}
+
 	private static void readClickCSV(BufferedReader br, String campaignName, ClickDao clickDao) {
 		try {
 			List<Click> clicksToAdd = new ArrayList<>();
@@ -73,6 +147,58 @@ public class ReaderCSV {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static Task getImpressionTask(BufferedReader br, String campaignName, ImpressionDao impressionDao){
+
+		return new Task(){
+
+			public Task<Void> call(){
+
+				try {
+					List<Impression> impressionsToAdd = new ArrayList<>();
+					int impressionIdentifier = impressionDao.getMaxIdentifier();
+
+					String line = br.readLine();
+
+					int numLines = (int) br.lines().count();
+					int currentLine = 1;
+
+					while (line != null) {
+						String[] contents = line.split(",");
+
+						LocalDateTime impressionDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
+						long impressionId = Long.parseLong( contents[1] );
+						Gender impressionGender = returnGender( contents[2] );
+						Age impressionAge = returnAge( contents[3] );
+						Income impressionIncome = returnIncome( contents[4] );
+						Context impressionContext = returnContext( contents[5] );
+						double impressionCost = Double.parseDouble( contents[6] );
+						impressionIdentifier++;
+						impressionsToAdd.add(new Impression(impressionIdentifier, campaignName, impressionDate, impressionId,
+								impressionGender, impressionAge, impressionIncome, impressionContext, impressionCost));
+
+						line = br.readLine();
+						currentLine++;
+
+						//Used to communicate with the progress bar
+						updateProgress(currentLine, numLines);
+
+					}
+
+					if(impressionsToAdd.size() > 0) {
+						impressionDao.save(impressionsToAdd);
+					}
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
+
+				return null;
+
+			}
+
+		};
+
 	}
 
 	private static void readImpressionCSV(BufferedReader br, String campaignName, ImpressionDao impressionDao) {
@@ -104,6 +230,64 @@ public class ReaderCSV {
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static Task getServerTask(BufferedReader br, String campaignName, ServerEntryDao serverEntryDao){
+
+		return new Task(){
+
+			public Task<Void> call(){
+
+				try {
+					List<ServerEntry> serverEntriesToAdd = new ArrayList<>();
+					int serverEntryIdentifier = serverEntryDao.getMaxIdentifier();
+
+					String line = br.readLine();
+
+					int numLines = (int) br.lines().count();
+					int currentLine = 1;
+
+					while (line != null) {
+						String[] contents = line.split(",");
+
+						LocalDateTime serverEntryDate = LocalDateTime.parse(contents[0], ReaderCSV.formatter);
+						long serverId = Long.parseLong( contents[1] );
+
+						LocalDateTime serverExitDate;
+						if( !contents[2].equals("n/a") ) {
+							serverExitDate = LocalDateTime.parse(contents[2], ReaderCSV.formatter);
+						} else {
+							serverExitDate = serverEntryDate;
+						}
+
+						int serverPageView = Integer.parseInt(contents[3]);
+						boolean serverConversion = (contents[4].equals("Yes"));
+
+						serverEntryIdentifier++;
+						serverEntriesToAdd.add(new ServerEntry(serverEntryIdentifier, campaignName, serverEntryDate, serverId,
+								serverExitDate, serverPageView, serverConversion));
+
+						line = br.readLine();
+
+						//Used to communicate with the progress bar
+						currentLine++;
+						updateProgress(currentLine, numLines);
+
+					}
+
+					if(serverEntriesToAdd.size() > 0) {
+						serverEntryDao.save(serverEntriesToAdd);
+					}
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
+
+				return null;
+
+			}
+
+		};
+
 	}
 
 	private static void readServerEntryCSV(BufferedReader br, String campaignName, ServerEntryDao serverEntryDao) {

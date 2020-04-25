@@ -6,10 +6,14 @@ import daos.ClickDao;
 import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.FileChooser;
 import models.ReaderCSV;
+import popups.ImportPopup;
+import popups.LoadPopup;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
@@ -171,6 +175,7 @@ public class CampaignTabController{
      * CampaignHandler class
 
      */
+    @FXML
     public void loadNewCampaign(){
         // check that the campaign has a name
         String newCampaignName = campaignName.getText();
@@ -185,15 +190,30 @@ public class CampaignTabController{
             return;
         }
 
+        ImportPopup i = new ImportPopup();
+
+        ProgressBar clickProgress = i.getClickProgress();
+        ProgressBar serverProgress = i.getServerProgress();
+        ProgressBar impressionProgress = i.getImpressionProgress();
+
         // if it reaches this point, there is a name and files are loaded
         try{
-            //Concurrency offers small benefit for this test set but may have much better improvements for other sets
-            //TODO technically daos not thread safe but since atm each executes on different dao alright
+
+            Task clickTask = ReaderCSV.getReaderTask(clickLog.getAbsolutePath(), newCampaignName);
+            clickProgress.progressProperty().bind(clickTask.progressProperty());
+
+            Task impressionTask = ReaderCSV.getReaderTask(impressionLog.getAbsolutePath(), newCampaignName);
+            impressionProgress.progressProperty().bind(impressionTask.progressProperty());
+
+            Task serverTask = ReaderCSV.getReaderTask(serverLog.getAbsolutePath(), newCampaignName);
+            serverProgress.progressProperty().bind(serverTask.progressProperty());
+
             ExecutorService readerService = Executors.newCachedThreadPool();
-            readerService.execute(() -> ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName));
-            readerService.execute(() -> ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName));
-            readerService.execute(() -> ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName));
+            readerService.execute(clickTask);
+            readerService.execute(impressionTask);
+            readerService.execute(serverTask);
             readerService.shutdown();
+
             try {
                 if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {
                     readerService.shutdownNow();
@@ -207,6 +227,29 @@ public class CampaignTabController{
                 readerService.shutdownNow();
                 Thread.currentThread().interrupt();
             }
+
+            /*
+            //Concurrency offers small benefit for this test set but may have much better improvements for other sets
+            //TODO technically daos not thread safe but since atm each executes on different dao alright
+            ExecutorService readerService = Executors.newCachedThreadPool();
+            readerService.execute(() -> ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName));
+            readerService.execute(() -> ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName));
+            readerService.execute(() -> ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName));
+            readerService.shutdown();
+
+            try {
+                if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {
+                    readerService.shutdownNow();
+                    controller.error("The CSV reader timed out! Please try again");
+                } else {
+
+                    controller.success("CSV files successfully loaded");
+
+                }
+            } catch (InterruptedException ex) {
+                readerService.shutdownNow();
+                Thread.currentThread().interrupt();
+            }*/
             /*
             ReaderCSV.readCSV(clickLoc, campaignName, clickDao, impressionDao, serverEntryDao);
             ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao);

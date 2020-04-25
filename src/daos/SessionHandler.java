@@ -37,7 +37,6 @@ public class SessionHandler {
                 settings.put("hibernate.order_inserts", "true");
 
                 configuration.setProperties(settings);
-
                 configuration.addAnnotatedClass(Click.class);
                 configuration.addAnnotatedClass(Impression.class);
                 configuration.addAnnotatedClass(ServerEntry.class);
