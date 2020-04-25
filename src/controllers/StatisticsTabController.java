@@ -77,7 +77,7 @@ public class StatisticsTabController{
 
         this.pieChartModel.setCampaign(campaignName);
         this.pieChartModel.setStart(this.controller.getStart());
-        this.pieChartModel.setEnd(this.controller.getStart());
+        this.pieChartModel.setEnd(this.controller.getEnd());
         HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
 
         updatePieChartData(
