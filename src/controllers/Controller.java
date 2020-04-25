@@ -56,6 +56,8 @@ public class Controller {
 
     private Metrics metrics;
 
+    private String currentCampaignName;
+
     //Should I do this - or put in in campaign tab controller???
     ClickDao clickDao = DaoInjector.newClickDao();
     ImpressionDao impressionDao = DaoInjector.newImpressionDao();
@@ -115,11 +117,19 @@ public class Controller {
      *
      * */
     public void loadCampaignData(String campaignName){
+        this.currentCampaignName = campaignName;
         filterTabController.setDateTimeFrom(getFromDateForCampaign(campaignName));
         filterTabController.setDateTimeTo(getToDateForCampaign(campaignName));
         statisticsTabController.loadData(campaignName);
         histogramTabController.loadData(campaignName);
         graphsTabController.loadData(campaignName);
+    }
+
+    //Takes toggled bools for filter as params
+    public void reloadCampaignData() {
+        statisticsTabController.loadData(this.currentCampaignName);
+        histogramTabController.loadData(this.currentCampaignName);
+        graphsTabController.loadData(this.currentCampaignName);
     }
 
 
@@ -196,7 +206,7 @@ public class Controller {
      *
      * @return gives current start date
      */
-    public LocalDateTime getStart(){
+    public LocalDateTime getStart() {
         LocalDateTime before = LocalDateTime.of(filterTabController.dFrom, filterTabController.tFrom);
         return before;
 

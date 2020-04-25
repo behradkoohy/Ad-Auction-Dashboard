@@ -137,7 +137,7 @@
                         <Insets left="10.0" />
                     </VBox.margin>
                 </JFXTimePicker>
-                <JFXButton style="-fx-background-color: #9575cd#9575cd;" text="RELOAD DATA" textFill="WHITE">
+                <JFXButton onAction="#reloadData" style="-fx-background-color: #9575cd#9575cd;" text="RELOAD DATA" textFill="WHITE">
                     <VBox.margin>
                         <Insets left="10.0" top="30.0" />
                     </VBox.margin>

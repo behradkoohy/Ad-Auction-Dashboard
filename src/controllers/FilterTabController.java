@@ -39,6 +39,7 @@ public class FilterTabController {
     public LocalTime tFrom;
     public LocalTime tTo;
 
+    //TODO Filter controller updates main controller which sets the relevant flags in each of the models
     public void init(Controller controller){
 
         this.controller = controller;
@@ -152,6 +153,7 @@ public class FilterTabController {
      * Called every time the value of the to date picker changes
      */
     public void updateDTo(){
+        System.out.println(dToPicker.getValue());
 
         dTo = dToPicker.getValue();
 
@@ -178,16 +180,19 @@ public class FilterTabController {
     }
 
     public void setDateTimeFrom(LocalDateTime from) {
+        //Updates tFrom and dFrom automatically
         dFromPicker.setValue(from.toLocalDate());
         timeFromPicker.setValue(from.toLocalTime());
-        this.updateDFrom();
-        this.updateTFrom();
     }
 
     public void setDateTimeTo(LocalDateTime to) {
+        //Updates tFrom and dFrom automatically
         dToPicker.setValue(to.toLocalDate());
         timeToPicker.setValue(to.toLocalTime());
-        this.updateDTo();
-        this.updateTTo();
+    }
+
+    public void reloadData() {
+        //In future should pass through toggles as params
+        controller.reloadCampaignData();
     }
 }
