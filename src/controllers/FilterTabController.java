@@ -203,7 +203,6 @@ public class FilterTabController {
      * called when spinner changes
      */
     public void updateGranSpin(){
-        System.out.println("HI?");
         granDigit = (int) granSpinner.getValue();
     }
 

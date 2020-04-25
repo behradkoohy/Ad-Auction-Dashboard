@@ -430,16 +430,16 @@ public class Metrics {
             }
             //pages viewed defines bounce
             else {
-                System.out.println("###################Pages viewed##################");
+
                 for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
-                    System.out.println("Pages viewed: " +server.getPageViews() + "   bounce limit: " + bouncePages);
+
                     if (server.getPageViews() < bouncePages) {
-                        System.out.println("bounce");
+
                         num ++;
 
                     }
                     else {
-                        System.out.println("no bounce");
+
                     }
                 }
             }

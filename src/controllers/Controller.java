@@ -190,7 +190,6 @@ public class Controller {
     @FXML
     public void updateBouncePageLabel(){
 
-        System.out.println("Setting page bounce limit to: " + String.valueOf(Math.round(bouncePageSlider.getValue())));
 
         bouncePagesLabel.setText(String.valueOf(Math.round(bouncePageSlider.getValue())));
         metrics.setBouncePages((int) Math.round(bouncePageSlider.getValue()));
