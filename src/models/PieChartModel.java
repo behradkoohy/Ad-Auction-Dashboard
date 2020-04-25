@@ -22,7 +22,7 @@ public class PieChartModel {
     public void setEnd(LocalDateTime end) { this.end = end; }
 
     public HashMap<String, Integer> getDistributions() {
-        List<Impression> impressions = this.impressionDao. getByDateAndCampaign(campaign, start, end);
+        List<Impression> impressions = this.impressionDao.getFromCampaign(campaign);
         int nrImpressions = impressions.size();
         HashMap<String, Integer> distr = new HashMap<String, Integer>();
 
