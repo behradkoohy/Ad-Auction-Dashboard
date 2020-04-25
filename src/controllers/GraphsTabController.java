@@ -8,8 +8,11 @@ import models.ChartHandler;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.*;
 
 public class GraphsTabController {
     @FXML private LineChart<?,?> lineChart;
@@ -159,12 +162,39 @@ public class GraphsTabController {
         this.start = controller.getStart();
         this.end = controller.getEnd();
         //TODO let user decide granularity
-        this.duration = Duration.between(start, end).dividedBy(10);
+        this.duration = calcDuration();
         for (String campaignName : campaigns) {
-            new ChartHandler(campaignName, lineChart, lineChartXAxis, lineChartYAxis, this.controller.calcMetric(),
-                            this.data, this.controller.unitsDifference, impressions, conversions, clicks, uniqueUsers,
-                            bounces, totalCostB, CTRB, CPAB, CPCB, CPMB, bounceRateB, start, end, duration);
+            ChartHandler handler = new ChartHandler(campaignName, lineChart, lineChartXAxis,
+                    lineChartYAxis, this.controller.calcMetric(), this.data, this.controller.unitsDifference, impressions,
+                    conversions, clicks, uniqueUsers, bounces, totalCostB, CTRB, CPAB,
+                    CPCB, CPMB, bounceRateB, start, end, duration, this.controller.getMetrics());
         }
+    }
+
+    private Duration calcDuration() {
+        int digits = this.controller.getGranDigits();
+        ChronoUnit unit = this.controller.getGranUnit();
+        Duration dur;
+
+        switch (unit) {
+            case HOURS:
+                dur = Duration.of(digits, HOURS);
+                break;
+                
+            case DAYS: 
+                dur = Duration.of(digits, DAYS);
+                break;
+                
+            case WEEKS:
+                dur = Duration.of(digits, DAYS).multipliedBy(7);
+                break;
+
+            default:
+                dur = Duration.ofDays(1);
+        }
+        
+        return dur;
+
     }
 
 }

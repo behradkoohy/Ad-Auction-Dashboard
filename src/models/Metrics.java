@@ -100,6 +100,7 @@ public class Metrics {
 
         bounceDef = false;
         this.bouncePages = bouncePages;
+        System.out.println("Bounce pages is now: " + this.bouncePages);
 
     }
 
@@ -393,6 +394,13 @@ public class Metrics {
         return series;
     }
 
+    /**
+     * gives number of bounces
+     * @param start
+     * @param end
+     * @param duration
+     * @return
+     */
     public XYChart.Series getBouncesPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
@@ -423,9 +431,16 @@ public class Metrics {
             }
             //pages viewed defines bounce
             else {
+
                 for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
+
                     if (server.getPageViews() < bouncePages) {
+
                         num ++;
+
+                    }
+                    else {
+
                     }
                 }
             }
@@ -613,6 +628,13 @@ public class Metrics {
 
     }
 
+    /**
+     * bounce RATE
+     * @param start
+     * @param end
+     * @param duration
+     * @return
+     */
     public XYChart.Series getBouncePerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
@@ -627,7 +649,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.toLocalDate().toString(), bounces.get(index)/clicks.get(index)));
+            series.getData().add(new XYChart.Data(current.toString(), bounces.get(index)/(clicks.get(index))+1));
 
             index ++;
             current = nextTime;

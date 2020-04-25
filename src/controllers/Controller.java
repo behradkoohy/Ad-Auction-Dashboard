@@ -1,5 +1,6 @@
 package controllers;
 
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXTabPane;
 import daos.ClickDao;
@@ -94,6 +95,10 @@ public class Controller {
         accessibilityTabController.init(this);
         printTabController.init(this);
 
+    }
+
+    public Metrics getMetrics() {
+        return this.metrics;
     }
 
     /**
@@ -232,6 +237,7 @@ public class Controller {
     @FXML
     public void updateBouncePageLabel(){
 
+
         bouncePagesLabel.setText(String.valueOf(Math.round(bouncePageSlider.getValue())));
         metrics.setBouncePages((int) Math.round(bouncePageSlider.getValue()));
 
@@ -250,4 +256,12 @@ public class Controller {
         return this.LHS;
     }
 
+
+    public int getGranDigits() {
+        return filterTabController.getGranDigit();
+    }
+
+    public ChronoUnit getGranUnit() {
+        return filterTabController.getGranTimeUnit();
+    }
 }

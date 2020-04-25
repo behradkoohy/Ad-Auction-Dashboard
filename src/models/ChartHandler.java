@@ -53,7 +53,8 @@ public class ChartHandler {
                         boolean impressions, boolean conversions,
                         boolean clicks, boolean unique, boolean bounces, boolean totalCost, boolean CTR,
                         boolean CPA, boolean CPC, boolean CPM, boolean bounceRate,
-                        LocalDateTime start, LocalDateTime end, Duration duration){
+                        LocalDateTime start, LocalDateTime end, Duration duration,
+                        Metrics metricsModel){
 
         this.campaignName = campaignName;
         this.chart = chart;
@@ -79,9 +80,9 @@ public class ChartHandler {
         this.end = end;
         this.duration = duration;
 
-        this.metricsModel = new Metrics();
+        this.metricsModel = metricsModel;
         this.metricsModel.setCampaign(campaignName);
-        r = new Random();
+
 
         this.init();
     }
