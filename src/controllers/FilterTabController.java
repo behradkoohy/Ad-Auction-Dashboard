@@ -91,6 +91,12 @@ public class FilterTabController {
         hobbies = true;
         travel = true;
 
+    }
+
+    @FXML
+    public void initialize(){
+
+        //Keep this in the fxml initialize method
         granDigit = 1;
         granTimeUnit = ChronoUnit.DAYS;
 
@@ -99,6 +105,9 @@ public class FilterTabController {
 
         granSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,100) {
         });
+
+        //By default combo box will show hours
+        granCombo.getSelectionModel().selectFirst();
 
     }
 

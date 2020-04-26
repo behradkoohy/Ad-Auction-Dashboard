@@ -43,6 +43,7 @@ public class CampaignTabController{
         // load previous campaigns
         // TODO : change method to use a campaign Entity and DAO
         this.loadPreviousCampaigns();
+
     }
 
     // TODO : refactor using campaign Entity
@@ -59,10 +60,14 @@ public class CampaignTabController{
         if( campaignName != null ){
             this.controller.success("Selected campaign " + campaignName + ". Importing data..." );
             this.controller.loadCampaignData(campaignName);
+
+            controller.unGreyOtherTabs();
+
             this.controller.goToMainPage();
         }else{
             this.controller.error("Please select a campaign");
         }
+
     }
 
     /**
@@ -225,6 +230,9 @@ public class CampaignTabController{
             serverLabel.setText("");
 
             this.controller.loadCampaignData(newCampaignName);
+
+            controller.unGreyOtherTabs();
+
             this.controller.goToMainPage();
 
         }catch (Exception e) {

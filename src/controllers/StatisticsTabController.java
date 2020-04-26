@@ -85,12 +85,10 @@ public class StatisticsTabController{
         CPM.setText(String.valueOf(to2DP(this.metricsModel.getCPM())));
         bounceRate.setText(String.valueOf(to2DP(this.metricsModel.getBounceRate())));
 
-
         this.pieChartModel.setCampaign(campaignName);
         this.pieChartModel.setStart(this.controller.getStart());
         this.pieChartModel.setEnd(this.controller.getStart());
         HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
-
 
         //ADD CONTEXT DATA
         updatePieChartData(
@@ -102,7 +100,8 @@ public class StatisticsTabController{
     }
 
     /**
-     * Returns the double rounded to 2 decimal places
+     * Returns the double rounded to 2 decimal places, used
+     * for presenting data in the stats tab
      * @return
      */
     public double to2DP(double x){
