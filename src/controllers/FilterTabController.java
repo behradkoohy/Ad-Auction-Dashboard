@@ -178,21 +178,22 @@ public class FilterTabController {
 
     }
 
+    /*
     @FXML
-    /**
+    
      * Called by the reload data button
-     */
+
     public void reloadData(){
 
         //FILL IN THE RELOAD DATA STUFF HERE
 
     }
 
-    /**
+
      * Return the values of all the checkboxes in the order
      * they are shown in the UI from left to right, top to bottom
      * @return
-     */
+
     public boolean[] getCheckBoxVals(){
 
         return new boolean[]{male, female, lt25, btwn2534,
@@ -200,11 +201,11 @@ public class FilterTabController {
 
     }
 
-    /**
+
      * Returns an array containing the before date time,
      * followed by the after date time
      * @return
-     */
+
     public LocalDateTime[] getDateTime(){
 
         LocalDateTime[] arr = new LocalDateTime[2];
@@ -214,6 +215,6 @@ public class FilterTabController {
 
         return arr;
 
-    }
+    }*/
 
 }
