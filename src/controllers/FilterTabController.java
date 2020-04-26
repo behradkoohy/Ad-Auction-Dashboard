@@ -40,6 +40,14 @@ public class FilterTabController {
     private boolean medIncome;
     private boolean highIncome;
 
+    //Context
+    private boolean news;
+    private boolean shopping;
+    private boolean socialMedia;
+    private boolean blog;
+    private boolean hobbies;
+    private boolean travel;
+
     //Date range
     public LocalDate dFrom;
     public LocalDate dTo;
@@ -76,6 +84,12 @@ public class FilterTabController {
         lowIncome = true;
         medIncome = true;
         highIncome = true;
+        news = true;
+        shopping = true;
+        socialMedia = true;
+        blog = true;
+        hobbies = true;
+        travel = true;
 
         granDigit = 1;
         granTimeUnit = ChronoUnit.DAYS;
@@ -156,6 +170,48 @@ public class FilterTabController {
     public void toggleHigh(){
 
         highIncome = !highIncome;
+
+    }
+
+    @FXML
+    public void toggleNews(){
+
+        news = !news;
+
+    }
+
+    @FXML
+    public void toggleShopping(){
+
+        shopping = !shopping;
+
+    }
+
+    @FXML
+    public void toggleSocialMedia(){
+
+        socialMedia = !socialMedia;
+
+    }
+
+    @FXML
+    public void toggleBlog(){
+
+        blog = !blog;
+
+    }
+
+    @FXML
+    public void toggleHobbies(){
+
+        hobbies = !hobbies;
+
+    }
+
+    @FXML
+    public void toggleTravel(){
+
+        travel = !travel;
 
     }
 

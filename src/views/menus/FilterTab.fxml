@@ -13,9 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="486.0" prefWidth="233.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FilterTabController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="592.0" prefWidth="276.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.FilterTabController">
     <children>
-        <VBox layoutX="-6.0" layoutY="1.0" minHeight="506.0" minWidth="244.0" prefHeight="552.0" prefWidth="250.0" spacing="10.0">
+        <VBox layoutX="-6.0" layoutY="1.0" minHeight="506.0" minWidth="244.0" prefHeight="552.0" prefWidth="286.0" spacing="10.0">
             <children>
                 <Label fx:id="genderTitle" text="Gender" underline="true">
                     <padding>
@@ -52,6 +52,9 @@
                     <font>
                         <Font size="14.0" />
                     </font>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
                 </Label>
                 <FlowPane prefHeight="25.0" prefWidth="248.0">
                     <children>
@@ -96,6 +99,9 @@
                     <font>
                         <Font size="14.0" />
                     </font>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
                 </Label>
                 <FlowPane prefHeight="26.0" prefWidth="248.0">
                     <children>
@@ -119,6 +125,61 @@
                         <Insets top="10.0" />
                     </VBox.margin>
                 </FlowPane>
+            <Label fx:id="incomeTitle1" layoutX="20.0" layoutY="194.0" text="Context" underline="true">
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="5.0" />
+               </VBox.margin>
+            </Label>
+            <FlowPane layoutX="20.0" layoutY="232.0" prefHeight="26.0" prefWidth="248.0">
+               <children>
+                  <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleNews" selected="true" text="News">
+                     <FlowPane.margin>
+                        <Insets left="10.0" />
+                     </FlowPane.margin>
+                  </JFXCheckBox>
+                  <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleShopping" selected="true" text="Shopping">
+                     <FlowPane.margin>
+                        <Insets left="10.0" />
+                     </FlowPane.margin>
+                  </JFXCheckBox>
+                  <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleSocialMedia" selected="true" text="Social Media">
+                     <FlowPane.margin>
+                        <Insets left="10.0" />
+                     </FlowPane.margin>
+                  </JFXCheckBox>
+                  <FlowPane prefHeight="26.0" prefWidth="248.0">
+                     <children>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBlog" selected="true" text="Blog">
+                           <FlowPane.margin>
+                              <Insets left="10.0" />
+                           </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleHobbies" selected="true" text="Hobbies">
+                           <FlowPane.margin>
+                              <Insets left="10.0" />
+                           </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleTravel" selected="true" text="Travel">
+                           <FlowPane.margin>
+                              <Insets left="10.0" />
+                           </FlowPane.margin>
+                        </JFXCheckBox>
+                     </children>
+                     <FlowPane.margin>
+                        <Insets top="10.0" />
+                     </FlowPane.margin>
+                  </FlowPane>
+               </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </FlowPane>
                 <JFXDatePicker fx:id="dFromPicker" onAction="#updateDFrom" promptText="Date From">
                     <VBox.margin>
                         <Insets left="10.0" top="10.0" />
