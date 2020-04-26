@@ -179,10 +179,10 @@ public class Controller {
     }
 
 
-    /*
+    /**
      *
      * @return gives current start date
-
+    */
     public LocalDateTime getStart(){
         LocalDateTime before = LocalDateTime.of(filterTabController.dFrom, filterTabController.tFrom);
         return before;
@@ -190,15 +190,16 @@ public class Controller {
     }
 
 
-     *
+     /**
      * @return gives current end date
-
+     */
     public LocalDateTime getEnd(){
         LocalDateTime after = LocalDateTime.of(filterTabController.dTo, filterTabController.tTo);
         return after;
     }
 
 
+    /*
      * Triggered from the FilterTabController via the "reload data"
      * button. This method is responsible for updating the data on the
      * stats page and the graph according to the filters just specified

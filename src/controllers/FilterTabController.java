@@ -178,11 +178,8 @@ public class FilterTabController {
 
     }
 
-    /*
-    @FXML
-    
-     * Called by the reload data button
-
+    /** Called by the reload data button
+     */
     public void reloadData(){
 
         //FILL IN THE RELOAD DATA STUFF HERE
@@ -190,6 +187,7 @@ public class FilterTabController {
     }
 
 
+    /**
      * Return the values of all the checkboxes in the order
      * they are shown in the UI from left to right, top to bottom
      * @return
