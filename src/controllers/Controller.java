@@ -178,39 +178,40 @@ public class Controller {
 
     }
 
-    /**
+
+    /*
      *
      * @return gives current start date
-     */
+
     public LocalDateTime getStart(){
         LocalDateTime before = LocalDateTime.of(filterTabController.dFrom, filterTabController.tFrom);
         return before;
 
     }
 
-    /**
+    
      *
      * @return gives current end date
-     */
+
     public LocalDateTime getEnd(){
         LocalDateTime after = LocalDateTime.of(filterTabController.dTo, filterTabController.tTo);
         return after;
     }
 
-    /**
+
      * Triggered from the FilterTabController via the "reload data"
      * button. This method is responsible for updating the data on the
      * stats page and the graph according to the filters just specified
      * in the filter tab controller
-     */
+
     public void reloadData(){
 
-        /*
+
         Can use getCheckBoxVals and getDateTime methods in filter
         tab controller to get the filter information required
-        */
 
-    }
+
+    }*/
 
     //BOUNCE CONTROLLER
     @FXML
