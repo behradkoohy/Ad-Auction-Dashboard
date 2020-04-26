@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 public class FilterTabController {
+
     @FXML private JFXDatePicker dFromPicker;
     @FXML private JFXDatePicker dToPicker;
     @FXML private JFXTimePicker timeFromPicker;
@@ -33,7 +34,7 @@ public class FilterTabController {
     private boolean medIncome;
     private boolean highIncome;
 
-    //Date range
+    //Date and time range
     public LocalDate dFrom;
     public LocalDate dTo;
     public LocalTime tFrom;
@@ -176,4 +177,43 @@ public class FilterTabController {
         tTo = timeToPicker.getValue();
 
     }
+
+    @FXML
+    /**
+     * Called by the reload data button
+     */
+    public void reloadData(){
+
+        //FILL IN THE RELOAD DATA STUFF HERE
+
+    }
+
+    /**
+     * Return the values of all the checkboxes in the order
+     * they are shown in the UI from left to right, top to bottom
+     * @return
+     */
+    public boolean[] getCheckBoxVals(){
+
+        return new boolean[]{male, female, lt25, btwn2534,
+        btwn3544, btwn4554, gt55, lowIncome, medIncome, highIncome};
+
+    }
+
+    /**
+     * Returns an array containing the before date time,
+     * followed by the after date time
+     * @return
+     */
+    public LocalDateTime[] getDateTime(){
+
+        LocalDateTime[] arr = new LocalDateTime[2];
+
+        arr[0] = LocalDateTime.of(dFrom, tFrom);
+        arr[1] = LocalDateTime.of(dTo, tTo);
+
+        return arr;
+
+    }
+
 }

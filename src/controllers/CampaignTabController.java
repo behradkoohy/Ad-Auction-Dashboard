@@ -199,6 +199,11 @@ public class CampaignTabController{
         // if it reaches this point, there is a name and files are loaded
         try{
 
+            /*
+
+            Trying to do the same thing but updates the progress bars cant get it working at the moment
+            so leave it commented out for now
+
             Task clickTask = ReaderCSV.getReaderTask(clickLog.getAbsolutePath(), newCampaignName);
             clickProgress.progressProperty().bind(clickTask.progressProperty());
 
@@ -226,9 +231,9 @@ public class CampaignTabController{
             } catch (InterruptedException ex) {
                 readerService.shutdownNow();
                 Thread.currentThread().interrupt();
-            }
+            }*/
 
-            /*
+
             //Concurrency offers small benefit for this test set but may have much better improvements for other sets
             //TODO technically daos not thread safe but since atm each executes on different dao alright
             ExecutorService readerService = Executors.newCachedThreadPool();
@@ -249,7 +254,7 @@ public class CampaignTabController{
             } catch (InterruptedException ex) {
                 readerService.shutdownNow();
                 Thread.currentThread().interrupt();
-            }*/
+            }
             /*
             ReaderCSV.readCSV(clickLoc, campaignName, clickDao, impressionDao, serverEntryDao);
             ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao);
