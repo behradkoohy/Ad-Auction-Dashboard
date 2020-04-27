@@ -249,7 +249,7 @@
             </FlowPane>
             <VBox alignment="CENTER">
                <VBox.margin>
-                  <Insets left="10.0" top="5.0" />
+                  <Insets left="10.0" top="5.0" bottom="10.0" />
                </VBox.margin>
                <children>
                       <JFXButton onAction="#reloadData" style="-fx-background-color: #9575cd#9575cd;" text="RELOAD DATA" textFill="WHITE" />
