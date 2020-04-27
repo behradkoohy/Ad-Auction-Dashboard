@@ -20,7 +20,9 @@ public class User {
         BLOG, //0
         NEWS, //1
         SOCIALMEDIA, //2
-        SHOPPING //3
+        SHOPPING, //3
+        HOBBIES, //4
+        TRAVEL //5
     }
 
     public enum Gender {

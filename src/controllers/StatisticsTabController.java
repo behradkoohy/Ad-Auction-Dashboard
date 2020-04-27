@@ -85,11 +85,11 @@ public class StatisticsTabController{
         numBounces.setText(String.valueOf(this.metricsModel.getNumBounces(start, end)));
         numConversions.setText(String.valueOf(this.metricsModel.getConversions(start, end)));
         totalCost.setText(String.valueOf(this.metricsModel.getTotalCost(start, end)));
-        CTR.setText(String.valueOf(this.metricsModel.getCTR(start, end)));
-        CPA.setText(String.valueOf(this.metricsModel.getCPA(start, end)));
-        CPC.setText(String.valueOf(this.metricsModel.getCPC(start, end)));
-        CPM.setText(String.valueOf(this.metricsModel.getCPM(start, end)));
-        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(start, end)));
+        CTR.setText(String.valueOf(to2DP(this.metricsModel.getCTR(start, end))));
+        CPA.setText(String.valueOf(to2DP(this.metricsModel.getCPA(start, end))));
+        CPC.setText(String.valueOf(to2DP(this.metricsModel.getCPC(start, end))));
+        CPM.setText(String.valueOf(to2DP(this.metricsModel.getCPM(start, end))));
+        bounceRate.setText(String.valueOf(to2DP(this.metricsModel.getBounceRate(start, end))));
 
 
         this.pieChartModel.setCampaign(campaignName);

@@ -177,6 +177,8 @@ public class ReaderCSV {
 		contexts.put("News", Context.NEWS);
 		contexts.put("Shopping", Context.SHOPPING);
 		contexts.put("Social Media", Context.SOCIALMEDIA);
+        contexts.put("Hobbies", Context.HOBBIES);
+        contexts.put("Travel", Context.TRAVEL);
 		
 		return contexts.get(context);
 	}

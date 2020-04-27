@@ -58,7 +58,8 @@ public class Metrics {
     public Metrics() {
         this.filter = new Filter(true, true,
                 true, true, true, true, true,
-                true, true, true);
+                true, true, true,
+                true, true, true, true, true, true);
     }
 
     public void setCampaign(String campaign) {

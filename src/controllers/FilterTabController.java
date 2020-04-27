@@ -288,7 +288,8 @@ public class FilterTabController {
     private Filter makeFilter() {
         return new Filter(male, female,
                             lt25, btwn2534, btwn3544, btwn4554, gt55,
-                            lowIncome, medIncome, highIncome);
+                            lowIncome, medIncome, highIncome,
+                            news, shopping, socialMedia, blog, hobbies, travel);
     }
 
     @FXML

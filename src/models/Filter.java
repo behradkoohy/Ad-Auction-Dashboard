@@ -23,11 +23,18 @@ public class Filter implements Predicate<EntityAbstract> {
     private boolean highIncome;
 
     //Context
-    //TODO add contexts
+    private boolean news;
+    private boolean shopping;
+    private boolean socialMedia;
+    private boolean blog;
+    private boolean hobbies;
+    private boolean travel;
+
 
     public Filter(boolean male, boolean female,
                   boolean lt25, boolean btwn2534, boolean btwn3544, boolean btwn4554, boolean gt55,
-                  boolean lowIncome, boolean medIncome, boolean highIncome) {
+                  boolean lowIncome, boolean medIncome, boolean highIncome,
+                  boolean news, boolean shopping, boolean socialMedia, boolean blog, boolean hobbies, boolean travel) {
         this.male = male;
         this.female = female;
         this.lt25 = lt25;
@@ -38,6 +45,12 @@ public class Filter implements Predicate<EntityAbstract> {
         this.lowIncome = lowIncome;
         this.medIncome = medIncome;
         this.highIncome = highIncome;
+        this.news = news;
+        this.shopping = shopping;
+        this.socialMedia = socialMedia;
+        this.blog = blog;
+        this.hobbies = hobbies;
+        this.travel = travel;
     }
 
     @Override
@@ -53,7 +66,15 @@ public class Filter implements Predicate<EntityAbstract> {
 
                 ((i.getIncome().equals(User.Income.LOW) && lowIncome) ||
                 (i.getIncome().equals(User.Income.MEDIUM) && medIncome) ||
-                (i.getIncome().equals(User.Income.HIGH) && highIncome))
+                (i.getIncome().equals(User.Income.HIGH) && highIncome)) &&
+
+                ((i.getContext().equals(User.Context.NEWS) && news) ||
+                (i.getContext().equals(User.Context.SHOPPING) && shopping) ||
+                (i.getContext().equals(User.Context.SOCIALMEDIA) && socialMedia) ||
+                (i.getContext().equals(User.Context.BLOG) && blog) ||
+                (i.getContext().equals(User.Context.HOBBIES) && hobbies) ||
+                (i.getContext().equals(User.Context.TRAVEL) && travel))
+
         );
     }
 }
