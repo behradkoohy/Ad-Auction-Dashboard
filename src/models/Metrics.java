@@ -65,44 +65,38 @@ public class Metrics {
         this.campaign = campaign;
     }
 
-    public Double getNumImpressions() {
-        Tuple tuple = new Tuple(NUMIMPRESS, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
+    public Double getNumImpressions(LocalDateTime start, LocalDateTime end) {
+//        Tuple tuple = new Tuple(NUMIMPRESS, campaign);
+//        if (cacheSingle.containsKey(tuple)) {
+//            return cacheSingle.get(tuple);
+//        }
+        Double num = Double.valueOf(getImpressionsPerTimeList(start, end, Duration.between(start, end)).get(0));
 
-        Double num = (double) impressionDao.getFromCampaign(campaign).size();
-        cacheSingle.put(tuple, num);
+
+//        Double num = (double) impressionDao.getFromCampaign(campaign).size();
+//        cacheSingle.put(tuple, num);
 
         return num;
     }
 
-    public Double getNumClicks() {
-        Tuple tuple = new Tuple(NUMCLICKS, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
-        Double num = (double) clickDao.getFromCampaign(campaign).size();
-        cacheSingle.put(tuple, num);
+    public Double getNumClicks(LocalDateTime start, LocalDateTime end) {
+//        Tuple tuple = new Tuple(NUMCLICKS, campaign);
+//        if (cacheSingle.containsKey(tuple)) {
+//            return cacheSingle.get(tuple);
+//        }
+//        Double num = (double) clickDao.getFromCampaign(campaign).size();
+//        cacheSingle.put(tuple, num);
+
+        Double num = Double.valueOf(getClicksPerTimeList(start, end, Duration.between(start, end)).get(0));
         return num;
     }
 
 
-    public Double getNumUniqs() {
-        Tuple tuple = new Tuple(NUMUNIQ, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
+    public Double getNumUniqs(LocalDateTime start, LocalDateTime end) {
 
-        HashSet set = new HashSet<>();
+        Double num = Double.valueOf(getUniquesPerTimeList(start, end, Duration.between(start, end)).get(0));
 
-        for (Click click : clickDao.getFromCampaign(campaign)) {
-            set.add(click.getId());
-        }
-        Double num = (double) set.size();
-        cacheSingle.put(tuple, num);
-
-        return (double) set.size();
+        return num;
 
     }
 
@@ -122,87 +116,34 @@ public class Metrics {
     }
 
 
-    public Double getNumBounces() {
-        Tuple tuple = new Tuple(BOUNCE, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
+    public Double getNumBounces(LocalDateTime start, LocalDateTime end) {
 
-        Double num = 0.0;
-        //time spent defines bounce
-        if (bounceDef) {
+        Double num = Double.valueOf(getBouncesPerTimeList(start, end, Duration.between(start, end)).get(0));
+        return num;
 
-            for (ServerEntry server : serverEntryDao.getFromCampaign(campaign)) {
+    }
 
-                if (server.getExitDate() != null) {
-                    Duration duration = Duration.between(server.getEntryDate(), server.getExitDate());
-                    if (duration.compareTo(bounceTime) <= 0) {
-                        num ++;
-                    }
-                }
+    public Double getConversions(LocalDateTime start, LocalDateTime end) {
 
-
-            }
-
-        }
-        //pages viewed defines bounce
-        else {
-            for (ServerEntry server : serverEntryDao.getFromCampaign(campaign)) {
-                if (server.getPageViews() <= bouncePages) {
-                    num ++;
-                }
-            }
-        }
-        cacheSingle.put(tuple, num);
+        Double num = Double.valueOf(getConversionsPerTimeList(start, end, Duration.between(start, end)).get(0));
         return num;
     }
 
-    public Double getConversions() {
-        Tuple tuple = new Tuple(CONVER, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
-        Double num = 0.0;
-        for (ServerEntry server : serverEntryDao.getFromCampaign(campaign)) {
-            if (server.getConversion()) {
-                num++;
-            }
-        }
-        cacheSingle.put(tuple, num);
-        return num;
-    }
-
-    public Double getCTR() {
-        Tuple tuple = new Tuple(CTR, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
-        Double num = this.getNumClicks()/this.getNumImpressions();
-        cacheSingle.put(tuple, num);
+    public Double getCTR(LocalDateTime start, LocalDateTime end) {
+        Double num = Double.valueOf(getCTRPerTimeList(start, end, Duration.between(start, end)).get(0));
         return num;
 
     }
 
     //TODO do we use total cost or just click cost or just impressions cost
-    public Double getCPA() {
-        Tuple tuple = new Tuple(CPA, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
-        Double num = this.getTotalCost() / this.getConversions();
-        cacheSingle.put(tuple, num);
+    public Double getCPA(LocalDateTime start, LocalDateTime end) {
+        Double num = Double.valueOf(getCPAPerTimeList(start, end, Duration.between(start, end)).get(0));
         return num;
     }
 
 
-    public Double getTotalCost() {
-        Tuple tuple = new Tuple(TOTALCOST, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
-        Double num = this.getTotalClickCost() + this.getTotalImpressionsCost();
-        cacheSingle.put(tuple, num);
-
+    public Double getTotalCost(LocalDateTime start, LocalDateTime end) {
+        Double num = getTotalClickCostPerTime(start, end, Duration.between(start, end)).get(0) + getTotalImpressionsCostPerTime(start, end, Duration.between(start, end)).get(0);
         return num;
 
     }
@@ -291,40 +232,24 @@ public class Metrics {
     }
 
 
-    public Double getCPC() {
-        Tuple tuple = new Tuple(CPC, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
-        Double num = this.getTotalClickCost() / this.getNumClicks();
-        cacheSingle.put(tuple, num);
+    public Double getCPC(LocalDateTime start, LocalDateTime end) {
+        Double num = Double.valueOf(getCPCPerTimeList(start, end, Duration.between(start, end)).get(0));
         return num;
     }
 
-    public Double getCPM() {
-        Tuple tuple = new Tuple(CPM, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
-        Double num = this.getTotalCost() / (this.getNumImpressions()/1000);
-        cacheSingle.put(tuple, num);
+    public Double getCPM(LocalDateTime start, LocalDateTime end) {
+        Double num = Double.valueOf(getCPMPerTimeList(start, end, Duration.between(start, end)).get(0));
         return num;
     }
 
-    public Double getBounceRate() {
-        Tuple tuple = new Tuple(BOUNCE, campaign);
-        if (cacheSingle.containsKey(tuple)) {
-            return cacheSingle.get(tuple);
-        }
-        Double num = this.getNumBounces()/this.getNumClicks();
-        cacheSingle.put(tuple, num);
+    public Double getBounceRate(LocalDateTime start, LocalDateTime end) {
+        Double num = Double.valueOf(getBouncePerTimeList(start, end, Duration.between(start, end)).get(0));
         return num;
     }
 
     /**
-     *
-     * @param start the start date
-     * @param end the end date
+     * @param start    the start date
+     * @param end      the end date
      * @param duration the time interval for each data point e.g. 1 hour
      * @return
      */
@@ -385,7 +310,6 @@ public class Metrics {
         List data = clickDao.getByDateAndCampaign(campaign, start, end);
 
 
-
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
             LocalDateTime finalCurrent = current;
@@ -420,7 +344,6 @@ public class Metrics {
         return a -> set.add(keyFunc.apply(a));
     }
 
-    
     public XYChart.Series getUniquesPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         XYChart.Series series = new XYChart.Series();
@@ -431,18 +354,10 @@ public class Metrics {
         LocalDateTime current = start;
 
 
-
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
             LocalDateTime finalCurrent = current;
             Predicate<EntityAbstract> timePred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
-
-//            HashSet set = new HashSet<>();
-//
-//            for (Click click : clickDao.getByDateAndCampaign(campaign, current, nextTime)) {
-//                set.add(click.getId());
-//            }
-
 
             series.getData().add(new XYChart.Data(current.format(formatter), data.stream().filter(timePred.and(distinctBy(EntityAbstract::getId)).and(filter)).count()));
 
@@ -452,8 +367,31 @@ public class Metrics {
         return series;
     }
 
+    public ArrayList<Long> getUniquesPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
+
+        ArrayList<Long> impressList = new ArrayList<>();
+
+        List data = clickDao.getByDateAndCampaign(campaign, start, end);
+
+        LocalDateTime current = start;
+
+
+        while (current.isBefore(end)) {
+            LocalDateTime nextTime = current.plus(duration);
+            LocalDateTime finalCurrent = current;
+            Predicate<EntityAbstract> timePred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
+
+            impressList.add(data.stream().filter(timePred.and(distinctBy(EntityAbstract::getId)).and(filter)).count());
+
+            current = nextTime;
+        }
+
+        return impressList;
+    }
+
     /**
      * gives number of bounces
+     *
      * @param start
      * @param end
      * @param duration
@@ -480,7 +418,7 @@ public class Metrics {
         return series;
     }
 
-    private ArrayList<Integer> getBouncesPerTimeList (LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList<Integer> getBouncesPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
         LocalDateTime current = start;
         ArrayList<Integer> bounces = new ArrayList();
         List data = serverEntryDao.getByDateAndCampaign(campaign, start, end);
@@ -578,10 +516,33 @@ public class Metrics {
             series.getData().add(new XYChart.Data(current.format(formatter), con.get(index)));
 
             current = nextTime;
-            index ++;
+            index++;
         }
 
         return series;
+    }
+
+    public ArrayList<Double> getCTRPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
+
+        ArrayList<Double> ctrList = new ArrayList<>();
+
+        List clickData = clickDao.getByDateAndCampaign(campaign, start, end);
+        List impressData = impressionDao.getByDateAndCampaign(campaign, start, end);
+
+        LocalDateTime current = start;
+
+        while (current.isBefore(end)) {
+            LocalDateTime nextTime = current.plus(duration);
+            LocalDateTime finalCurrent = current;
+            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
+
+            ctrList.add((double) clickData.stream().filter(pred.and(filter)).count() / (impressData.stream().filter(pred.and(filter)).count() + 1));
+
+            current = nextTime;
+        }
+
+        return ctrList;
+
     }
 
     public XYChart.Series getCTRPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
@@ -599,12 +560,35 @@ public class Metrics {
             LocalDateTime finalCurrent = current;
             Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
 
-            series.getData().add(new XYChart.Data(current.format(formatter), (double) clickData.stream().filter(pred.and(filter)).count()/(impressData.stream().filter(pred.and(filter)).count()+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), (double) clickData.stream().filter(pred.and(filter)).count() / (impressData.stream().filter(pred.and(filter)).count() + 1)));
 
             current = nextTime;
         }
 
         return series;
+
+    }
+
+    public ArrayList<Double> getCPAPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
+
+        ArrayList<Double> cpaList = new ArrayList<>();
+
+        ArrayList<Double> costs = this.getTotalCostPerTime(start, end, duration);
+        ArrayList<Integer> cons = this.getConversionsPerTimeList(start, end, duration);
+
+        LocalDateTime current = start;
+        int index = 0;
+
+        while (current.isBefore(end)) {
+            LocalDateTime nextTime = current.plus(duration);
+
+            cpaList.add(costs.get(index) / (cons.get(index) + 1));
+
+            current = nextTime;
+            index++;
+        }
+
+        return cpaList;
 
     }
 
@@ -622,13 +606,36 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.format(formatter),  costs.get(index)/(cons.get(index)+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index) / (cons.get(index) + 1)));
 
             current = nextTime;
             index++;
         }
 
         return series;
+
+    }
+
+    public ArrayList<Double> getCPCPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
+
+        ArrayList<Double> cpcList = new ArrayList<>();
+
+        ArrayList<Double> costs = this.getTotalCostPerTime(start, end, duration);
+        ArrayList<Integer> clicks = this.getClicksPerTimeList(start, end, duration);
+
+        LocalDateTime current = start;
+        int index = 0;
+
+        while (current.isBefore(end)) {
+            LocalDateTime nextTime = current.plus(duration);
+
+            cpcList.add(Double.valueOf(costs.get(index)) / (clicks.get(index) + 1));
+
+            index++;
+            current = nextTime;
+        }
+
+        return cpcList;
 
     }
 
@@ -646,13 +653,37 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.format(formatter), Double.valueOf(costs.get(index))/(clicks.get(index)+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), Double.valueOf(costs.get(index)) / (clicks.get(index) + 1)));
 
-            index ++;
+            index++;
             current = nextTime;
         }
 
         return series;
+
+    }
+
+    public ArrayList<Double> getCPMPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
+
+        ArrayList<Double> cpmList = new ArrayList<>();
+
+        ArrayList<Double> costs = this.getTotalCostPerTime(start, end, duration);
+        ArrayList<Integer> impress = this.getImpressionsPerTimeList(start, end, duration);
+
+        LocalDateTime current = start;
+        int index = 0;
+
+        while (current.isBefore(end)) {
+            LocalDateTime nextTime = current.plus(duration);
+
+
+            cpmList.add(costs.get(index) / (impress.get(index) + 1));
+
+            index++;
+            current = nextTime;
+        }
+
+        return cpmList;
 
     }
 
@@ -671,9 +702,9 @@ public class Metrics {
             LocalDateTime nextTime = current.plus(duration);
 
 
-            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index)/(impress.get(index)+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index) / (impress.get(index) + 1)));
 
-            index ++;
+            index++;
             current = nextTime;
         }
 
@@ -681,8 +712,32 @@ public class Metrics {
 
     }
 
+    public ArrayList<Double> getBouncePerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
+
+        ArrayList<Double> bounceList = new ArrayList<>();
+
+        ArrayList<Integer> bounces = this.getBouncesPerTimeList(start, end, duration);
+        ArrayList<Integer> clicks = this.getClicksPerTimeList(start, end, duration);
+
+        LocalDateTime current = start;
+        int index = 0;
+
+        while (current.isBefore(end)) {
+            LocalDateTime nextTime = current.plus(duration);
+
+            bounceList.add( Double.valueOf(bounces.get(index)) / (clicks.get(index) + 1));
+
+            index++;
+            current = nextTime;
+        }
+
+        return bounceList;
+
+    }
+
     /**
      * bounce RATE
+     *
      * @param start
      * @param end
      * @param duration
@@ -702,9 +757,9 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.format(formatter), Double.valueOf(bounces.get(index))/(clicks.get(index)+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), Double.valueOf(bounces.get(index)) / (clicks.get(index) + 1)));
 
-            index ++;
+            index++;
             current = nextTime;
         }
 
@@ -742,11 +797,6 @@ public class Metrics {
             return Objects.hash(name, camp);
         }
     }
-
-
-
-
-
 
 
 }

@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import models.Metrics;
 import models.PieChartModel;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 
@@ -60,19 +61,22 @@ public class StatisticsTabController{
         this.metricsModel.setCampaign(campaignName);
 
         statsCampaignNameLabel.setText(campaignName);
-        Double nrImpressions = this.metricsModel.getNumImpressions();
 
-        numImpressions.setText(String.valueOf(nrImpressions));
-        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks()));
-        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs()));
-        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces()));
-        numConversions.setText(String.valueOf(this.metricsModel.getConversions()));
-        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost()));
-        CTR.setText(String.valueOf(this.metricsModel.getCTR()));
-        CPA.setText(String.valueOf(this.metricsModel.getCPA()));
-        CPC.setText(String.valueOf(this.metricsModel.getCPC()));
-        CPM.setText(String.valueOf(this.metricsModel.getCPM()));
-        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate()));
+        LocalDateTime start = this.controller.getStart();
+        LocalDateTime end = this.controller.getEnd();
+
+
+        numImpressions.setText(String.valueOf(this.metricsModel.getNumImpressions(start, end)));
+        numClicks.setText(String.valueOf(this.metricsModel.getNumClicks(start, end)));
+        numUnique.setText(String.valueOf(this.metricsModel.getNumUniqs(start, end)));
+        numBounces.setText(String.valueOf(this.metricsModel.getNumBounces(start, end)));
+        numConversions.setText(String.valueOf(this.metricsModel.getConversions(start, end)));
+        totalCost.setText(String.valueOf(this.metricsModel.getTotalCost(start, end)));
+        CTR.setText(String.valueOf(this.metricsModel.getCTR(start, end)));
+        CPA.setText(String.valueOf(this.metricsModel.getCPA(start, end)));
+        CPC.setText(String.valueOf(this.metricsModel.getCPC(start, end)));
+        CPM.setText(String.valueOf(this.metricsModel.getCPM(start, end)));
+        bounceRate.setText(String.valueOf(this.metricsModel.getBounceRate(start, end)));
 
 
         this.pieChartModel.setCampaign(campaignName);
