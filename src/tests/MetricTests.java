@@ -6,15 +6,11 @@ import models.ReaderCSV;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
-
 import static org.junit.Assert.assertTrue;
 
 public class MetricTests {
 
     private static Metrics metrics;
-    private static LocalDateTime start = LocalDateTime.of(2015, 1, 1, 12, 0);
-    private static LocalDateTime end = LocalDateTime.of(2015, 1, 2, 12, 0);
 
     @BeforeClass
     public static void setupThis(){
@@ -32,27 +28,28 @@ public class MetricTests {
 
     @Test
     public void totalImpressionsTest() {
-        assertTrue(metrics.getNumImpressions(start, end) == 99);
+        System.out.println(metrics.getNumImpressions());
+        assertTrue(metrics.getNumImpressions() == 99);
     }
 
     @Test
     public void totalClicksTest() {
-        assertTrue(metrics.getNumClicks(start, end) == 99);
+        assertTrue(metrics.getNumClicks() == 99);
     }
 
     @Test
     public void uniquesTest() {
-        assertTrue(metrics.getNumUniqs(start, end) == 98);
+        assertTrue(metrics.getNumUniqs() == 98);
     }
 
     @Test
     public void conversionsTest() {
-        assertTrue(metrics.getConversions(start, end) == 6);
+        assertTrue(metrics.getConversions() == 6);
     }
 
     @Test
     public void cTRTest() {
-        assertTrue(metrics.getCTR(start, end) == 1);
+        assertTrue(metrics.getCTR() == 1);
     }
 
 
@@ -61,17 +58,17 @@ public class MetricTests {
     //total total cost = 464.941084
     @Test
     public void cPATest() {
-        assertTrue(metrics.getCPA(start, end) == (464.9410839999999/6));
+        assertTrue(metrics.getCPA() == (464.9410839999999/6));
     }
 
     @Test
     public void cPCTest() {
-        assertTrue(metrics.getCPC(start, end) == (464.83540999999985/99));
+        assertTrue(metrics.getCPC() == (464.83540999999985/99));
     }
 
     @Test
     public void cPMTest() {
-        assertTrue(metrics.getCPM(start, end) == (4696.374585858584));
+        assertTrue(metrics.getCPM() == (4696.374585858584));
     }
 
 
