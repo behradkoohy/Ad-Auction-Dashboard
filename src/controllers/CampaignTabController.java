@@ -10,8 +10,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import models.ReaderCSV;
+import popups.LoadingPopup;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -43,10 +45,11 @@ public class CampaignTabController{
         // load previous campaigns
         // TODO : change method to use a campaign Entity and DAO
         this.loadPreviousCampaigns();
+
     }
 
     // TODO : refactor using campaign Entity
-    private void loadPreviousCampaigns(){
+    public void loadPreviousCampaigns(){
         try {
             campaignChooser.getItems().addAll(clickDao.getCampaigns());
         } catch (Exception e) {
@@ -56,13 +59,21 @@ public class CampaignTabController{
 
     public void loadSelectedCampaign() {
         String campaignName = (String)campaignChooser.getValue();
+
         if( campaignName != null ){
+
             this.controller.success("Selected campaign " + campaignName + ". Importing data..." );
+            //LoadingPopup p = new LoadingPopup("Loading campaign: " + campaignName + "...");
             this.controller.loadCampaignData(campaignName);
+            controller.unGreyOtherTabs();
             this.controller.goToMainPage();
+
         }else{
+
             this.controller.error("Please select a campaign");
+
         }
+
     }
 
     /**
@@ -228,6 +239,9 @@ public class CampaignTabController{
             serverLabel.setText("");
 
             this.controller.loadCampaignData(newCampaignName);
+
+            controller.unGreyOtherTabs();
+
             this.controller.goToMainPage();
 
         }catch (Exception e) {
@@ -236,6 +250,10 @@ public class CampaignTabController{
 
     }
 
+    public List getCampaignChooserItems(){
 
+        return campaignChooser.getItems();
+
+    }
 
 }

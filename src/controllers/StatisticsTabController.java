@@ -8,6 +8,9 @@ import models.PieChartModel;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 
 public class StatisticsTabController{
@@ -32,6 +35,7 @@ public class StatisticsTabController{
     @FXML private PieChart genderPie;
     @FXML private PieChart agePie;
     @FXML private PieChart incomePie;
+    @FXML private PieChart contextPie;
 
     public void init(Controller controller){
         this.controller = controller;
@@ -39,20 +43,29 @@ public class StatisticsTabController{
         this.pieChartModel = new PieChartModel();
     }
 
-    public void initialize(Metrics metricsModel){
-
-        this.metricsModel = metricsModel;
+    @FXML
+    public void initialize(){
 
         //Setting up the look of the pie charts
         genderPie.setTitle("Gender");
         genderPie.setLegendVisible(false);
-        genderPie.setStyle("-fx-font-size: " + 10 + "px;");
+        genderPie.setStyle("-fx-font-size: 10");
         agePie.setTitle("Age");
         agePie.setLegendVisible(false);
-        agePie.setStyle("-fx-font-size: " + 10 + "px;");
+        agePie.setStyle("-fx-font-size: 10");
         incomePie.setTitle("Income");
         incomePie.setLegendVisible(false);
-        incomePie.setStyle("-fx-font-size: " + 10 + "px;");
+        incomePie.setStyle("-fx-font-size: 10");
+        contextPie.setTitle("Context");
+        contextPie.setLegendVisible(false);
+        contextPie.setStyle("-fx-font-size: 10");
+
+    }
+
+    public void initialize(Metrics metricsModel){
+
+        this.metricsModel = metricsModel;
+
     }
 
     public void loadData(String campaignName) {
@@ -84,11 +97,25 @@ public class StatisticsTabController{
         this.pieChartModel.setEnd(this.controller.getEnd());
         HashMap<String, Integer> pieChartData =  this.pieChartModel.getDistributions();
 
+        //ADD CONTEXT DATA
         updatePieChartData(
                 pieChartData.get("men"), pieChartData.get("women"),
                 pieChartData.get("lt25"), pieChartData.get("btwn2534"), pieChartData.get("btwn3544"), pieChartData.get("btwn4554"), pieChartData.get("gt55"),
                 pieChartData.get("low"), pieChartData.get("medium"), pieChartData.get("high")
         );
+
+    }
+
+    /**
+     * Returns the double rounded to 2 decimal places, used
+     * for presenting data in the stats tab
+     * @return
+     */
+    public double to2DP(double x){
+
+         x = (double) Math.round(x * 100);
+         x /= 100;
+         return x;
 
     }
 
@@ -116,9 +143,12 @@ public class StatisticsTabController{
                                    int medIncome, int highIncome){
 
 
+        //ADD CONTEXT DATA
+
         genderPie.getData().clear();
         agePie.getData().clear();
         incomePie.getData().clear();
+        contextPie.getData().clear();
 
         PieChart.Data gender1 = new PieChart.Data("Men", men);
         PieChart.Data gender2 = new PieChart.Data("Women", women);
@@ -135,6 +165,49 @@ public class StatisticsTabController{
         PieChart.Data income2 = new PieChart.Data("Medium", medIncome);
         PieChart.Data income3 = new PieChart.Data("High", highIncome);
         incomePie.getData().addAll(income1, income2, income3);
+
+        Random r = new Random();
+
+        //Fill with random data for now just to show where it is on UI
+        PieChart.Data context1 = new PieChart.Data("News", r.nextInt(10));
+        PieChart.Data context2 = new PieChart.Data("Shopping", r.nextInt(10));
+        PieChart.Data context3 = new PieChart.Data("Social Media", r.nextInt(10));
+        PieChart.Data context4 = new PieChart.Data("Blog", r.nextInt(10));
+        PieChart.Data context5 = new PieChart.Data("Hobbies", r.nextInt(10));
+        PieChart.Data context6 = new PieChart.Data("Travel", r.nextInt(10));
+        contextPie.getData().addAll(context1, context2, context3, context4, context5, context6);
+
+    }
+
+    //TODO for use with JUNIT test
+    public Metrics getMetrics(){
+
+        return metricsModel;
+
+    }
+
+    //TODO for use with JUNIT test
+    public String[] getLabelVals(){
+
+        return new String[]{numImpressions.getText(),
+        numClicks.getText(), numUnique.getText(), numBounces.getText(),
+        numConversions.getText(), totalCost.getText(), CTR.getText(),
+        CPA.getText(), CPC.getText(), CPM.getText(), bounceRate.getText()};
+
+    }
+
+    //TODO for use with JUNIT test
+    public Map<String, Integer> getPieChartModelData(){
+
+        return this.pieChartModel.getDistributions();
+
+    }
+
+    //TODO for use with JUNIT test
+    public List[] getPieChartData(){
+
+        return new List[]{genderPie.getData(), agePie.getData(),
+        incomePie.getData(), contextPie.getData()};
 
     }
 

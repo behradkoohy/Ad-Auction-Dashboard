@@ -74,6 +74,4 @@ public class MetricTests {
         assertTrue(metrics.getCPM(start, end) == (4696.374585858584));
     }
 
-
-
 }

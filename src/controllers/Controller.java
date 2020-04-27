@@ -95,6 +95,32 @@ public class Controller {
         accessibilityTabController.init(this);
         printTabController.init(this);
 
+        greyOutOtherTabs();
+
+    }
+
+    /**
+     * Greys out all the tabs apart from campaign management
+     */
+    public void greyOutOtherTabs(){
+
+        LHS.getTabs().get(1).setDisable(true);
+        LHS.getTabs().get(2).setDisable(true);
+        LHS.getTabs().get(3).setDisable(true);
+        LHS.getTabs().get(4).setDisable(true);
+
+    }
+
+    /**
+     * Ungreys all the other tabs
+     */
+    public void unGreyOtherTabs(){
+
+        LHS.getTabs().get(1).setDisable(false);
+        LHS.getTabs().get(2).setDisable(false);
+        LHS.getTabs().get(3).setDisable(false);
+        LHS.getTabs().get(4).setDisable(false);
+
     }
 
     public Metrics getMetrics() {
