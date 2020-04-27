@@ -161,8 +161,8 @@ public class GraphsTabController {
     public void updateChart(){
         this.start = controller.getStart();
         this.end = controller.getEnd();
-        //TODO let user decide granularity
         this.duration = calcDuration();
+        //TODO something with multiple charts
         for (String campaignName : campaigns) {
             ChartHandler handler = new ChartHandler(campaignName, lineChart, lineChartXAxis,
                     lineChartYAxis, this.controller.calcMetric(), this.data, this.controller.unitsDifference, impressions,

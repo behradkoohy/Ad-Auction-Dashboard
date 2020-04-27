@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import models.Filter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -91,6 +92,7 @@ public class FilterTabController {
     //These toggle methods will be called whenever the checkboxes are ticked/unticked
     @FXML
     public void toggleMale(){
+        System.out.println("toggle male");
 
         male = !male;
 
@@ -214,7 +216,14 @@ public class FilterTabController {
 
     public void reloadData() {
         //In future should pass through toggles as params
+        controller.getMetrics().setFilter(makeFilter());
         controller.reloadCampaignData();
+    }
+
+    private Filter makeFilter() {
+        return new Filter(male, female,
+                            lt25, btwn2534, btwn3544, btwn4554, gt55,
+                            lowIncome, medIncome, highIncome);
     }
 
     @FXML

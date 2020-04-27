@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Impression")
-public class Impression implements Serializable {
+public class Impression extends EntityAbstract implements Serializable {
 
     public Impression() {
 

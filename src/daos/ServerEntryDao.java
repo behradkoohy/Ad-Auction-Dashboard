@@ -75,7 +75,7 @@ public class ServerEntryDao {
 
     public LocalDateTime getMaxDateFromCampaign(String campaign) {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
-            LocalDateTime maxDate = session.createQuery("select max(s.exitDate) from ServerEntry s where campaign=:campaign"
+            LocalDateTime maxDate = session.createQuery("select max(s.entryDate) from ServerEntry s where campaign=:campaign"
                     , LocalDateTime.class).setParameter("campaign", campaign).uniqueResult();
             return maxDate;
         }
