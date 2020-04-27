@@ -7,6 +7,8 @@ import models.Metrics;
 import models.PieChartModel;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -169,6 +171,38 @@ public class StatisticsTabController{
         PieChart.Data context5 = new PieChart.Data("Hobbies", r.nextInt(10));
         PieChart.Data context6 = new PieChart.Data("Travel", r.nextInt(10));
         contextPie.getData().addAll(context1, context2, context3, context4, context5, context6);
+
+    }
+
+    //TODO for use with JUNIT test
+    public Metrics getMetrics(){
+
+        return metricsModel;
+
+    }
+
+    //TODO for use with JUNIT test
+    public String[] getLabelVals(){
+
+        return new String[]{numImpressions.getText(),
+        numClicks.getText(), numUnique.getText(), numBounces.getText(),
+        numConversions.getText(), totalCost.getText(), CTR.getText(),
+        CPA.getText(), CPC.getText(), CPM.getText(), bounceRate.getText()};
+
+    }
+
+    //TODO for use with JUNIT test
+    public Map<String, Integer> getPieChartModelData(){
+
+        return this.pieChartModel.getDistributions();
+
+    }
+
+    //TODO for use with JUNIT test
+    public List[] getPieChartData(){
+
+        return new List[]{genderPie.getData(), agePie.getData(),
+        incomePie.getData(), contextPie.getData()};
 
     }
 
