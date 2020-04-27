@@ -94,7 +94,6 @@ public class ChartHandler {
 
         chart.getData().clear();
 
-
         //TODO Disregard the time for now and just test chart function using 10 points on x axis
         //unitDifference = 10;
 
@@ -176,7 +175,10 @@ public class ChartHandler {
 
     }
 
-
+    /*
+    At the moment this is dummy data, can change the constructor e.g. add the controller as
+    an argument so that the updated data sets from the database to go on the chart can be accessed
+    */
     private void addImpressions(){
 
         XYChart.Series series = metricsModel.getImpressionsPerTime(start, end, duration);

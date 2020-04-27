@@ -6,18 +6,14 @@ import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import entities.Click;
-import entities.EntityAbstract;
 import entities.Impression;
 import entities.ServerEntry;
 import javafx.scene.chart.XYChart;
 
-import java.beans.IntrospectionException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 
@@ -27,7 +23,7 @@ public class Metrics {
     private String campaign = null;
 
     private boolean bounceDef = false;
-    private int bouncePages = 3;
+    private int bouncePages = 1;
     private Duration bounceTime = Duration.ofSeconds(5);
 
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yy");
@@ -36,8 +32,6 @@ public class Metrics {
     private ClickDao clickDao = DaoInjector.newClickDao();
     private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
     private ServerEntryDao serverEntryDao = DaoInjector.newServerEntryDao();
-
-    private Filter filter;
 
     //Potentially dont need to cache at this point since implemented dao caching
     private HashMap<Tuple, Double> cacheSingle = new HashMap<>();
@@ -54,12 +48,6 @@ public class Metrics {
     private static int CPC = 9;
     private static int CPM = 10;
     private static int BOUNCE = 11;
-
-    public Metrics() {
-        this.filter = new Filter(true, true,
-                true, true, true, true, true,
-                true, true, true);
-    }
 
     public void setCampaign(String campaign) {
         this.campaign = campaign;
@@ -207,11 +195,11 @@ public class Metrics {
 
     }
 
-    private ArrayList<Double> getTotalCostPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList getTotalCostPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         ArrayList<Double> clickCosts = this.getTotalClickCostPerTime(start, end, duration);
         ArrayList<Double> impressionCosts = this.getTotalImpressionsCostPerTime(start, end, duration);
-        ArrayList<Double> totalCosts = new ArrayList();
+        ArrayList totalCosts = new ArrayList();
 
         for (int i = 0; i < clickCosts.size(); i++) {
             totalCosts.add(clickCosts.get(i) + impressionCosts.get(i));
@@ -235,7 +223,7 @@ public class Metrics {
 
     private ArrayList<Double> getTotalClickCostPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
-        ArrayList<Double> costs = new ArrayList();
+        ArrayList costs = new ArrayList();
 
         LocalDateTime current = start;
 
@@ -271,7 +259,7 @@ public class Metrics {
 
     private ArrayList<Double> getTotalImpressionsCostPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
-        ArrayList<Double> costs = new ArrayList();
+        ArrayList costs = new ArrayList();
 
         LocalDateTime current = start;
 
@@ -349,9 +337,9 @@ public class Metrics {
             LocalDateTime nextTime = current.plus(duration);
 
             LocalDateTime finalCurrent = current;
-            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
+            Predicate<Impression> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
 
-            series.getData().add(new XYChart.Data(current.format(formatter), (impress.stream().filter(pred.and(filter)).count())));
+            series.getData().add(new XYChart.Data(current.format(formatter), (impress.stream().filter(pred).count())));
             current = nextTime;
         }
 
@@ -359,17 +347,13 @@ public class Metrics {
         return series;
     }
 
-    private ArrayList<Integer> getImpressionsPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
-        ArrayList<Integer> impress = new ArrayList();
-        List impressData = impressionDao.getByDateAndCampaign(campaign, start, end);
+    private ArrayList getImpressionsPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
+        ArrayList impress = new ArrayList();
         LocalDateTime current = start;
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            LocalDateTime finalCurrent = current;
-            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
-
-            impress.add((int) impressData.stream().filter(pred.and(filter)).count());
+            impress.add(impressionDao.getByDateAndCampaign(campaign, current, nextTime).size());
             current = nextTime;
         }
 
@@ -382,42 +366,27 @@ public class Metrics {
         series.setName("Clicks");
 
         LocalDateTime current = start;
-        List data = clickDao.getByDateAndCampaign(campaign, start, end);
-
-
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            LocalDateTime finalCurrent = current;
-            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
-
-            series.getData().add(new XYChart.Data(current.format(formatter), data.stream().filter(pred.and(filter)).count()));
+            series.getData().add(new XYChart.Data(current.format(formatter), clickDao.getByDateAndCampaign(campaign, current, nextTime).size()));
             current = nextTime;
         }
 
         return series;
     }
 
-    private ArrayList<Integer> getClicksPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
+    private ArrayList getClicksPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
         LocalDateTime current = start;
         ArrayList<Integer> clicks = new ArrayList<>();
-        List data = clickDao.getByDateAndCampaign(campaign, start, end);
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            LocalDateTime finalCurrent = current;
-            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
-
-            clicks.add((int) data.stream().filter(pred.and(filter)).count());
+            clicks.add(clickDao.getByDateAndCampaign(campaign, current, nextTime).size());
             current = nextTime;
         }
 
         return clicks;
-    }
-
-    public static <T> Predicate<T> distinctBy(Function<? super T, ?> keyFunc) {
-        Set set = ConcurrentHashMap.newKeySet();
-        return a -> set.add(keyFunc.apply(a));
     }
 
     
@@ -426,25 +395,18 @@ public class Metrics {
         XYChart.Series series = new XYChart.Series();
         series.setName("Uniques");
 
-        List data = clickDao.getByDateAndCampaign(campaign, start, end);
-
         LocalDateTime current = start;
-
-
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            LocalDateTime finalCurrent = current;
-            Predicate<EntityAbstract> timePred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
 
-//            HashSet set = new HashSet<>();
-//
-//            for (Click click : clickDao.getByDateAndCampaign(campaign, current, nextTime)) {
-//                set.add(click.getId());
-//            }
+            HashSet set = new HashSet<>();
 
+            for (Click click : clickDao.getByDateAndCampaign(campaign, current, nextTime)) {
+                set.add(click.getId());
+            }
 
-            series.getData().add(new XYChart.Data(current.format(formatter), data.stream().filter(timePred.and(distinctBy(EntityAbstract::getId)).and(filter)).count()));
+            series.getData().add(new XYChart.Data(current.format(formatter), set.size()));
 
             current = nextTime;
         }
@@ -463,99 +425,110 @@ public class Metrics {
 
         XYChart.Series series = new XYChart.Series();
         series.setName("Bounces");
-        ArrayList bouncey = getBouncesPerTimeList(start, end, duration);
-        int index = 0;
 
         LocalDateTime current = start;
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-
-            series.getData().add(new XYChart.Data(current.format(formatter), bouncey.get(index)));
-
-            current = nextTime;
-            index++;
-        }
-
-        return series;
-    }
-
-    private ArrayList<Integer> getBouncesPerTimeList (LocalDateTime start, LocalDateTime end, Duration duration) {
-        LocalDateTime current = start;
-        ArrayList<Integer> bounces = new ArrayList();
-        List data = serverEntryDao.getByDateAndCampaign(campaign, start, end);
-
-        while (current.isBefore(end)) {
-            LocalDateTime nextTime = current.plus(duration);
-            LocalDateTime finalCurrent = current;
-
-            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
-            Predicate<ServerEntry> serverNullPred = n -> n.getExitDate() != null;
-            Predicate<ServerEntry> serverDurationPred = n -> Duration.between(n.getEntryDate(), n.getExitDate()).compareTo(bounceTime) < 0;
-            Predicate<ServerEntry> serverPagePred = n -> n.getPageViews() < bouncePages;
-
 
             int num = 0;
             //time spent defines bounce
             if (bounceDef) {
-                //have to remove entries with no exit date first
-                bounces.add((int) data.stream().filter(pred).filter(filter).filter(serverNullPred).filter(serverDurationPred).count());
+
+                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
+                    //exitDate can be null!!!! - check if this actually works
+                    if (server.getExitDate() != null) {
+                        Duration timeSpent = Duration.between(server.getEntryDate(), server.getExitDate());
+                        if (timeSpent.compareTo(bounceTime) <= 0) {
+                            num ++;
+                        }
+                    }
 
 
-//                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
-//
-//                    if (server.getExitDate() != null) {
-//                        Duration timeSpent = Duration.between(server.getEntryDate(), server.getExitDate());
-//                        if (timeSpent.compareTo(bounceTime) <= 0) {
-//                            num ++;
-//                        }
-//                    }
-//
-//
-//                }
+
+                }
 
             }
             //pages viewed defines bounce
             else {
 
-                bounces.add((int) data.stream().filter(pred).filter(serverPagePred).filter(filter).count());
-//                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
-//                    if (server.getPageViews() < bouncePages) {
-//                        num ++;
-//                    }
-//                }
-//            }
-//
-//            bounces.add(num);
+                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
 
+                    if (server.getPageViews() < bouncePages) {
 
+                        num ++;
+
+                    }
+                    else {
+
+                    }
+                }
             }
+
+            series.getData().add(new XYChart.Data(current.format(formatter), num));
+
             current = nextTime;
         }
-        return bounces;
+
+        return series;
     }
 
-    private ArrayList<Integer> getConversionsPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
-        ArrayList<Integer> conversions = new ArrayList();
+    private ArrayList getBouncesPerTimeList (LocalDateTime start, LocalDateTime end, Duration duration) {
         LocalDateTime current = start;
-        List data = serverEntryDao.getByDateAndCampaign(campaign, start, end);
+        ArrayList bounces = new ArrayList();
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            LocalDateTime finalCurrent = current;
-            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
-            Predicate<ServerEntry> converPred = n -> n.getConversion();
 
-            conversions.add((int) data.stream().filter(pred).filter(filter).filter(converPred).count());
+            int num = 0;
+            //time spent defines bounce
+            if (bounceDef) {
 
-//            int num = 0;
-//            for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
-//                if (server.getConversion()) {
-//                    num++;
-//                }
-//            }
-//
-//            conversions.add(num);
+                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
+
+                    if (server.getExitDate() != null) {
+                        Duration timeSpent = Duration.between(server.getEntryDate(), server.getExitDate());
+                        if (timeSpent.compareTo(bounceTime) <= 0) {
+                            num ++;
+                        }
+                    }
+
+
+                }
+
+            }
+            //pages viewed defines bounce
+            else {
+                for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
+                    if (server.getPageViews() < bouncePages) {
+                        num ++;
+                    }
+                }
+            }
+
+            bounces.add(num);
+
+            current = nextTime;
+        }
+
+        return bounces;
+    }
+
+    private ArrayList getConversionsPerTimeList(LocalDateTime start, LocalDateTime end, Duration duration) {
+        ArrayList conversions = new ArrayList();
+        LocalDateTime current = start;
+
+        while (current.isBefore(end)) {
+            LocalDateTime nextTime = current.plus(duration);
+
+            int num = 0;
+            for (ServerEntry server : serverEntryDao.getByDateAndCampaign(campaign, current, nextTime)) {
+                if (server.getConversion()) {
+                    num++;
+                }
+            }
+
+            conversions.add(num);
 
             current = nextTime;
         }
@@ -589,17 +562,12 @@ public class Metrics {
         XYChart.Series series = new XYChart.Series();
         series.setName("CTR");
 
-        List clickData = clickDao.getByDateAndCampaign(campaign, start, end);
-        List impressData = impressionDao.getByDateAndCampaign(campaign, start, end);
-
         LocalDateTime current = start;
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
-            LocalDateTime finalCurrent = current;
-            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
 
-            series.getData().add(new XYChart.Data(current.format(formatter), (double) clickData.stream().filter(pred.and(filter)).count()/(impressData.stream().filter(pred.and(filter)).count()+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), clickDao.getByDateAndCampaign(campaign, current, nextTime).size()/impressionDao.getByDateAndCampaign(campaign, current, nextTime).size()));
 
             current = nextTime;
         }
@@ -622,10 +590,10 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.format(formatter),  costs.get(index)/(cons.get(index)+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index)/cons.get(index)));
 
+            index ++;
             current = nextTime;
-            index++;
         }
 
         return series;
@@ -646,7 +614,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.format(formatter), Double.valueOf(costs.get(index))/(clicks.get(index)+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index)/clicks.get(index)));
 
             index ++;
             current = nextTime;
@@ -670,8 +638,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-
-            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index)/(impress.get(index)+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), costs.get(index)/impress.get(index)));
 
             index ++;
             current = nextTime;
@@ -702,7 +669,7 @@ public class Metrics {
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            series.getData().add(new XYChart.Data(current.format(formatter), Double.valueOf(bounces.get(index))/(clicks.get(index)+1)));
+            series.getData().add(new XYChart.Data(current.format(formatter), bounces.get(index)/(clicks.get(index))+1));
 
             index ++;
             current = nextTime;
@@ -710,13 +677,6 @@ public class Metrics {
 
         return series;
 
-    }
-
-    public void setFilter(Filter filter) {
-        System.out.println(this.filter);
-        System.out.println("Change filter");
-        this.filter = filter;
-        System.out.println(this.filter);
     }
 
     private static class Tuple {

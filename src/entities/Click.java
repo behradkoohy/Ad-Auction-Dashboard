@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Click")
-public class Click extends EntityAbstract implements Serializable {
+public class Click implements Serializable {
 
     public Click() {
 
@@ -75,25 +75,5 @@ public class Click extends EntityAbstract implements Serializable {
         System.out.println("Date: " + date);
         System.out.println("Click cost: " + clickCost);
         user.print();
-    }
-
-    @Override
-    public User.Gender getGender() {
-        return getUser().getGender();
-    }
-
-    @Override
-    public User.Age getAge() {
-        return getUser().getAge();
-    }
-
-    @Override
-    public User.Income getIncome() {
-        return getUser().getIncome();
-    }
-
-    @Override
-    public User.Context getContext() {
-        return getUser().getContext();
     }
 }

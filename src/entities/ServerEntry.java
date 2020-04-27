@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ServerEntry")
-public class ServerEntry extends EntityAbstract implements Serializable {
+public class ServerEntry implements Serializable {
 
     public ServerEntry() {
 
@@ -89,31 +89,6 @@ public class ServerEntry extends EntityAbstract implements Serializable {
         System.out.println("Page Views: " + pageViews);
         System.out.println("Conversion: " + conversion);
         user.print();
-    }
-
-    @Override
-    public User.Gender getGender() {
-        return getUser().getGender();
-    }
-
-    @Override
-    public User.Age getAge() {
-        return getUser().getAge();
-    }
-
-    @Override
-    public User.Income getIncome() {
-        return getUser().getIncome();
-    }
-
-    @Override
-    public User.Context getContext() {
-        return getUser().getContext();
-    }
-
-    @Override
-    public LocalDateTime getDate() {
-        return getEntryDate();
     }
 
 }
