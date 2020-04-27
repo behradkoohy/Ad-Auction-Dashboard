@@ -51,7 +51,7 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of Impressions:">
+                                        <Label fx:id="numImpressionsTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of Impressions:">
                                             <GridPane.margin>
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
@@ -59,7 +59,7 @@
                               <Tooltip text="The total number of times this advert has been shown to a user" />
                            </tooltip>
                                         </Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of clicks:" GridPane.rowIndex="1">
+                                        <Label fx:id="clicksTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of clicks:" GridPane.rowIndex="1">
                                             <GridPane.margin>
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
@@ -67,7 +67,7 @@
                               <Tooltip text="The total number of users that have actively clicked on this advert" />
                            </tooltip>
                                         </Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Number of unique users:" GridPane.rowIndex="2">
+                                        <Label fx:id="uniqueTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Number of unique users:" GridPane.rowIndex="2">
                                             <GridPane.margin>
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
@@ -75,7 +75,7 @@
                               <Tooltip text="The total number of unique users that have clicked on the advert so far" />
                            </tooltip>
                                         </Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of bounces:" GridPane.rowIndex="3">
+                                        <Label fx:id="bounceTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of bounces:" GridPane.rowIndex="3">
                                             <GridPane.margin>
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
@@ -83,7 +83,7 @@
                               <Tooltip text="The total number of bounces recorded so far. A bounce is when the user has failed to interact with the advert upon clicking on it e.g. closed after x seconds, closed after only opening one page. You can define how a bounce should be measured in the &quot;Bounce&quot; tab" />
                            </tooltip>
                                         </Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of conversions:" GridPane.rowIndex="4">
+                                        <Label fx:id="conversionsTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of conversions:" GridPane.rowIndex="4">
                                             <GridPane.margin>
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
@@ -91,7 +91,7 @@
                               <Tooltip text="The total number of conversions recorded so far. A conversion is when the advert has been &quot;successful&quot; e.g. the user subscribed to the service advertised or bought the product advertised" />
                            </tooltip>
                                         </Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total cost of campaign:" GridPane.rowIndex="5">
+                                        <Label fx:id="costTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total cost of campaign:" GridPane.rowIndex="5">
                                             <GridPane.margin>
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
@@ -99,23 +99,23 @@
                               <Tooltip text="The total cost of the campaign so far" />
                            </tooltip>
                                         </Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CTR:" GridPane.columnIndex="2">
+                                        <Label fx:id="ctrTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CTR:" GridPane.columnIndex="2">
                            <tooltip>
                               <Tooltip text="The average number of clicks per impression" />
                            </tooltip></Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPA:" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                        <Label fx:id="cpaTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPA:" GridPane.columnIndex="2" GridPane.rowIndex="1">
                            <tooltip>
                               <Tooltip text="The average amount of money spent for each acquisition (for each conversion)" />
                            </tooltip></Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPC:" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                        <Label fx:id="cpcTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPC:" GridPane.columnIndex="2" GridPane.rowIndex="2">
                            <tooltip>
                               <Tooltip text="The average amount of money spent for each click" />
                            </tooltip></Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPM:" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                        <Label fx:id="cpmTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPM:" GridPane.columnIndex="2" GridPane.rowIndex="3">
                            <tooltip>
                               <Tooltip text="The average amount of money spent for every 1000 impressions" />
                            </tooltip></Label>
-                                        <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Bounce Rate:" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                        <Label fx:id="bounceRateTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Bounce Rate:" GridPane.columnIndex="2" GridPane.rowIndex="4">
                            <tooltip>
                               <Tooltip text="The average number of bounces per click" />
                            </tooltip></Label>
