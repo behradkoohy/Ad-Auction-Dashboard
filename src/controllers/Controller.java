@@ -8,6 +8,7 @@ import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import com.jfoenix.controls.*;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -240,11 +241,35 @@ public class Controller {
 
     }
 
+    public String getCurrentCampaignName(){
+
+        return currentCampaignName;
+
+    }
+
+    /**
+     * Can be used to check if the thread that called this method is the javaFX thread,
+     * if not then throw an exception
+     * @param methodName
+     * @throws Exception
+     */
+    public void verifyIsFXThread(String methodName) throws Exception{
+
+        if(!Platform.isFxApplicationThread()){
+
+            throw new Exception(methodName + " was called on a thread other than the javaFX thread! \n Make sure " +
+                    "you use: " + methodName + "EXT if you want to update the GUI from an external thread");
+
+        }
+
+    }
+
     /**
      *
      * @return gives current start date
      */
     public LocalDateTime getStart() {
+
         LocalDateTime before = LocalDateTime.of(filterTabController.dFrom, filterTabController.tFrom);
         return before;
 
