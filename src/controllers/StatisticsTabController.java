@@ -102,7 +102,7 @@ public class StatisticsTabController{
         populateLabelsEXT(campaignName, numImpressionsStr, numClicksStr, numUniqueStr, numBouncesStr, numConversionsStr,
                 totalCostStr, CTRstr, CPAstr, CPCstr, CPMstr, bounceRateStr);
 
-        //Possible a bit of a hardcoding/hacky way of doing it but its fine for now
+        //Possibly a bit of a hardcoding/hacky way of doing it but its fine for now
         populatePieChartsEXT(newPieChartData.get(0), newPieChartData.get(1), newPieChartData.get(2), newPieChartData.get(3));
 
     }
@@ -142,7 +142,7 @@ public class StatisticsTabController{
      * @param CPC
      * @param CPM
      */
-    public void populateLabels(String campaignName, String numImpressions, String numClicks, String numUnique,
+    private void populateLabels(String campaignName, String numImpressions, String numClicks, String numUnique,
                                String numBounces, String numConversions, String totalCost, String CTR, String CPA,
                                String CPC, String CPM, String bounceRate){
 
@@ -174,7 +174,8 @@ public class StatisticsTabController{
     }
 
     /**
-     * Update the pie charts from an external thread
+     * Allows updating the pie charts from an external thread
+     *
      * @param genderData
      * @param ageData
      * @param incomeData
@@ -202,7 +203,7 @@ public class StatisticsTabController{
      * @param incomeData
      * @param contextData
      */
-    public void populatePieCharts(List<PieChart.Data> genderData, List<PieChart.Data> ageData,
+    private void populatePieCharts(List<PieChart.Data> genderData, List<PieChart.Data> ageData,
                                   List<PieChart.Data> incomeData, List<PieChart.Data> contextData) {
 
         try {
@@ -241,12 +242,10 @@ public class StatisticsTabController{
     }
 
     /**
-
      * Update the pie charts to show that some data has changed
      *
      * All values are the number of users there are for each attribute
      *
-
      * @param men
      * @param women
      * @param lt25

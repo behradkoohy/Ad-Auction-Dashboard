@@ -7,6 +7,7 @@ import entities.Click;
 import java.util.*;
 
 public class HistogramModel {
+
     private String campaign = null;
     private ClickDao clickDao = DaoInjector.newClickDao();
     private HashMap<Double, Integer> histogramData = new HashMap<Double, Integer>();
@@ -16,6 +17,7 @@ public class HistogramModel {
     }
 
     public HashMap<Double, Integer> getData(double minCost, Double maxCost, double bandLength ) {
+
         List<Click> data = clickDao.getFromCampaign(this.campaign);
         this.histogramData.clear();
 
