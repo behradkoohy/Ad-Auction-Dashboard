@@ -311,8 +311,8 @@ public class CampaignTabController{
             readerService.execute(() -> ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName));
             readerService.shutdown();
             //Pre-fetches to store in cache
-            clickDao.getFromCampaign(newCampaignName);
-            serverEntryDao.getFromCampaign(newCampaignName);
+            //clickDao.getFromCampaign(newCampaignName);
+            //serverEntryDao.getFromCampaign(newCampaignName);
             try {
                 if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {
                     readerService.shutdownNow();
