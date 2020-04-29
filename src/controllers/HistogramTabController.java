@@ -39,6 +39,12 @@ public class HistogramTabController {
         this.getData(0, null, 1);
     }
 
+    public void loadDataNoUI( String campaignName ){
+        this.histogramModel = new HistogramModel();
+        this.histogramModel.setCampaign(campaignName);
+        this.getDataNoUI(0, null, 1);
+    }
+
     public void refreshData(){
         try{
             double minCost = Double.valueOf(minValue.getText());
@@ -60,6 +66,10 @@ public class HistogramTabController {
         updateHistogramData();
     }
 
+    public void getDataNoUI(double minCost, Double maxCost, double bandLength){
+        this.barChartData = this.histogramModel.getData(minCost, maxCost, bandLength);
+    }
+
     public void updateHistogramGraphics(){
         barChart.getData().removeAll(barChart.getData());
         barChart.setLegendVisible(false);
@@ -79,4 +89,11 @@ public class HistogramTabController {
         barChart.getData().addAll(series);
     }
 
+    public HistogramModel getHistogramModel() {
+        return histogramModel;
+    }
+
+    public HashMap<Double, Integer> getBarChartData() {
+        return barChartData;
+    }
 }
