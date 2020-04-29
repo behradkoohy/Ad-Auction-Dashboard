@@ -12,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import models.ReaderCSV;
-import popups.CreatePopup;
 import popups.LoadPreviousPopup;
 
 import java.io.File;
@@ -89,6 +88,7 @@ public class CampaignTabController{
 
         if( campaignName != null ){
 
+            controller.blurWindow();
             LoadPreviousPopup p = new LoadPreviousPopup("Loading previous campaign: " + campaignName);
             Task t = controller.getLoadCampaignTask(campaignName, p);
             p.bind(t.progressProperty());
@@ -233,74 +233,75 @@ public class CampaignTabController{
 
         // if it reaches this point, there is a name and files are loaded
 
-            //CreatePopup p = new CreatePopup();
+        //CreatePopup p = new CreatePopup();
 
-            /*
-            Task clickTask = ReaderCSV.getReaderTask(clickLog.getAbsolutePath(), newCampaignName);
-            p.bindClick(clickTask.progressProperty());
+        /*
+        Task clickTask = ReaderCSV.getReaderTask(clickLog.getAbsolutePath(), newCampaignName);
+        p.bindClick(clickTask.progressProperty());
 
-            Task impressionTask = ReaderCSV.getReaderTask(impressionLog.getAbsolutePath(), newCampaignName);
-            p.bindImpression(impressionTask.progressProperty());
+        Task impressionTask = ReaderCSV.getReaderTask(impressionLog.getAbsolutePath(), newCampaignName);
+        p.bindImpression(impressionTask.progressProperty());
 
-            Task serverTask = ReaderCSV.getReaderTask(serverLog.getAbsolutePath(), newCampaignName);
-            p.bindServer(serverTask.progressProperty());*/
+        Task serverTask = ReaderCSV.getReaderTask(serverLog.getAbsolutePath(), newCampaignName);
+        p.bindServer(serverTask.progressProperty());*/
 
-            /*
-            Task t = controller.getLoadCampaignTask(campaignName, p);
-            p.bind(t.progressProperty());
-            new Thread(t).start();*/
+        /*
+        Task t = controller.getLoadCampaignTask(campaignName, p);
+        p.bind(t.progressProperty());
+        new Thread(t).start();*/
 
-            //TODO none of this works ATM so just leave for now :(
+        //TODO none of this works ATM so just leave for now :(
 
-            /*
-            LoadPreviousPopup p = new LoadPreviousPopup("Loading CSV files...");
+        /*
+        LoadPreviousPopup p = new LoadPreviousPopup("Loading CSV files...");
 
-            Task t = new Task(){
+        Task t = new Task(){
 
-                LoadPreviousPopup p;
+            LoadPreviousPopup p;
 
-                public Task<Void> init(LoadPreviousPopup p){
+            public Task<Void> init(LoadPreviousPopup p){
 
-                    this.p = p;
+                this.p = p;
 
-                    return this;
+                return this;
 
+            }
+
+            public Task<Void> call(){
+
+                updateProgress(1,100);
+                ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName);
+                updateProgress(33,100);
+                ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName);
+                updateProgress(66,100);
+                ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName);
+                updateProgress(100,100);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
 
-                public Task<Void> call(){
+                return null;
 
-                    updateProgress(1,100);
-                    ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName);
-                    updateProgress(33,100);
-                    ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName);
-                    updateProgress(66,100);
-                    ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName);
-                    updateProgress(100,100);
+            }
 
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        }.init(p);
 
-                    return null;
+        p.bind(t.progressProperty());
+        new Thread(t).start();*/
 
-                }
-
-            }.init(p);
-
-            p.bind(t.progressProperty());
-            new Thread(t).start();*/
-
-            /*
-            new Thread(() -> {
+        /*
+        new Thread(() -> {
 
 
-               ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName);
-               ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName);
-               ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName);
+           ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName);
+           ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName);
+           ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName);
 
-            }).start();*/
+        }).start();
+        */
 
         try {
             //Concurrency offers small benefit for this test set but may have much better improvements for other sets
@@ -332,7 +333,7 @@ public class CampaignTabController{
             ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao);
             ReaderCSV.readCSV(serverLoc, campaignName, clickDao, impressionDao, serverEntryDao);
              */
-            System.out.println("Finished importing data for new campaign: " + campaignName);
+            System.out.println("Finished importing data for new campaign: " + newCampaignName);
 
             this.controller.success("Files successfully uploaded, please click \"OK\" to begin loading data");
 
@@ -350,11 +351,12 @@ public class CampaignTabController{
 
             this.controller.goToMainPage();
 
-            } catch(Exception e){
+        } catch(Exception e){
 
-                controller.error("error reading files...");
+            e.printStackTrace();
+            controller.error("error reading files...");
 
-            }
+        }
 
     }
 
