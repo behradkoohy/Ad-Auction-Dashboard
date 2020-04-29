@@ -13,17 +13,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import models.Metrics;
+import popups.LoadPreviousPopup;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
-
-
-import popups.LoadPreviousPopup;
 
 public class Controller {
     /*
@@ -34,6 +34,7 @@ public class Controller {
     UI component references in scene builder with these variables
      */
     @FXML private JFXTabPane LHS;
+    @FXML private GridPane gridPane;
 
     @FXML AnchorPane campaignTab;
     @FXML AnchorPane statisticsTab;
@@ -99,6 +100,14 @@ public class Controller {
 
     }
 
+
+    public void blurWindow() {
+        gridPane.getParent().setEffect(new GaussianBlur(10));
+    }
+
+    public  void unblurWindow() {
+        gridPane.getParent().setEffect(null);
+    }
     /**
      * Greys out all the tabs apart from campaign management
      */
@@ -221,6 +230,7 @@ public class Controller {
                 }
 
                 p.close();
+                unblurWindow();
 
                 return null;
 
@@ -235,13 +245,21 @@ public class Controller {
      *
      *
      * */
-    public void loadCampaignData(String campaignName){
+    public void loadCampaignData(String campaignName) {
         this.currentCampaignName = campaignName;
+        blurWindow();
+        LoadPreviousPopup p = new LoadPreviousPopup("Loading new campaign: " + campaignName);
+        Task t = getLoadCampaignTask(campaignName, p);
+        p.bind(t.progressProperty());
+        new Thread(t).start();
+        /*
         filterTabController.setDateTimeFrom(getFromDateForCampaign(campaignName));
         filterTabController.setDateTimeTo(getToDateForCampaign(campaignName));
         statisticsTabController.loadData(campaignName);
         histogramTabController.loadData(campaignName);
         graphsTabController.loadData(campaignName);
+        
+         */
     }
 
     //Takes toggled bools for filter as params

@@ -1,15 +1,14 @@
 package popups;
 
-import com.jfoenix.controls.JFXSpinner;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Simple loading popup with a progress bar, violates MVC so will
@@ -52,6 +51,7 @@ public class LoadPreviousPopup {
         v.getChildren().add(l);
 
         popUp.setResizable(false);
+        popUp.initStyle(StageStyle.UNDECORATED);
         popUp.show();
 
     }
