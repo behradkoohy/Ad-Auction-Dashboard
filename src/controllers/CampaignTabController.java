@@ -6,11 +6,14 @@ import daos.ClickDao;
 import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import models.ReaderCSV;
-import popups.LoadingPopup;
+import popups.CreatePopup;
+import popups.LoadPreviousPopup;
 
 import java.io.File;
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class CampaignTabController{
+
     private Controller controller;
 
     @FXML private JFXComboBox campaignChooser;
@@ -42,6 +46,7 @@ public class CampaignTabController{
 
     @FXML
     public void initialize() {
+
         // load previous campaigns
         // TODO : change method to use a campaign Entity and DAO
         this.loadPreviousCampaigns();
@@ -50,23 +55,44 @@ public class CampaignTabController{
 
     // TODO : refactor using campaign Entity
     public void loadPreviousCampaigns(){
+
         try {
-            campaignChooser.getItems().addAll(clickDao.getCampaigns());
+
+            List<String> l = clickDao.getCampaigns();
+            populateCampaignChooser(l);
+
         } catch (Exception e) {
+
             System.out.println("No data loaded!");
+
         }
+
+    }
+
+    public void populateCampaignChooser(List<String> list){
+
+        if(Platform.isFxApplicationThread()){
+
+            campaignChooser.getItems().addAll(list);
+
+        } else {
+
+            Platform.runLater(() -> campaignChooser.getItems().addAll(list));
+
+        }
+
     }
 
     public void loadSelectedCampaign() {
-        String campaignName = (String)campaignChooser.getValue();
+
+        String campaignName = (String) campaignChooser.getValue();
 
         if( campaignName != null ){
 
-            this.controller.success("Selected campaign " + campaignName + ". Importing data..." );
-            //LoadingPopup p = new LoadingPopup("Loading campaign: " + campaignName + "...");
-            this.controller.loadCampaignData(campaignName);
-            controller.unGreyOtherTabs();
-            this.controller.goToMainPage();
+            LoadPreviousPopup p = new LoadPreviousPopup("Loading previous campaign: " + campaignName);
+            Task t = controller.getLoadCampaignTask(campaignName, p);
+            p.bind(t.progressProperty());
+            new Thread(t).start();
 
         }else{
 
@@ -96,17 +122,25 @@ public class CampaignTabController{
 
         } else {
 
-            clickLabel.setText(clickLog.getName());
+            String str = clickLog.getName();
+            updateClickLabel(str);
 
         }
 
-        /*
-        if((impressionLog != null && serverLog != null) && clickLog.equals(impressionLog) || clickLog.equals(serverLog)){
-            this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
-            clickLog = null;
+    }
+
+    public void updateClickLabel(String str){
+
+        if(Platform.isFxApplicationThread()){
+
+            clickLabel.setText(str);
+
+        } else {
+
+            Platform.runLater(() -> clickLabel.setText(str));
+
         }
 
-        clickLabel.setText(clickLog.getName());*/
     }
 
     /**
@@ -183,6 +217,7 @@ public class CampaignTabController{
 
      */
     public void loadNewCampaign(){
+
         // check that the campaign has a name
         String newCampaignName = campaignName.getText();
         if( newCampaignName.trim().equals("")){
@@ -197,7 +232,77 @@ public class CampaignTabController{
         }
 
         // if it reaches this point, there is a name and files are loaded
-        try{
+
+            //CreatePopup p = new CreatePopup();
+
+            /*
+            Task clickTask = ReaderCSV.getReaderTask(clickLog.getAbsolutePath(), newCampaignName);
+            p.bindClick(clickTask.progressProperty());
+
+            Task impressionTask = ReaderCSV.getReaderTask(impressionLog.getAbsolutePath(), newCampaignName);
+            p.bindImpression(impressionTask.progressProperty());
+
+            Task serverTask = ReaderCSV.getReaderTask(serverLog.getAbsolutePath(), newCampaignName);
+            p.bindServer(serverTask.progressProperty());*/
+
+            /*
+            Task t = controller.getLoadCampaignTask(campaignName, p);
+            p.bind(t.progressProperty());
+            new Thread(t).start();*/
+
+            //TODO none of this works ATM so just leave for now :(
+
+            /*
+            LoadPreviousPopup p = new LoadPreviousPopup("Loading CSV files...");
+
+            Task t = new Task(){
+
+                LoadPreviousPopup p;
+
+                public Task<Void> init(LoadPreviousPopup p){
+
+                    this.p = p;
+
+                    return this;
+
+                }
+
+                public Task<Void> call(){
+
+                    updateProgress(1,100);
+                    ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName);
+                    updateProgress(33,100);
+                    ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName);
+                    updateProgress(66,100);
+                    ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName);
+                    updateProgress(100,100);
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    return null;
+
+                }
+
+            }.init(p);
+
+            p.bind(t.progressProperty());
+            new Thread(t).start();*/
+
+            /*
+            new Thread(() -> {
+
+
+               ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName);
+               ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName);
+               ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName);
+
+            }).start();*/
+
+        try {
             //Concurrency offers small benefit for this test set but may have much better improvements for other sets
             //TODO technically daos not thread safe but since atm each executes on different dao alright
             ExecutorService readerService = Executors.newCachedThreadPool();
@@ -221,6 +326,7 @@ public class CampaignTabController{
                 readerService.shutdownNow();
                 Thread.currentThread().interrupt();
             }
+
             /*
             ReaderCSV.readCSV(clickLoc, campaignName, clickDao, impressionDao, serverEntryDao);
             ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao);
@@ -244,9 +350,11 @@ public class CampaignTabController{
 
             this.controller.goToMainPage();
 
-        }catch (Exception e) {
-            this.controller.error("Error reading files...");
-        }
+            } catch(Exception e){
+
+                controller.error("error reading files...");
+
+            }
 
     }
 

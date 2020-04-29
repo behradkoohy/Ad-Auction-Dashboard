@@ -1,13 +1,13 @@
 package controllers;
 
-import com.jfoenix.controls.*;
 import com.jfoenix.controls.JFXSlider;
 import com.jfoenix.controls.JFXTabPane;
 import daos.ClickDao;
 import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
-import com.jfoenix.controls.*;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 
-import models.Metrics;
+import popups.LoadPreviousPopup;
 
 public class Controller {
     /*
@@ -132,20 +132,101 @@ public class Controller {
     * */
     public void error(String message){
 
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        if(Platform.isFxApplicationThread()){
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+
+        } else {
+
+            Platform.runLater(() -> {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText(message);
+                alert.showAndWait();
+
+            });
+
+        }
 
     }
+
     public void success(String message){
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        if(Platform.isFxApplicationThread()){
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+
+        } else {
+
+            Platform.runLater(() -> {
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText(message);
+                alert.showAndWait();
+
+            });
+
+        }
+
+    }
+
+    public Task getLoadCampaignTask(String campaignName, LoadPreviousPopup p){
+
+        return new Task (){
+
+            public Task<Void> call(){
+
+                currentCampaignName = campaignName;
+
+                //The number of things that have to be done
+                int total = 5;
+
+                int done = 0;
+
+                filterTabController.setDateTimeFrom(getFromDateForCampaign(campaignName));
+                updateProgress(++done, total);
+
+                filterTabController.setDateTimeTo(getToDateForCampaign(campaignName));
+                updateProgress(++done, total);
+
+                statisticsTabController.loadData(campaignName);
+                updateProgress(++done, total);
+
+                histogramTabController.loadData(campaignName);
+                updateProgress(++done, total);
+
+                graphsTabController.loadData(campaignName);
+                updateProgress(++done, total);
+
+                unGreyOtherTabs();
+                goToMainPage();
+                updateProgress(++done, total);
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                p.close();
+
+                return null;
+
+            }
+
+        };
 
     }
 
@@ -181,12 +262,14 @@ public class Controller {
     }
 
     public LocalDateTime getToDateForCampaign(String campaignName) {
+
         ArrayList<LocalDateTime> maxs = new ArrayList<>();
         maxs.add(clickDao.getMaxDateFromCampaign(campaignName));
         maxs.add(impressionDao.getMaxDateFromCampaign(campaignName));
         maxs.add(serverEntryDao.getMaxDateFromCampaign(campaignName));
         Collections.sort(maxs);
         return maxs.get(maxs.size() - 1);
+
     }
 
     /**
@@ -194,7 +277,17 @@ public class Controller {
      */
     public void goToMainPage(){
         SingleSelectionModel<Tab> model = LHS.getSelectionModel();
-        model.select(1);
+
+        if(Platform.isFxApplicationThread()){
+
+            model.select(1);
+
+        } else {
+
+            Platform.runLater(() -> model.select(1));
+
+        }
+
     }
 
     public Controller(){
@@ -240,11 +333,35 @@ public class Controller {
 
     }
 
+    public String getCurrentCampaignName(){
+
+        return currentCampaignName;
+
+    }
+
+    /**
+     * Can be used to check if the thread that called this method is the javaFX thread,
+     * if not then throw an exception
+     * @param methodName
+     * @throws Exception
+     */
+    public void verifyIsFXThread(String methodName) throws Exception{
+
+        if(!Platform.isFxApplicationThread()){
+
+            throw new Exception(methodName + " was called on a thread other than the javaFX thread! \n Make sure " +
+                    "you use: " + methodName + "EXT if you want to update the GUI from an external thread");
+
+        }
+
+    }
+
     /**
      *
      * @return gives current start date
      */
     public LocalDateTime getStart() {
+
         LocalDateTime before = LocalDateTime.of(filterTabController.dFrom, filterTabController.tFrom);
         return before;
 
@@ -263,7 +380,6 @@ public class Controller {
     @FXML
     public void updateBouncePageLabel(){
 
-
         bouncePagesLabel.setText(String.valueOf(Math.round(bouncePageSlider.getValue())));
         metrics.setBouncePages((int) Math.round(bouncePageSlider.getValue()));
 
@@ -276,6 +392,7 @@ public class Controller {
         metrics.setBounceTime(Duration.ofSeconds(Math.round(bounceDurationSlider.getValue())));
 
     }
+
     //BOUNCE CONTROLLER
 
     public JFXTabPane getLHS(){

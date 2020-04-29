@@ -1,9 +1,12 @@
 package controllers;
 
+import daos.DaoInjector;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import models.ChartHandler;
 
 import java.time.Duration;
@@ -15,11 +18,13 @@ import java.util.List;
 import static java.time.temporal.ChronoUnit.*;
 
 public class GraphsTabController {
+
     @FXML private LineChart<?,?> lineChart;
     @FXML private CategoryAxis lineChartXAxis;
     @FXML private NumberAxis lineChartYAxis;
 
     private Controller controller;
+    private ChartHandler handler;
 
     //Whether or not these metrics should be displayed on the graph
     private boolean impressions;
@@ -37,13 +42,14 @@ public class GraphsTabController {
     private LocalDateTime start;
     private LocalDateTime end;
     private Duration duration;
-    private List data = new ArrayList(10);
-
     private List<String> campaigns = new ArrayList<String>(4);
 
-    public void init(Controller controller){
+    @FXML
+    public void initialize(){
+
+        lineChartYAxis.setLabel("Number");
         lineChart.setAnimated(false);
-        this.controller = controller;
+
         //Initial state of checkboxes below the chart
         impressions = true;
         conversions = true;
@@ -56,13 +62,119 @@ public class GraphsTabController {
         CPCB = false;
         CPMB = false;
         bounceRateB = false;
+
     }
 
+    public void init(Controller controller){
+
+        this.controller = controller;
+        handler = new ChartHandler(controller.getMetrics());
+
+    }
+
+    /**
+     * Called whenever a new campaign is loaded
+     * @param campaignName
+     */
     public void loadData(String campaignName){
+
         campaigns.add(campaignName);
-
-
         this.updateChart();
+
+    }
+
+    public void updateChart(){
+
+        this.start = controller.getStart();
+        this.end = controller.getEnd();
+        this.duration = calcDuration();
+
+        List<XYChart.Series> newChartData = handler.getChartDataAccordingTo(controller.getCurrentCampaignName(), start, end,
+                duration, impressions, conversions, clicks, uniqueUsers, bounces, CTRB, CPAB, CPCB, CPMB, bounceRateB);
+
+        populateGraphEXT(newChartData);
+
+        /*
+        TODO something with multiple charts
+        for (String campaignName : campaigns) {
+
+
+
+        }*/
+    }
+
+    /**
+     * Allows updating of graph from an external thread
+     * @param data
+     */
+    public void populateGraphEXT(List<XYChart.Series> data){
+
+        if(Platform.isFxApplicationThread()){
+
+            populateGraph(data);
+
+        } else {
+
+            Platform.runLater(() -> populateGraph(data));
+
+        }
+
+    }
+
+    /**
+     * Populates the graph with the data specified
+     * @param data
+     */
+    private void populateGraph(List<XYChart.Series> data){
+
+        try {
+
+            controller.verifyIsFXThread("populateGraph");
+
+        } catch (Exception e){
+
+            controller.error(e.getMessage());
+            return;
+
+        }
+
+        lineChart.getData().clear();
+
+        for(XYChart.Series s: data){
+
+            lineChart.getData().add(s);
+
+        }
+
+        lineChartXAxis.setLabel(controller.calcMetric());
+
+    }
+
+    private Duration calcDuration() {
+
+        int digits = this.controller.getGranDigits();
+        ChronoUnit unit = this.controller.getGranUnit();
+        Duration dur;
+
+        switch (unit) {
+            case HOURS:
+                dur = Duration.of(digits, HOURS);
+                break;
+
+            case DAYS:
+                dur = Duration.of(digits, DAYS);
+                break;
+
+            case WEEKS:
+                dur = Duration.of(digits, DAYS).multipliedBy(7);
+                break;
+
+            default:
+                dur = Duration.ofDays(1);
+        }
+
+        return dur;
+
     }
 
     /*
@@ -155,45 +267,6 @@ public class GraphsTabController {
 
         bounceRateB = !bounceRateB;
         updateChart();
-
-    }
-
-    public void updateChart(){
-        this.start = controller.getStart();
-        this.end = controller.getEnd();
-        this.duration = calcDuration();
-        //TODO something with multiple charts
-        for (String campaignName : campaigns) {
-            ChartHandler handler = new ChartHandler(campaignName, lineChart, lineChartXAxis,
-                    lineChartYAxis, this.controller.calcMetric(), this.data, this.controller.unitsDifference, impressions,
-                    conversions, clicks, uniqueUsers, bounces, totalCostB, CTRB, CPAB,
-                    CPCB, CPMB, bounceRateB, start, end, duration, this.controller.getMetrics());
-        }
-    }
-
-    private Duration calcDuration() {
-        int digits = this.controller.getGranDigits();
-        ChronoUnit unit = this.controller.getGranUnit();
-        Duration dur;
-
-        switch (unit) {
-            case HOURS:
-                dur = Duration.of(digits, HOURS);
-                break;
-                
-            case DAYS: 
-                dur = Duration.of(digits, DAYS);
-                break;
-                
-            case WEEKS:
-                dur = Duration.of(digits, DAYS).multipliedBy(7);
-                break;
-
-            default:
-                dur = Duration.ofDays(1);
-        }
-        
-        return dur;
 
     }
 
