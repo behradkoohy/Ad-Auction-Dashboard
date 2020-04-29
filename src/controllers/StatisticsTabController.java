@@ -36,6 +36,8 @@ public class StatisticsTabController{
     @FXML private PieChart incomePie;
     @FXML private PieChart contextPie;
 
+    private boolean firstLoad;
+
     public void init(Controller controller){
         this.controller = controller;
         this.metricsModel = this.controller.getMetrics();
@@ -44,6 +46,8 @@ public class StatisticsTabController{
 
     @FXML
     public void initialize(){
+
+        firstLoad = true;
 
         //Setting up the look of the pie charts
         genderPie.setTitle("Gender");
@@ -61,6 +65,12 @@ public class StatisticsTabController{
 
     }
 
+    public void setFirstLoad(){
+
+        firstLoad = false;
+
+    }
+
     public void initialize(Metrics metricsModel){
 
         this.metricsModel = metricsModel;
@@ -69,6 +79,13 @@ public class StatisticsTabController{
 
     public void loadData(String campaignName) {
         //TODO very messy, just have each model fetch the data once
+
+        /*
+        if(!firstLoad){
+
+            controller.startLoadingIndicator();
+
+        }*/
 
         this.metricsModel.setCampaign(campaignName);
 
@@ -104,6 +121,13 @@ public class StatisticsTabController{
 
         //Possibly a bit of a hardcoding/hacky way of doing it but its fine for now
         populatePieChartsEXT(newPieChartData.get(0), newPieChartData.get(1), newPieChartData.get(2), newPieChartData.get(3));
+
+        /*
+        if(!firstLoad){
+
+            controller.endLoadingIndicator();
+
+        }*/
 
     }
 
@@ -265,11 +289,6 @@ public class StatisticsTabController{
         List out = new ArrayList<List<PieChart.Data>>();
 
         //ADD CONTEXT DATA
-
-        genderPie.getData().clear();
-        agePie.getData().clear();
-        incomePie.getData().clear();
-        contextPie.getData().clear();
 
         PieChart.Data gender1 = new PieChart.Data("Men", men);
         PieChart.Data gender2 = new PieChart.Data("Women", women);

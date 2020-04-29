@@ -85,14 +85,22 @@ public class GraphsTabController {
 
     public void updateChart(){
 
-        this.start = controller.getStart();
-        this.end = controller.getEnd();
-        this.duration = calcDuration();
+        new Thread(() -> {
 
-        List<XYChart.Series> newChartData = handler.getChartDataAccordingTo(controller.getCurrentCampaignName(), start, end,
-                duration, impressions, conversions, clicks, uniqueUsers, bounces, CTRB, CPAB, CPCB, CPMB, bounceRateB);
+            controller.startLoadingIndicator();
 
-        populateGraphEXT(newChartData);
+            this.start = controller.getStart();
+            this.end = controller.getEnd();
+            this.duration = calcDuration();
+
+            List<XYChart.Series> newChartData = handler.getChartDataAccordingTo(controller.getCurrentCampaignName(), start, end,
+                    duration, impressions, conversions, clicks, uniqueUsers, bounces, CTRB, CPAB, CPCB, CPMB, bounceRateB);
+
+            populateGraphEXT(newChartData);
+
+            controller.endLoadingIndicator();
+
+        }).start();
 
         /*
         TODO something with multiple charts

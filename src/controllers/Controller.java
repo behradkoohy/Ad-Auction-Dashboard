@@ -16,6 +16,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import models.Metrics;
 import popups.LoadPreviousPopup;
 
@@ -40,7 +41,7 @@ public class Controller {
     @FXML AnchorPane statisticsTab;
     @FXML AnchorPane histogramTab;
     @FXML AnchorPane graphsTab;
-    @FXML AnchorPane filterTab;
+    @FXML StackPane filterTab;
     @FXML AnchorPane accessibilityTab;
     @FXML AnchorPane printTab;
 
@@ -102,12 +103,35 @@ public class Controller {
 
 
     public void blurWindow() {
-        gridPane.getParent().setEffect(new GaussianBlur(10));
+
+        Platform.runLater(() -> gridPane.getParent().setEffect(new GaussianBlur(10)));
+
     }
 
     public  void unblurWindow() {
-        gridPane.getParent().setEffect(null);
+
+        Platform.runLater(() -> gridPane.getParent().setEffect(null));
+
     }
+
+    /**
+     * Starts the loading indicator on the filter tab panel
+     */
+    public void startLoadingIndicator(){
+
+        filterTabController.startLoadingIndicator();
+
+    }
+
+    /**
+     * Ends the laoding indicator on the filter tab panel
+     */
+    public void endLoadingIndicator(){
+
+        filterTabController.endLoadingIndicator();
+
+    }
+
     /**
      * Greys out all the tabs apart from campaign management
      */
@@ -211,6 +235,7 @@ public class Controller {
                 updateProgress(++done, total);
 
                 statisticsTabController.loadData(campaignName);
+                statisticsTabController.setFirstLoad();
                 updateProgress(++done, total);
 
                 histogramTabController.loadData(campaignName);
@@ -264,9 +289,13 @@ public class Controller {
 
     //Takes toggled bools for filter as params
     public void reloadCampaignData() {
+
+        startLoadingIndicator();
         statisticsTabController.loadData(this.currentCampaignName);
         histogramTabController.loadData(this.currentCampaignName);
         graphsTabController.loadData(this.currentCampaignName);
+        endLoadingIndicator();
+
     }
 
 

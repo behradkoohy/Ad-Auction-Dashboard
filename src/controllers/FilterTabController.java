@@ -2,12 +2,15 @@ package controllers;
 
 import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXTimePicker;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.layout.StackPane;
 import models.Filter;
 
 import java.time.LocalDate;
@@ -16,12 +19,14 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 public class FilterTabController {
+
     @FXML private JFXDatePicker dFromPicker;
     @FXML private JFXDatePicker dToPicker;
     @FXML private JFXTimePicker timeFromPicker;
     @FXML private JFXTimePicker timeToPicker;
     @FXML private Spinner granSpinner;
     @FXML private ComboBox granCombo;
+    @FXML private StackPane stackPane;
 
     private Controller controller;
 
@@ -96,6 +101,8 @@ public class FilterTabController {
 
     @FXML
     public void initialize(){
+
+        stackPane.getChildren().get(1).setVisible(false);
 
         //Keep this in the fxml initialize method
         granDigit = 1;
@@ -280,9 +287,15 @@ public class FilterTabController {
     }
 
     public void reloadData() {
-        //In future should pass through toggles as params
-        controller.getMetrics().setFilter(makeFilter());
-        controller.reloadCampaignData();
+
+        new Thread(() -> {
+
+            //In future should pass through toggles as params
+            controller.getMetrics().setFilter(makeFilter());
+            controller.reloadCampaignData();
+
+        }).start();
+
     }
 
     private Filter makeFilter() {
@@ -323,6 +336,48 @@ public class FilterTabController {
                 granTimeUnit = ChronoUnit.DAYS;
 
         }
+    }
+
+    public void startLoadingIndicator(){
+
+        if(Platform.isFxApplicationThread()){
+
+            stackPane.getChildren().get(1).setVisible(true);
+            stackPane.getChildren().get(0).setEffect(new GaussianBlur(10));
+
+
+        } else {
+
+            Platform.runLater(() -> {
+
+                //A JFoenix spinner is "on top" of the filter panel in a stackpane
+                stackPane.getChildren().get(1).setVisible(true);
+                stackPane.getChildren().get(0).setEffect(new GaussianBlur(10));
+
+            });
+
+        }
+
+    }
+
+    public void endLoadingIndicator(){
+
+        if(Platform.isFxApplicationThread()){
+
+            stackPane.getChildren().get(1).setVisible(false);
+            stackPane.getChildren().get(0).setEffect(null);
+
+        } else {
+
+            Platform.runLater(() -> {
+
+                stackPane.getChildren().get(1).setVisible(false);
+                stackPane.getChildren().get(0).setEffect(null);
+
+            });
+
+        }
+
     }
 
     public int getGranDigit() {
