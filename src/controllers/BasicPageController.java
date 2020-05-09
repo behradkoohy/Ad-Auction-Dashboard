@@ -1,23 +1,43 @@
 package controllers;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
+import models.ChartHandler;
+import models.PieChartModel;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public class BasicPageController {
 
-    //BASIC PAGE
-    @FXML
-    private LineChart basicChart;
+    @FXML private LineChart basicChart;
     @FXML private PieChart genderPie;
     @FXML private PieChart agePie;
     @FXML private PieChart incomePie;
+    @FXML private Label impressionsLabel;
+    @FXML private Label clicksLabel;
+    @FXML private Label uniquesLabel;
+    @FXML private Label bouncesLabel;
+    @FXML private Label conversionsLabel;
+    @FXML private Label totCostLabel;
+
+    /*
+    Again, not sure how handlers and models are
+    going to work now we have multiple seperate graphs?
+    So I will add a seperate instance for each controller
+    at the moment, this can be changed if its not right
+     */
+    private PieChartModel pieChartModel;
+    private ChartHandler chartHandler;
 
     private boolean impressions;
     private boolean conversions;
@@ -28,9 +48,11 @@ public class BasicPageController {
     @FXML
     public void initialize(){
 
-        test();
-        impressionsLabel.setText("Testing 123");
-
+        pieChartModel = new PieChartModel();
+        //System.out.println("value of root controller: " + ControllerInjector.getRootController());
+        //System.out.println("And the value of its metrics: " + ControllerInjector.getRootController().getMetrics());
+        //test();
+        //impressionsLabel.setText("Testing 123");
     }
 
     //TODO for testing delete later
@@ -87,6 +109,68 @@ public class BasicPageController {
     }
 
     /**
+     * Called by the root controller, calls all relevant methods to update
+     * all information shown on the basic page
+     */
+    public void updateData(String campaignName){
+
+        if(chartHandler == null){
+
+            chartHandler = new ChartHandler(ControllerInjector.getRootController().getMetrics());
+
+        }
+
+        LocalDateTime start = ControllerInjector.getRootController().getPeriodStart();
+        //System.out.println("start is: " + start.getDayOfYear());
+        LocalDateTime end = ControllerInjector.getRootController().getPeriodEnd();
+        System.out.println("end is: " + start.getDayOfYear());
+        java.time.Duration dur = ControllerInjector.getRootController().calcDuration();
+
+        String numImpressionsStr = String.valueOf(String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getNumImpressions(start, end))));
+        String numClicksStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getNumClicks(start, end)));
+        String numUniqueStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getNumUniqs(start, end)));
+        String numBouncesStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getNumBounces(start, end)));
+        String numConversionsStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getConversions(start, end)));
+        String totalCostStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getTotalCost(start, end)));
+
+        updateLabels(numImpressionsStr, numClicksStr, numUniqueStr, numBouncesStr,
+                numConversionsStr, totalCostStr);
+
+        pieChartModel.setCampaign(campaignName);
+        pieChartModel.setStart(start);
+        pieChartModel.setEnd(end);
+
+        HashMap<String, Integer> pieChartData = pieChartModel.getDistributions();
+        List<PieChart.Data> genderPieData = getGenderPieData(pieChartData.get("men"), pieChartData.get("women"));
+        List<PieChart.Data> agePieData = getAgePieData(pieChartData.get("lt25"), pieChartData.get("btwn2534"),
+                pieChartData.get("btwn3544"), pieChartData.get("btwn4554"), pieChartData.get("gt55"));
+        List<PieChart.Data> incomePieData = getIncomePieData(pieChartData.get("low"), pieChartData.get("medium"),
+                pieChartData.get("high"));
+
+        updateBasicPieCharts(genderPieData, agePieData, incomePieData);
+
+        List<XYChart.Series> newChartData = chartHandler.getBasicChartDataAccordingTo(campaignName, start, end,
+                dur, impressions, conversions, clicks, uniques, bounces);
+
+    }
+
+    public void updateLabels(String impressions, String clicks, String uniques,
+                             String bounces, String conversions, String totCost){
+
+        RootController.doGUITask(() -> {
+
+            impressionsLabel.setText(impressions);
+            clicksLabel.setText(clicks);
+            uniquesLabel.setText(uniques);
+            bouncesLabel.setText(bounces);
+            conversionsLabel.setText(conversions);
+            totCostLabel.setText(totCost);
+
+        });
+
+    }
+
+    /**
      * Updates the pie charts on the basic stats page
      * @param genderData
      * @param ageData
@@ -95,21 +179,17 @@ public class BasicPageController {
     public void updateBasicPieCharts(List<PieChart.Data> genderData,
                                      List<PieChart.Data> ageData,
                                      List<PieChart.Data> incomeData){
-        /*
-        if(genderData.size() != 2 || ageData.size() != 5 || incomeData.size() != 5){
 
-            error("One of the pie chart data sets on the basic statistics page has the wrong" +
-                    "amount of members! This should not be happening");
+        RootController.doGUITask(() -> {
 
-        }*/
+            genderPie.getData().clear();
+            agePie.getData().clear();
+            incomePie.getData().clear();
+            genderPie.getData().addAll(genderData);
+            agePie.getData().addAll(ageData);
+            incomePie.getData().addAll(incomeData);
 
-        genderPie.getData().clear();
-        agePie.getData().clear();
-        incomePie.getData().clear();
-
-        genderPie.getData().addAll(genderData);
-        agePie.getData().addAll(ageData);
-        incomePie.getData().addAll(incomeData);
+        });
 
     }
 
@@ -146,23 +226,61 @@ public class BasicPageController {
 
     }
 
-    @FXML
-    public void toggleImpressions(){}
-    @FXML
-    public void toggleConversions(){}
-    @FXML
-    public void toggleClicks(){}
-    @FXML
-    public void toggleUniques(){}
-    @FXML
-    public void toggleBounces(){}
+    /**
+     * Update the basic chart to show the given data
+     * @param data
+     */
+    public void updateBasicChart(List<XYChart.Series> data){
 
-    @FXML private Label impressionsLabel;
-    @FXML private Label clicksLabel;
-    @FXML private Label uniquesLabel;
-    @FXML private Label bouncesLabel;
-    @FXML private Label conversionsLabel;
-    @FXML private Label totCostLabel;
-    //END BASIC PAGE
+        RootController.doGUITask(() -> {
+
+            basicChart.getData().clear();
+
+            for(XYChart.Series s: data){
+
+                basicChart.getData().add(s);
+
+            }
+
+            basicChart.getXAxis().setLabel(ControllerInjector.getRootController().calcMetric());
+
+        });
+
+    }
+
+    @FXML
+    public void toggleImpressions(){
+
+        impressions = !impressions;
+
+    }
+
+    @FXML
+    public void toggleConversions(){
+
+        conversions = !conversions;
+
+    }
+
+    @FXML
+    public void toggleClicks(){
+
+        clicks = !clicks;
+
+    }
+
+    @FXML
+    public void toggleUniques(){
+
+        uniques = !uniques;
+
+    }
+
+    @FXML
+    public void toggleBounces(){
+
+        bounces = !bounces;
+
+    }
 
 }

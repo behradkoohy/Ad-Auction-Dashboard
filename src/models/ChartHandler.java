@@ -27,11 +27,9 @@ public class ChartHandler {
 
     }
 
-    public List<XYChart.Series> getChartDataAccordingTo(String campaignName, LocalDateTime start, LocalDateTime end,
+    public List<XYChart.Series> getBasicChartDataAccordingTo(String campaignName, LocalDateTime start, LocalDateTime end,
                                                         Duration duration, boolean impressions, boolean conversions, boolean clicks,
-                                                        boolean unique, boolean bounces, boolean CTR, boolean CPA, boolean CPC,
-                                                        boolean CPM, boolean bounceRate){
-
+                                                        boolean unique, boolean bounces){
         metricsModel.setCampaign(campaignName);
         this.start = start;
         this.end = end;
@@ -58,6 +56,20 @@ public class ChartHandler {
         if(bounces) {
             seriesList.add(getBounces());
         }
+
+        return seriesList;
+
+    }
+
+    public List<XYChart.Series> getAdvancedChartDataAccordingTo(String campaignName, LocalDateTime start, LocalDateTime end,
+                                                             Duration duration, boolean CTR, boolean CPA, boolean CPC,
+                                                             boolean CPM, boolean bounceRate){
+        metricsModel.setCampaign(campaignName);
+        this.start = start;
+        this.end = end;
+        this.duration = duration;
+
+        List<XYChart.Series> seriesList = new ArrayList<XYChart.Series>();
 
         if(CTR) {
             seriesList.add(getCTR());

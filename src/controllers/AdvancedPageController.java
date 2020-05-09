@@ -4,17 +4,32 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import models.PieChartModel;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AdvancedPageController {
 
     //ADVANCED PAGE
-    @FXML
-    private LineChart advancedChart;
+    @FXML private LineChart advancedChart;
     @FXML private BarChart histogram;
+    @FXML private Label ctrLabel;
+    @FXML private Label cpaLabel;
+    @FXML private Label cpcLabel;
+    @FXML private Label cpmLabel;
+    @FXML private Label bounceRateLabel;
+    @FXML private PieChart contextPie;
+
+    /*
+    At the moment this is an extra instance than
+    the one in the basic page controller, perhaps we
+    only need one shared one? look into changing this later
+     */
+    private PieChartModel pieChartModel;
 
     private boolean ctr;
     private boolean cpa;
@@ -22,23 +37,48 @@ public class AdvancedPageController {
     private boolean cpm;
     private boolean bounceRate;
 
-    @FXML
-    public void toggleCTR(){}
-    @FXML
-    public void toggleCPA(){}
-    @FXML
-    public void toggleCPC(){}
-    @FXML
-    public void toggleCPM(){}
-    @FXML
-    public void toggleBounceRate(){}
+    public void initialize(){
 
-    @FXML private Label ctrLabel;
-    @FXML private Label cpaLabel;
-    @FXML private Label cpcLabel;
-    @FXML private Label cpmLabel;
-    @FXML private Label bounceRateLabel;
-    @FXML private PieChart contextPie;
+        pieChartModel = new PieChartModel();
+
+    }
+
+    public void updateData(String campaignName){
+
+        LocalDateTime start = ControllerInjector.getRootController().getPeriodStart();
+        LocalDateTime end = ControllerInjector.getRootController().getPeriodEnd();
+
+        String ctrStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getCTR(start, end)));
+        String cpaStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getCPA(start, end)));
+        String cpcStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getCPC(start, end)));
+        String cpmStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getCPM(start, end)));
+        String bounceRateStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getBounceRate(start, end)));
+
+        updateLabels(ctrStr, cpaStr, cpcStr,  cpmStr, bounceRateStr);
+
+        /*
+        Not sure how the pie chart model works for context stuff at the moment
+
+        pieChartModel.setCampaign(campaignName);
+        pieChartModel.setStart(start);
+        pieChartModel.setEnd(end);
+        */
+    }
+
+    public void updateLabels(String ctr, String cpa, String cpc,
+                             String cpm, String bounceRate){
+
+        RootController.doGUITask(() -> {
+
+            ctrLabel.setText(ctr);
+            cpaLabel.setText(cpa);
+            cpcLabel.setText(cpc);
+            cpmLabel.setText(cpm);
+            bounceRateLabel.setText(bounceRate);
+
+        });
+
+    }
 
     /**
      * Generate the context pie chart data that will populate the context pie chart
@@ -73,11 +113,79 @@ public class AdvancedPageController {
      */
     public void updateContextPieChart(List<PieChart.Data> contextData){
 
-        contextPie.getData().clear();
-        contextPie.getData().addAll(contextData);
+        RootController.doGUITask(() -> {
+
+            contextPie.getData().clear();
+            contextPie.getData().addAll(contextData);
+
+        });
 
     }
 
-    //END ADVANCED PAGE
+    /**
+     * Make the advanced line chart show the new data
+     *
+     * @param data
+     */
+    public void updateAdvancedChart(List<XYChart.Series> data){
+
+        RootController.doGUITask(() -> {
+
+            advancedChart.getData().clear();
+            advancedChart.getData().addAll(data);
+
+        });
+
+    }
+
+    /**
+     * Update the histogram to show the new data specified,
+     * note that the histogram only ever has one series of data
+     */
+    public void updateHistogram(XYChart.Series data){
+
+        RootController.doGUITask(() -> {
+
+            histogram.getData().clear();
+            histogram.getData().add(data);
+
+        });
+
+    }
+
+    @FXML
+    public void toggleCTR(){
+
+        ctr = !ctr;
+
+    }
+
+    @FXML
+    public void toggleCPA(){
+
+        cpa = !cpa;
+
+    }
+
+    @FXML
+    public void toggleCPC(){
+
+        cpc = !cpc;
+
+    }
+
+    @FXML
+    public void toggleCPM(){
+
+        cpm = !cpm;
+
+    }
+
+    @FXML
+    public void toggleBounceRate(){
+
+        bounceRate = !bounceRate;
+
+    }
 
 }

@@ -1,99 +1,144 @@
 package controllers;
 
 import com.jfoenix.controls.*;
+import daos.ClickDao;
+import daos.DaoInjector;
+import daos.ImpressionDao;
+import daos.ServerEntryDao;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Translate;
-import javafx.stage.Stage;
 import javafx.util.Duration;
+import models.Metrics;
 
-import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.Collections;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.ChronoUnit.HOURS;
+
+/**
+ * As the filter panel controls the whole app it makes
+ * sense for the root controller to also be the controller for the filter panel,
+ * so this is now the controller for the filter panel
+ */
 public class RootController {
 
-    public static void main(String[] args){
+    //OTHER CONTROLLERS
+    @FXML private BasicPageController basicStatsPageController;
+    @FXML private AdvancedPageController advancedStatsPageController;
+    @FXML private ComparePageController comparePageController;
 
-        new Tester();
+    //FILTER PANEL
+    @FXML private Circle circle;
+    @FXML private AnchorPane sideAnchor;
+    @FXML private Polygon arrow;
+    @FXML private JFXComboBox filterTargetComboBox;
+    @FXML private JFXDatePicker dateFromPicker;
+    @FXML private JFXTimePicker timeFromPicker;
+    @FXML private JFXDatePicker dateToPicker;
+    @FXML private JFXTimePicker timeToPicker;
+    @FXML private Spinner granularitySpinner;
+    @FXML private JFXComboBox granularityComboBox;
+    @FXML private JFXSlider bouncePageSlider;
+    @FXML private JFXSlider bounceDurationSlider;
 
-    }
+    //BOTTOM BAR
+    @FXML private JFXButton campaignButton;
+    @FXML private JFXButton printButton;
+    @FXML private Label campaignLabel;
 
-    static class Tester {
+    private ClickDao clickDao;
+    private ImpressionDao impressionDao;
+    private ServerEntryDao serverEntryDao;
 
-        public Tester(){
+    /*
+    Need to implement using multiple metrics instances somehow so perhaps
+    one metrics instance for basic controller, one for advanced controller,
+    and one each for both compare graphs? Keep like this for now
+    */
+    private Metrics metrics;
 
-            //FOR TESTING
-            Platform.startup(() -> {
+    //Which campaign's data is currently being shown
+    private String currentCampaign;
 
-                Parent root = null;
 
-                try {
-                    root = FXMLLoader.load(getClass().getClassLoader().getResource("views/layout.fxml"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    private LocalDate dateFrom;
+    private LocalTime timeFrom;
+    private LocalDate dateTo;
+    private LocalTime timeTo;
 
-                Stage stage = new Stage();
-                stage.setScene(new Scene(root));
-                stage.show();
+    private boolean circleIsRight;
+    private boolean circleIsClickable;
 
-            });
+    //Gender
+    private boolean male;
+    private boolean female;
 
-        }
+    //Age range
+    private boolean lt25;
+    private boolean btwn2534;
+    private boolean btwn3544;
+    private boolean btwn4554;
+    private boolean gt55;
 
-    }
+    //Income
+    private boolean lowIncome;
+    private boolean medIncome;
+    private boolean highIncome;
+
+    //Context
+    private boolean news;
+    private boolean shopping;
+    private boolean socialMedia;
+    private boolean blog;
+    private boolean hobbies;
+    private boolean travel;
 
     @FXML
     public void initialize(){
 
+        clickDao = DaoInjector.newClickDao();
+        impressionDao = DaoInjector.newImpressionDao();
+        serverEntryDao = DaoInjector.newServerEntryDao();
+
+        granTimeUnit = ChronoUnit.DAYS;
+
+        circleIsRight = true;
+        circleIsClickable = true;
         initFilterTab();
+        ControllerInjector.associateRoot(this);
+        metrics = new Metrics();
+        System.out.println("val of basic stats controller: " + basicStatsPageController.toString());
+
+        //Initially the date spinners will be from week ago until now
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime weekAgo = now.minus(1, ChronoUnit.WEEKS);
+        dateToPicker.setValue(now.toLocalDate());
+        updateDTo();
+        timeToPicker.setValue(now.toLocalTime());
+        updateTTo();
+        dateFromPicker.setValue(weekAgo.toLocalDate());
+        updateDFrom();
+        timeFromPicker.setValue(weekAgo.toLocalTime());
+        updateTFrom();
 
     }
 
-    @FXML private BorderPane mainApp;
-    @FXML private ScrollPane scrollPane;
-    @FXML private ScrollPane sideScrollPane;
-    @FXML private BorderPane borderPane;
-    @FXML private BorderPane arrowBorder;
-    @FXML private FlowPane borderBody;
-    @FXML private StackPane rootPane;
-    @FXML private JFXTabPane tabPane;
-    @FXML private Circle circle;
-    @FXML private AnchorPane sideAnchor;
-    @FXML private Polygon arrow;
-
     private void initFilterTab(){
-
-        //Make sure the filter panel goes to the right by the width of the filter vbox
-
-        TranslateTransition moveRight = new TranslateTransition(Duration.millis(1), sideOverlay);
-        moveRight.setByX(326);
-
-        System.out.println("tab pane width: " + tabPane.getWidth());
-        System.out.println("tab pane max width: " + tabPane.getMaxWidth());
-
-        System.out.println("root pane width: " + rootPane.getWidth());
-        System.out.println("root pane max width: " + rootPane.getMaxWidth());
 
         double val = circle.getRadius();
 
@@ -103,7 +148,6 @@ public class RootController {
         Translate arrowTrans = new Translate();
         arrowTrans.setY(val + (val / 3));
 
-        //They are the same relative position to each other
         circle.getTransforms().add(circleTrans);
         arrow.getTransforms().add(arrowTrans);
 
@@ -111,22 +155,6 @@ public class RootController {
         anchorTrans.setX(sideAnchor.getMaxWidth() + 10);
         sideAnchor.getTransforms().add(anchorTrans);
 
-        //sideOverlay.setPickOnBounds(false);
-        //spinner.setPickOnBounds(false);
-        //filterIndicatorStack.setPickOnBounds(false);
-
-        //So that the scrolling doesnt get messed up, undisable it each time it slides in
-        //borderPane.setDisable(true);
-        //arrowBorder.setDisable(true);
-        //sideOverlay.setDisable(true);
-        System.out.println("starting animation...");
-        moveRight.play();
-        moveRight.setOnFinished(e -> System.out.println("Done animation"));
-
-        //sideOverlay.setOnMouseClicked(e -> System.out.println("Top stack thing was clicked!"));
-        //scrollPane.setOnMouseClicked(e -> System.out.println("Main app was clicked!"));
-        //filterShowHideButton.setVisible(false);
-        //filterArrow.setVisible(false);
         FadeTransition startCircle = new FadeTransition(Duration.seconds(8), circle);
         startCircle.setFromValue(circle.getOpacity());
         startCircle.setToValue(0);
@@ -139,13 +167,6 @@ public class RootController {
         parallelTransition.getChildren().add(startCircle);
         parallelTransition.getChildren().add(startArrow);
         parallelTransition.play();
-
-        //start.play();
-
-        /*
-        TranslateTransition sideTest = new TranslateTransition(Duration.seconds(5), sideAnchor);
-        sideTest.setByX(-sideAnchor.getMaxWidth());
-        sideTest.play();*/
 
         initFilterTabListeners();
 
@@ -160,9 +181,6 @@ public class RootController {
         arrow.setOnMouseClicked(e -> handleCircleClick());
 
     }
-
-    private boolean circleIsRight = true;
-    private boolean circleIsClickable = true;
 
     private void handleCircleExit(){
 
@@ -211,8 +229,6 @@ public class RootController {
 
         if(circleIsClickable){
 
-            System.out.println("passed circle click boolean");
-
             circleIsClickable = false;
             circleIsRight = !circleIsRight;
 
@@ -241,8 +257,6 @@ public class RootController {
 
             translateArrow.setByX(amt);
 
-            //circleIsRight = !circleIsRight;
-
             ParallelTransition parallelTransition = new ParallelTransition();
             parallelTransition.getChildren().add(translateCircle);
             parallelTransition.getChildren().add(translateAnchor);
@@ -250,7 +264,6 @@ public class RootController {
             parallelTransition.setOnFinished(g -> {
 
                 circleIsClickable = true;
-                //circleIsRight = !circleIsRight;
                 handleCircleExit();
 
             });
@@ -263,114 +276,262 @@ public class RootController {
     }
 
 
+    @FXML
+    public void toggleMale(){
 
-    //FILTER PANEL
-    @FXML private JFXSpinner spinner;
-    @FXML private JFXComboBox filterTargetComboBox;
-    @FXML private StackPane sideOverlay;
-    @FXML private VBox filterVBox;
-    @FXML private StackPane filterIndicatorStack;
-    @FXML private Circle filterShowHideButton;
-    @FXML private Polygon filterArrow;
+        male = !male;
 
-    //Gender
-    private boolean male;
-    private boolean female;
-
-    //Age range
-    private boolean lt25;
-    private boolean btwn2534;
-    private boolean btwn3544;
-    private boolean btwn4554;
-    private boolean gt55;
-
-    //Income
-    private boolean lowIncome;
-    private boolean medIncome;
-    private boolean highIncome;
-
-    //Context
-    private boolean news;
-    private boolean shopping;
-    private boolean socialMedia;
-    private boolean blog;
-    private boolean hobbies;
-    private boolean travel;
+    }
 
     @FXML
-    public void toggleMale(){}
+    public void toggleFemale(){
+
+        female = !female;
+
+    }
+
     @FXML
-    public void toggleFemale(){}
+    public void toggleLt25(){
+
+        lt25 = !lt25;
+
+    }
+
     @FXML
-    public void toggleLt25(){}
+    public void toggleBtwn2534(){
+
+        btwn2534 = !btwn2534;
+
+    }
+
     @FXML
-    public void toggleBtwn2534(){}
+    public void toggleBtwn3544(){
+
+        btwn3544 = !btwn3544;
+
+    }
+
     @FXML
-    public void toggleBtwn3544(){}
+    public void toggleBtwn4554(){
+
+        btwn4554 = !btwn4554;
+
+    }
+
     @FXML
-    public void toggleBtwn4554(){}
+    public void toggleGt55(){
+
+        gt55 = !gt55;
+
+    }
+
     @FXML
-    public void toggleGt55(){}
+    public void toggleLow(){
+
+        lowIncome = !lowIncome;
+
+    }
+
     @FXML
-    public void toggleLow(){}
+    public void toggleMed(){
+
+        medIncome = !medIncome;
+
+    }
+
     @FXML
-    public void toggleMed(){}
+    public void toggleHigh(){
+
+        highIncome = !highIncome;
+
+    }
+
     @FXML
-    public void toggleHigh(){}
+    public void toggleNews(){
+
+        news = !news;
+
+    }
+
     @FXML
-    public void toggleNews(){}
+    public void toggleShopping(){
+
+        shopping = !shopping;
+
+    }
+
     @FXML
-    public void toggleShopping(){}
+    public void toggleSocialMedia(){
+
+        socialMedia = !socialMedia;
+
+    }
+
     @FXML
-    public void toggleSocialMedia(){}
+    public void toggleBlog(){
+
+        blog = !blog;
+
+    }
+
     @FXML
-    public void toggleBlog(){}
+    public void toggleHobbies(){
+
+        hobbies = !hobbies;
+
+    }
+
     @FXML
-    public void toggleHobbies(){}
+    public void toggleTravel(){
+
+        travel = !travel;
+
+    }
+
     @FXML
-    public void toggleTravel(){}
-    @FXML
-    public void updateDFrom(){}
-    @FXML
-    public void updateTFrom(){}
-    @FXML
-    public void updateDTo(){}
-    @FXML
-    public void updateTTo(){}
-    @FXML
-    public void reloadData(){}
-    @FXML
-    public void updateGranSpin(){}
-    @FXML
-    public void updateGranCombo(){}
+    public void reloadDataButtonMethod(){}
+
     @FXML
     public void updateBouncePageLabel(){}
     @FXML
     public void updateBounceDurationLabel(){}
 
+    //BOUNCE SLIDER CHANGE METHODS HERE
 
-    /*
-    METHODS FOR UPDATING DATE AND TIME PICKERS HERE
+    public String getCurrentCampaign(){
 
-    RELOAD DATA BUTTON METHOD HERE
+        return currentCampaign;
 
-    BOUNCE SLIDER RESPONSE METHODS HERE
+    }
+
+    /**
+     * Call this method whenever a new / different campaign
+     * has been selected by the user to populate all parts
+     * of the UI with the data of the newly selected campaign
+     *
+     * @param campaign
      */
-    @FXML private JFXDatePicker dateFromPicker;
-    @FXML private JFXTimePicker timeFromPicker;
-    @FXML private JFXDatePicker dateToPicker;
-    @FXML private JFXTimePicker timeToPicker;
-    @FXML private Spinner granularitySpinner;
-    @FXML private JFXComboBox granularityComboBox;
-    @FXML private JFXSlider bouncePageSlider;
-    @FXML private JFXSlider bounceDurationSlider;
-    //END FILTER PANEL
+    public void loadCampaignData(String campaign){
 
-    //BOTTOM BAR
-    @FXML private JFXButton campaignButton;
-    @FXML private JFXButton printButton;
-    @FXML private Label campaignLabel;
-    //END BOTTOM BAR
+        new Thread(() -> {
+
+            currentCampaign = campaign;
+            doGUITask(() -> campaignLabel.setText(currentCampaign));
+            updateData();
+
+        }).start();
+
+    }
+
+    /**
+     * Causes all parts of the app to update their data, ie each controller
+     * to update all the ui components they are responsible for
+     */
+    public void updateData(){
+
+        LocalDateTime from = getMin(currentCampaign);
+        LocalDateTime to = getMax(currentCampaign);
+        setDateTimeFrom(from);
+        setDateTimeTo(to);
+
+        basicStatsPageController.updateData(currentCampaign);
+        //advancedStatsPageController.updateData(currentCampaign);
+        //comparePageController.updateData(currentCampaign);
+
+    }
+
+    public LocalDateTime getPeriodStart(){
+
+        return LocalDateTime.of(dateFrom, timeFrom);
+
+    }
+
+    public LocalDateTime getPeriodEnd(){
+
+        return LocalDateTime.of(dateTo, timeTo);
+
+    }
+
+    public LocalDateTime getMin(String campaignName) {
+
+        ArrayList<LocalDateTime> mins = new ArrayList<>();
+        mins.add(clickDao.getMinDateFromCampaign(campaignName));
+        mins.add(impressionDao.getMinDateFromCampaign(campaignName));
+        mins.add(serverEntryDao.getMinDateFromCampaign(campaignName));
+        Collections.sort(mins);
+        return mins.get(0);
+
+    }
+
+    public LocalDateTime getMax(String campaignName) {
+
+        ArrayList<LocalDateTime> maxs = new ArrayList<>();
+        maxs.add(clickDao.getMaxDateFromCampaign(campaignName));
+        maxs.add(impressionDao.getMaxDateFromCampaign(campaignName));
+        maxs.add(serverEntryDao.getMaxDateFromCampaign(campaignName));
+        Collections.sort(maxs);
+        return maxs.get(maxs.size() - 1);
+
+    }
+
+    @FXML
+    /**
+     * Called every time the value of the from date picker changes
+     */
+    public void updateDFrom(){
+
+        dateFrom = dateFromPicker.getValue();
+
+    }
+
+    @FXML
+    /**
+     * Called every time the value of the to date picker changes
+     */
+    public void updateDTo(){
+
+        System.out.println(dateToPicker.getValue());
+        dateTo = dateToPicker.getValue();
+
+    }
+
+    @FXML
+    /**
+     * Called every time the value of the from time picker changes
+     */
+    public void updateTFrom(){
+
+        timeFrom = timeFromPicker.getValue();
+
+    }
+
+    @FXML
+    /**
+     * Called every time the value of the to time picker changes
+     */
+    public void updateTTo(){
+
+        timeTo = timeToPicker.getValue();
+
+    }
+
+    public void setDateTimeFrom(LocalDateTime from) {
+        //Updates tFrom and dFrom automatically
+        dateFromPicker.setValue(from.toLocalDate());
+        timeFromPicker.setValue(from.toLocalTime());
+    }
+
+    public void setDateTimeTo(LocalDateTime to) {
+        //Updates tFrom and dFrom automatically
+        dateToPicker.setValue(to.toLocalDate());
+        timeToPicker.setValue(to.toLocalTime());
+    }
+
+    public Metrics getMetrics(){
+
+        return metrics;
+
+    }
 
     /**
      * WHENEVER YOU ARE CALLING ANY GUI UPDATE METHODS
@@ -405,6 +566,155 @@ public class RootController {
             alert.showAndWait();
 
         });
+
+    }
+
+    /**
+     * Calculates the time and date difference specified by the user,
+     * and returns the string of the unit that should be used as a metric
+     *
+     * @return metric whether the metric is minutes, hours, days or weeks
+     */
+    public String calcMetric(){
+
+        LocalDateTime start = LocalDateTime.of(dateFrom, timeFrom);
+        LocalDateTime end = LocalDateTime.of(dateTo, timeTo);
+
+        long days = start.until(end, ChronoUnit.DAYS);
+        long hours = start.until(end, ChronoUnit.HOURS);
+
+        int unitsDifference = 0;
+
+        if(days >= 30){
+
+            unitsDifference = Math.round(start.until(end, ChronoUnit.WEEKS));
+            return "Weeks";
+
+        } else if(days >= 1){
+
+            unitsDifference = Math.round(days);
+            return "Days";
+
+        } else if(hours >= 1){
+
+            unitsDifference = Math.round(hours);
+            return "Hours";
+
+        } else {
+
+            unitsDifference = Math.round(start.until(end, ChronoUnit.MINUTES));
+            return "Minutes";
+
+        }
+
+    }
+
+    public java.time.Duration calcDuration() {
+
+        int digits = getGranDigits();
+        ChronoUnit unit = getGranUnit();
+        java.time.Duration dur;
+
+        switch (unit) {
+            case HOURS:
+                dur = java.time.Duration.of(digits, HOURS);
+                break;
+
+            case DAYS:
+                dur = java.time.Duration.of(digits, DAYS);
+                break;
+
+            case WEEKS:
+                dur = java.time.Duration.of(digits, DAYS).multipliedBy(7);
+                break;
+
+            default:
+                dur = java.time.Duration.ofDays(1);
+        }
+
+        return dur;
+
+    }
+
+    public ChronoUnit getGranUnit(){
+
+        ChronoUnit granTimeUnit = null;
+
+        switch (String.valueOf(granularityComboBox.getValue())) {
+            case "Hours":
+                granTimeUnit = ChronoUnit.HOURS;
+                break;
+
+            case "Days":
+                granTimeUnit = ChronoUnit.DAYS;
+                break;
+
+            case "Weeks":
+                granTimeUnit = ChronoUnit.WEEKS;
+                break;
+
+            default:
+                granTimeUnit = ChronoUnit.DAYS;
+
+        }
+
+        return granTimeUnit;
+
+    }
+
+    public int getGranDigits(){
+
+        System.out.println("value of spinner: " + granularitySpinner);
+        return granDigit;
+
+    }
+
+    private int granDigit = 0;
+    private ChronoUnit granTimeUnit;
+
+    @FXML
+    /**
+     * called when spinner changes
+     */
+    public void updateGranSpin(){
+        granDigit = (int) granularitySpinner.getValue();
+    }
+
+    @FXML
+    /**
+     * called when combobox changes
+     */
+    public void updateGranCombo(){
+        System.out.println("COMBO");
+        switch (String.valueOf(granularityComboBox.getValue())) {
+            case "Hours":
+                granTimeUnit = ChronoUnit.HOURS;
+                break;
+
+            case "Days":
+                granTimeUnit = ChronoUnit.DAYS;
+                break;
+
+            case "Weeks":
+                granTimeUnit = ChronoUnit.WEEKS;
+                break;
+
+            default:
+                granTimeUnit = ChronoUnit.DAYS;
+
+        }
+    }
+
+    /**
+     * Returns the double rounded to 2 decimal places, used
+     * for presenting data in the stats tab
+     * @return
+     */
+    public static double to2DP(double x){
+
+        x = (double) Math.round(x * 100);
+        x /= 100;
+        return x;
 
     }
 

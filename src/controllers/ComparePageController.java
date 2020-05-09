@@ -13,4 +13,11 @@ public class ComparePageController {
     @FXML private LineChart secondChart;
     //END COMPARE PAGE
 
+    /**
+     * Does nothing for now until compare page is implemented
+     */
+    public void updateData(String campaignName){
+
+    }
+
 }
