@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
@@ -60,6 +61,10 @@ public class RootController {
     @FXML private JFXButton campaignButton;
     @FXML private JFXButton printButton;
     @FXML private Label campaignLabel;
+
+    //Loading indicator
+    @FXML private JFXSpinner spinner;
+    @FXML private BorderPane mainApp;
 
     private ClickDao clickDao;
     private ImpressionDao impressionDao;
@@ -395,6 +400,36 @@ public class RootController {
     public void updateBouncePageLabel(){}
     @FXML
     public void updateBounceDurationLabel(){}
+
+    /**
+     * Shows the spinner loading indicator and blurs the app
+     */
+    public void startLoadingIndicator(){
+
+        doGUITask(() -> {
+
+            spinner.setDisable(false);
+            spinner.setVisible(true);
+            mainApp.setEffect(new GaussianBlur(30));
+
+        });
+
+    }
+
+    /**
+     * Hides the spinner loading indicator and unblurs the app
+     */
+    public void endLoadingIndicator(){
+
+        doGUITask(() -> {
+
+            spinner.setDisable(true);
+            spinner.setVisible(false);
+            mainApp.setEffect(null);
+
+        });
+
+    }
 
     //BOUNCE SLIDER CHANGE METHODS HERE
 

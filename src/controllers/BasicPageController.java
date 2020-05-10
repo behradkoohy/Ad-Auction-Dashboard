@@ -1,12 +1,9 @@
 package controllers;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.chart.Chart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import models.ChartHandler;
 import models.PieChartModel;
@@ -152,6 +149,8 @@ public class BasicPageController {
         List<XYChart.Series> newChartData = chartHandler.getBasicChartDataAccordingTo(campaignName, start, end,
                 dur, impressions, conversions, clicks, uniques, bounces);
 
+        updateBasicGraph(newChartData);
+
     }
 
     public void updateLabels(String impressions, String clicks, String uniques,
@@ -230,7 +229,7 @@ public class BasicPageController {
      * Update the basic chart to show the given data
      * @param data
      */
-    public void updateBasicChart(List<XYChart.Series> data){
+    public void updateBasicGraph(List<XYChart.Series> data){
 
         RootController.doGUITask(() -> {
 
