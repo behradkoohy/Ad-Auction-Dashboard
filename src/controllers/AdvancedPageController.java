@@ -37,6 +37,7 @@ public class AdvancedPageController {
     private boolean cpm;
     private boolean bounceRate;
 
+    @FXML
     public void initialize(){
 
         pieChartModel = new PieChartModel();
