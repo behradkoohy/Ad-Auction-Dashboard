@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import com.jfoenix.controls.JFXTabPane?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
@@ -11,120 +12,126 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CampaignManagerController">
+<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CampaignManagerController">
    <children>
-      <JFXTabPane>
-         <tabs>
-            <Tab text="New campaign">
-              <content>
-                  <VBox prefHeight="376.0" prefWidth="306.0">
-                     <children>
-                        <Label />
-                        <Label prefHeight="66.0" prefWidth="207.0" text="Please provide a name for your new campaign and load the data files for it" wrapText="true" />
-                        <Label text="Campaign Name" underline="true" />
-                        <JFXTextField fx:id="newCampaignField">
-                           <VBox.margin>
-                              <Insets right="10.0" top="10.0" />
-                           </VBox.margin>
-                        </JFXTextField>
-                        <Label text="Campaign Files" underline="true">
-                           <VBox.margin>
-                              <Insets top="20.0" />
-                           </VBox.margin>
-                        </Label>
-                        <GridPane prefHeight="121.0" prefWidth="286.0">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="156.0" minWidth="10.0" prefWidth="108.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.5" minWidth="10.0" prefWidth="177.5" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints maxHeight="39.0" minHeight="9.0" prefHeight="28.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="73.0" minHeight="0.0" prefHeight="39.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="70.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
+      <AnchorPane fx:id="anchorPane">
+         <children>
+            <JFXTabPane>
+               <tabs>
+                  <Tab text="New campaign">
+                    <content>
+                        <VBox prefHeight="376.0" prefWidth="306.0">
                            <children>
-                              <JFXButton fx:id="serverButton" onAction="#chooseServer" prefHeight="27.0" prefWidth="284.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;" text="Choose file" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                 <GridPane.margin>
-                                    <Insets right="10.0" />
-                                 </GridPane.margin>
-                              </JFXButton>
-                              <JFXButton fx:id="impressionButton" onAction="#chooseImpression" prefHeight="27.0" prefWidth="260.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;" text="Choose file" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                 <GridPane.margin>
+                              <Label />
+                              <Label prefHeight="66.0" prefWidth="207.0" text="Please provide a name for your new campaign and load the data files for it" wrapText="true" />
+                              <Label text="Campaign Name" underline="true" />
+                              <JFXTextField fx:id="newCampaignField">
+                                 <VBox.margin>
                                     <Insets right="10.0" top="10.0" />
-                                 </GridPane.margin>
+                                 </VBox.margin>
+                              </JFXTextField>
+                              <Label text="Campaign Files" underline="true">
+                                 <VBox.margin>
+                                    <Insets top="20.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <GridPane prefHeight="121.0" prefWidth="286.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="156.0" minWidth="10.0" prefWidth="108.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="219.5" minWidth="10.0" prefWidth="177.5" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints maxHeight="39.0" minHeight="9.0" prefHeight="28.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="73.0" minHeight="0.0" prefHeight="39.0" vgrow="SOMETIMES" />
+                                    <RowConstraints maxHeight="70.0" minHeight="10.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <JFXButton fx:id="serverButton" onAction="#chooseServer" prefHeight="27.0" prefWidth="284.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;" text="Choose file" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets right="10.0" />
+                                       </GridPane.margin>
+                                    </JFXButton>
+                                    <JFXButton fx:id="impressionButton" onAction="#chooseImpression" prefHeight="27.0" prefWidth="260.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;" text="Choose file" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets right="10.0" top="10.0" />
+                                       </GridPane.margin>
+                                    </JFXButton>
+                                    <JFXButton fx:id="clickButton" onAction="#chooseClick" prefHeight="27.0" prefWidth="300.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;" text="Choose file" GridPane.columnIndex="1">
+                                       <GridPane.margin>
+                                          <Insets right="10.0" top="10.0" />
+                                       </GridPane.margin>
+                                    </JFXButton>
+                                    <Label text="Click log:" />
+                                    <Label text="Impression log:" GridPane.rowIndex="1" />
+                                    <Label text="Server log: " GridPane.rowIndex="2" />
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                              <JFXButton onAction="#createNewCampaign" prefHeight="27.0" prefWidth="248.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="CREATE AND LOAD NEW CAMPAIGN" textFill="WHITE">
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" top="20.0" />
+                                 </VBox.margin>
                               </JFXButton>
-                              <JFXButton fx:id="clickButton" onAction="#chooseClick" prefHeight="27.0" prefWidth="300.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;" text="Choose file" GridPane.columnIndex="1">
-                                 <GridPane.margin>
-                                    <Insets right="10.0" top="10.0" />
-                                 </GridPane.margin>
-                              </JFXButton>
-                              <Label text="Click log:" />
-                              <Label text="Impression log:" GridPane.rowIndex="1" />
-                              <Label text="Server log: " GridPane.rowIndex="2" />
                            </children>
-                           <VBox.margin>
-                              <Insets top="10.0" />
-                           </VBox.margin>
-                        </GridPane>
-                        <JFXButton onAction="#createNewCampaign" prefHeight="27.0" prefWidth="248.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="CREATE AND LOAD NEW CAMPAIGN" textFill="WHITE">
-                           <VBox.margin>
-                              <Insets left="20.0" right="20.0" top="20.0" />
-                           </VBox.margin>
-                        </JFXButton>
-                     </children>
-                     <padding>
-                        <Insets left="10.0" right="10.0" />
-                     </padding>
-                  </VBox>
-              </content>
-            </Tab>
-            <Tab text="Previous campaigns">
-              <content>
-                  <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="285.0">
-                     <children>
-                        <Label text="Previous campaigns">
-                           <VBox.margin>
-                              <Insets top="15.0" />
-                           </VBox.margin>
-                        </Label>
-                        <JFXComboBox fx:id="campaignComboBox" prefHeight="27.0" prefWidth="303.0">
-                           <VBox.margin>
-                              <Insets top="15.0" />
-                           </VBox.margin>
-                        </JFXComboBox>
-                        <Label text="Edit campaign name">
-                           <VBox.margin>
-                              <Insets top="15.0" />
-                           </VBox.margin>
-                        </Label>
-                        <JFXTextField fx:id="editCampaignField" prefHeight="27.0" prefWidth="265.0">
-                           <VBox.margin>
-                              <Insets top="15.0" />
-                           </VBox.margin>
-                        </JFXTextField>
-                        <JFXButton onAction="#updateCampaign" prefHeight="27.0" prefWidth="323.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="SAVE CHANGES" textFill="WHITE">
-                           <VBox.margin>
-                              <Insets left="20.0" right="20.0" top="20.0" />
-                           </VBox.margin>
-                        </JFXButton>
-                        <JFXButton onAction="#deleteCampaign" prefHeight="27.0" prefWidth="405.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="DELETE CAMPAIGN" textFill="WHITE">
-                           <VBox.margin>
-                              <Insets left="20.0" right="20.0" top="15.0" />
-                           </VBox.margin>
-                        </JFXButton>
-                        <JFXButton onAction="#loadPreviousCampaign" prefHeight="27.0" prefWidth="405.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="LOAD SELECTED CAMPAIGN" textFill="WHITE">
-                           <VBox.margin>
-                              <Insets left="20.0" right="20.0" top="15.0" />
-                           </VBox.margin>
-                        </JFXButton>
-                     </children>
-                  </VBox>
-              </content>
-            </Tab>
-         </tabs>
-      </JFXTabPane>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                        </VBox>
+                    </content>
+                  </Tab>
+                  <Tab text="Previous campaigns">
+                    <content>
+                        <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="320.0" prefWidth="285.0">
+                           <children>
+                              <Label text="Previous campaigns">
+                                 <VBox.margin>
+                                    <Insets top="15.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <JFXComboBox fx:id="campaignComboBox" prefHeight="27.0" prefWidth="303.0">
+                                 <VBox.margin>
+                                    <Insets top="15.0" />
+                                 </VBox.margin>
+                              </JFXComboBox>
+                              <Label text="Edit campaign name">
+                                 <VBox.margin>
+                                    <Insets top="15.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <JFXTextField fx:id="editCampaignField" prefHeight="27.0" prefWidth="265.0">
+                                 <VBox.margin>
+                                    <Insets top="15.0" />
+                                 </VBox.margin>
+                              </JFXTextField>
+                              <JFXButton onAction="#updateCampaign" prefHeight="27.0" prefWidth="323.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="SAVE CHANGES" textFill="WHITE">
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" top="20.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                              <JFXButton onAction="#deleteCampaign" prefHeight="27.0" prefWidth="405.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="DELETE CAMPAIGN" textFill="WHITE">
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" top="15.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                              <JFXButton onAction="#loadPreviousCampaign" prefHeight="27.0" prefWidth="405.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="LOAD SELECTED CAMPAIGN" textFill="WHITE">
+                                 <VBox.margin>
+                                    <Insets left="20.0" right="20.0" top="15.0" />
+                                 </VBox.margin>
+                              </JFXButton>
+                           </children>
+                        </VBox>
+                    </content>
+                  </Tab>
+               </tabs>
+            </JFXTabPane>
+         </children>
+      </AnchorPane>
+      <JFXSpinner fx:id="spinner" disable="true" scaleX="0.75" scaleY="0.75" visible="false" />
    </children>
-</AnchorPane>
+</StackPane>

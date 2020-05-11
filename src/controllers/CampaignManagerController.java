@@ -2,12 +2,15 @@ package controllers;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
 import daos.ClickDao;
 import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import javafx.fxml.FXML;
+import javafx.scene.effect.GaussianBlur;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import models.Metrics;
 import models.ReaderCSV;
@@ -30,6 +33,10 @@ public class CampaignManagerController {
     @FXML private JFXButton serverButton;
     @FXML private JFXComboBox campaignComboBox;
     @FXML private JFXTextField editCampaignField;
+
+    //For the campaign loading indicator
+    @FXML private AnchorPane anchorPane;
+    @FXML private JFXSpinner spinner;
 
     private ClickDao clickDao = DaoInjector.newClickDao();
     private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
@@ -316,6 +323,36 @@ public class CampaignManagerController {
         x = (double) Math.round(x * 100);
         x /= 100;
         return x;
+
+    }
+
+    /**
+     * Start the loading indicator for the campaign manager
+     */
+    public void startLoadingIndicator(){
+
+        RootController.doGUITask(() -> {
+
+            spinner.setDisable(false);
+            spinner.setVisible(true);
+            anchorPane.setEffect(new GaussianBlur(30));
+
+        });
+
+    }
+
+    /**
+     * End the loading indicator for the campaign manager
+     */
+    public void endLoadingIndicator(){
+
+        RootController.doGUITask(() -> {
+
+            spinner.setDisable(true);
+            spinner.setVisible(false);
+            anchorPane.setEffect(null);
+
+        });
 
     }
 

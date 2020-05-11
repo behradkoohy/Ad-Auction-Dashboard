@@ -69,7 +69,7 @@ public class ComparePageController {
     /**
      * Does nothing for now until compare page is implemented
      */
-    public void updateData(String campaignName){
+    public void updateData(){
 
     }
 

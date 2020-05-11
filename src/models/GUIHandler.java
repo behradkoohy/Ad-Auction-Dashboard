@@ -8,8 +8,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javax.persistence.criteria.Root;
 import java.io.IOException;
 
+/**
+ * This class manages all the different windows that will be open
+ */
 public class GUIHandler {
 
     private Stage managerStage;
@@ -50,6 +54,7 @@ public class GUIHandler {
         managerStage = new Stage();
         managerStage.setScene(new Scene(campaignParent));
 
+
         //KEEP MAIN STAGE HIDDEN UNTIL CAMPAIGN IS LOADED
         mainStage.show(); //comment this line out
 
@@ -58,20 +63,20 @@ public class GUIHandler {
     }
 
     /**
-     * Makes the campaign manager load from its fxml file
+     * Called when the campaign manager button is pressed to show the campaign manager
      */
-    public void showCampaignManager(){
+    public void reloadCampaignManager(){
 
-        Parent root = null;
+        Parent campaignParent = null;
 
         try {
-            root = FXMLLoader.load(getClass().getClassLoader().getResource("views/CampaignManager.fxml"));
+            campaignParent = FXMLLoader.load(getClass().getClassLoader().getResource("views/CampaignManager.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         managerStage = new Stage();
-        managerStage.setScene(new Scene(root));
+        managerStage.setScene(new Scene(campaignParent));
         managerStage.show();
 
     }
@@ -82,9 +87,7 @@ public class GUIHandler {
 
     }
 
-    /**
-     * Makes the main app load from its fxml file
-     */
+
     public void showMainGUI(){
 
         RootController.doGUITask(() -> mainStage.show());
