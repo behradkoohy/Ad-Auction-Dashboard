@@ -39,10 +39,10 @@ import static java.time.temporal.ChronoUnit.HOURS;
 public class RootController {
 
     //OTHER CONTROLLERS
-    @FXML private BasicPageController basicPageController;
-    @FXML private AdvancedPageController advancedPageController;
-    @FXML private ComparePageController comparePageController;
-    @FXML private CampaignManagerController campaignManagerController;
+    @FXML private BasicPageController basicStatsPageController;
+    //@FXML private AdvancedPageController advancedPageController;
+    //@FXML private ComparePageController comparePageController;
+    @FXML private CampaignManagerController campaignManagerPageController;
 
     //private static WindowController windowController;
 
@@ -69,9 +69,9 @@ public class RootController {
     @FXML private JFXSpinner spinner;
     @FXML private BorderPane mainApp;
 
-    private ClickDao clickDao;
-    private ImpressionDao impressionDao;
-    private ServerEntryDao serverEntryDao;
+    private ClickDao clickDao = DaoInjector.newClickDao();
+    private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
+    private ServerEntryDao serverEntryDao = DaoInjector.newServerEntryDao();
 
     //Which campaign's data is currently being shown
     private String currentCampaign;
@@ -111,11 +111,6 @@ public class RootController {
 
     @FXML
     public void initialize(){
-
-        clickDao = DaoInjector.newClickDao();
-        impressionDao = DaoInjector.newImpressionDao();
-        serverEntryDao = DaoInjector.newServerEntryDao();
-
         granTimeUnit = ChronoUnit.DAYS;
 
         circleIsRight = true;
@@ -123,20 +118,23 @@ public class RootController {
 
         this.initFilterTab();
 
-        campaignManagerController.init(this);
-        basicPageController.init(this);
+        campaignManagerPageController.init(this);
+        basicStatsPageController.init(this);
+
+        //Initially the date spinners will be from week ago until now
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime weekAgo = now.minus(1, ChronoUnit.WEEKS);
+        dateToPicker.setValue(now.toLocalDate());
+        updateDTo();
+        timeToPicker.setValue(now.toLocalTime());
+        updateTTo();
+        dateFromPicker.setValue(weekAgo.toLocalDate());
+        updateDFrom();
+        timeFromPicker.setValue(weekAgo.toLocalTime());
+        updateTFrom();
+
     }
 
-    /*
-    public static void setWindowController(WindowController ref) {
-        windowController = ref;
-    }
-
-    public static WindowController getWindowController() {
-        return windowController;
-    }
-
-     */
     /**
      * Call this method whenever a new / different campaign
      * has been selected by the user to populate all parts
@@ -168,7 +166,7 @@ public class RootController {
         setDateTimeFrom(from);
         setDateTimeTo(to);
 
-        basicPageController.updateData(currentCampaign);
+        basicStatsPageController.updateData(currentCampaign);
         //advancedPageController.updateData(currentCampaign);
 
     }
