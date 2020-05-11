@@ -57,15 +57,15 @@ public class BasicPageController {
     public void updateData(String campaignName){
 
         if(chartHandler == null){
-
             chartHandler = new ChartHandler(metricsModel);
-
         }
 
         LocalDateTime start = controller.getPeriodStart();
         LocalDateTime end = controller.getPeriodEnd();
         Duration dur = controller.calcDuration();
 
+        metricsModel.setCampaign(campaignName);
+        System.out.println(metricsModel.getNumImpressions(start, end));
         String numImpressionsStr = String.valueOf(String.valueOf(RootController.to2DP(
                 metricsModel.getNumImpressions(start, end))));
         String numClicksStr = String.valueOf(RootController.to2DP(metricsModel.getNumClicks(start, end)));
@@ -79,7 +79,6 @@ public class BasicPageController {
         pieChartModel.setCampaign(campaignName);
         pieChartModel.setStart(start);
         pieChartModel.setEnd(end);
-
         HashMap<String, Integer> pieChartData = pieChartModel.getDistributions();
         List<PieChart.Data> genderPieData = getGenderPieData(pieChartData.get("men"), pieChartData.get("women"));
         List<PieChart.Data> agePieData = getAgePieData(pieChartData.get("lt25"), pieChartData.get("btwn2534"),
@@ -91,7 +90,7 @@ public class BasicPageController {
 
         List<XYChart.Series> newChartData = chartHandler.getBasicChartDataAccordingTo(campaignName, start, end,
                 dur, impressions, conversions, clicks, uniques, bounces);
-
+        System.out.println(newChartData);
         updateBasicGraph(newChartData);
 
     }
