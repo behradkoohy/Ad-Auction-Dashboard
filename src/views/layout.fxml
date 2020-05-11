@@ -65,7 +65,7 @@
                         <Insets left="10.0" top="10.0" />
                      </FlowPane.margin>
                   </Label>
-                  <Label fx:id="campaignLabel" text="CAMPAIGNNAME" textFill="WHITE">
+                  <Label fx:id="campaignLabel" text="None" textFill="WHITE">
                      <FlowPane.margin>
                         <Insets left="10.0" top="10.0" />
                      </FlowPane.margin>

@@ -251,8 +251,6 @@ public class CampaignManagerController {
             String campaignName = (String) campaignComboBox.getValue();
             if(campaignName != null) {
                 this.controller.loadCampaignData(campaignName);
-                //RootController.getWindowController().closeCampaignManager();
-                //RootController.getWindowController().showMainGUI();
             }
 
         }).start();
