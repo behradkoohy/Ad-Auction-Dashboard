@@ -205,11 +205,19 @@ public class ComparePageController {
 
     }
 
+    private void updateDataWithLoader() {
+        new Thread(() -> {
+            controller.startLoadingIndicator();
+            this.updateData();
+            controller.endLoadingIndicator();
+        }).start();
+    }
+
     @FXML
     public void toggleImpressions(){
 
         impressions = !impressions;
-        updateData();
+        updateDataWithLoader();
 
     }
 
@@ -217,7 +225,7 @@ public class ComparePageController {
     public void toggleClicks(){
 
         clicks = !clicks;
-        updateData();
+        updateDataWithLoader();
 
     }
 
@@ -225,7 +233,7 @@ public class ComparePageController {
     public void toggleUniques(){
 
         uniques = !uniques;
-        updateData();
+        updateDataWithLoader();
 
     }
 
@@ -233,7 +241,7 @@ public class ComparePageController {
     public void toggleBounces(){
 
         bounces = !bounces;
-        updateData();
+        updateDataWithLoader();
 
     }
 
@@ -241,7 +249,7 @@ public class ComparePageController {
     public void toggleConversions(){
 
         conversions = !conversions;
-        updateData();
+        updateDataWithLoader();
 
     }
 
@@ -249,7 +257,7 @@ public class ComparePageController {
     public void toggleCtr(){
 
         ctr = !ctr;
-        updateData();
+        updateDataWithLoader();
 
     }
 
@@ -257,7 +265,7 @@ public class ComparePageController {
     public void toggleCpa(){
 
         cpa = !cpa;
-        updateData();
+        updateDataWithLoader();
 
     }
 
@@ -265,7 +273,7 @@ public class ComparePageController {
     public void toggleCpc(){
 
         cpc = !cpc;
-        updateData();
+        updateDataWithLoader();
 
     }
 
@@ -273,7 +281,7 @@ public class ComparePageController {
     public void toggleCpm(){
 
         cpm = !cpm;
-        updateData();
+        updateDataWithLoader();
 
     }
 
@@ -281,7 +289,7 @@ public class ComparePageController {
     public void toggleBounceRate(){
 
         bounceRate = !bounceRate;
-        updateData();
+        updateDataWithLoader();
 
     }
 

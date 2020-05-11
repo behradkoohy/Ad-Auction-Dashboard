@@ -192,39 +192,47 @@ public class BasicPageController {
 
     }
 
+    private void updateBasicChartWithLoader() {
+        new Thread(() -> {
+            controller.startLoadingIndicator();
+            this.updateBasicChart();
+            controller.endLoadingIndicator();
+        }).start();
+    }
+
     @FXML
     public void toggleImpressions(){
 
         impressions = !impressions;
-        updateBasicChart();
+        updateBasicChartWithLoader();
     }
 
     @FXML
     public void toggleConversions(){
 
         conversions = !conversions;
-        updateBasicChart();
+        updateBasicChartWithLoader();
     }
 
     @FXML
     public void toggleClicks(){
 
         clicks = !clicks;
-        updateBasicChart();
+        updateBasicChartWithLoader();
     }
 
     @FXML
     public void toggleUniques(){
 
         uniques = !uniques;
-        updateBasicChart();
+        updateBasicChartWithLoader();
     }
 
     @FXML
     public void toggleBounces(){
 
         bounces = !bounces;
-        updateBasicChart();
+        updateBasicChartWithLoader();
 
     }
 

@@ -191,11 +191,19 @@ public class AdvancedPageController {
 
     }
 
+    private void updateAdvancedChartWithLoader() {
+        new Thread(() -> {
+            controller.startLoadingIndicator();
+            this.updateAdvancedChart();
+            controller.endLoadingIndicator();
+        }).start();
+    }
+
     @FXML
     public void toggleCTR(){
 
         ctr = !ctr;
-        updateAdvancedChart();
+        updateAdvancedChartWithLoader();
 
     }
 
@@ -203,7 +211,7 @@ public class AdvancedPageController {
     public void toggleCPA(){
 
         cpa = !cpa;
-        updateAdvancedChart();
+        updateAdvancedChartWithLoader();
 
     }
 
@@ -211,7 +219,7 @@ public class AdvancedPageController {
     public void toggleCPC(){
 
         cpc = !cpc;
-        updateAdvancedChart();
+        updateAdvancedChartWithLoader();
 
     }
 
@@ -219,7 +227,7 @@ public class AdvancedPageController {
     public void toggleCPM(){
 
         cpm = !cpm;
-        updateAdvancedChart();
+        updateAdvancedChartWithLoader();
 
     }
 
@@ -227,7 +235,7 @@ public class AdvancedPageController {
     public void toggleBounceRate(){
 
         bounceRate = !bounceRate;
-        updateAdvancedChart();
+        updateAdvancedChartWithLoader();
 
     }
 
