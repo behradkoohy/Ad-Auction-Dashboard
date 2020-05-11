@@ -42,7 +42,7 @@ public class RootController {
     //OTHER CONTROLLERS
     @FXML private BasicPageController basicStatsPageController;
     @FXML private AdvancedPageController advancedStatsPageController;
-    //@FXML private ComparePageController comparePageController;
+    @FXML private ComparePageController comparePageController;
     @FXML private CampaignManagerController campaignManagerPageController;
 
     //private static WindowController windowController;
@@ -123,6 +123,7 @@ public class RootController {
         campaignManagerPageController.init(this);
         basicStatsPageController.init(this);
         advancedStatsPageController.init(this);
+        comparePageController.init(this);
 
         //Initially the date spinners will be from week ago until now
         LocalDateTime now = LocalDateTime.now();
@@ -167,6 +168,8 @@ public class RootController {
             startLoadingIndicator();
             currentCampaign = campaign;
             doGUITask(() -> campaignLabel.setText(currentCampaign));
+            comparePageController.setFirstChartLabel(currentCampaign);
+            comparePageController.loadOtherCampaignsCombo();
             LocalDateTime from = getFromDateForCampaign(currentCampaign);
             LocalDateTime to = getToDateForCampaign(currentCampaign);
             setDateTimeFrom(from);
@@ -186,6 +189,17 @@ public class RootController {
     private void loadData() {
         basicStatsPageController.updateData();
         advancedStatsPageController.updateData();
+        comparePageController.updateData();
+    }
+
+    @FXML
+    public void reloadDataButtonMethod() {
+        new Thread(() -> {
+            this.handleCircleClick();
+            startLoadingIndicator();
+            this.loadData();
+            endLoadingIndicator();
+        }).start();
     }
 
     private LocalDateTime getFromDateForCampaign(String campaignName) {
@@ -457,11 +471,6 @@ public class RootController {
 
         travel = !travel;
 
-    }
-
-    @FXML
-    public void reloadDataButtonMethod() {
-        this.loadData();
     }
 
     @FXML
