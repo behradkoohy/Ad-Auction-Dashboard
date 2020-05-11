@@ -40,7 +40,7 @@ public class RootController {
 
     //OTHER CONTROLLERS
     @FXML private BasicPageController basicStatsPageController;
-    //@FXML private AdvancedPageController advancedPageController;
+    @FXML private AdvancedPageController advancedStatsPageController;
     //@FXML private ComparePageController comparePageController;
     @FXML private CampaignManagerController campaignManagerPageController;
 
@@ -121,6 +121,7 @@ public class RootController {
 
         campaignManagerPageController.init(this);
         basicStatsPageController.init(this);
+        advancedStatsPageController.init(this);
 
         //Initially the date spinners will be from week ago until now
         LocalDateTime now = LocalDateTime.now();
@@ -146,10 +147,11 @@ public class RootController {
     public void loadCampaignData(String campaign){
 
         new Thread(() -> {
-
+            startLoadingIndicator();
             currentCampaign = campaign;
             doGUITask(() -> campaignLabel.setText(currentCampaign));
-            doGUITask(this::loadData);
+            this.loadData();
+            endLoadingIndicator();
 
         }).start();
 
@@ -168,7 +170,7 @@ public class RootController {
         setDateTimeTo(to);
 
         basicStatsPageController.updateData();
-        //advancedPageController.updateData(currentCampaign);
+        advancedStatsPageController.updateData();
 
     }
 

@@ -6,8 +6,12 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
+import models.ChartHandler;
+import models.MetricsModel;
 import models.PieChartModel;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +27,10 @@ public class AdvancedPageController {
     @FXML private Label bounceRateLabel;
     @FXML private PieChart contextPie;
 
-    /*
-    At the moment this is an extra instance than
-    the one in the basic page controller, perhaps we
-    only need one shared one? look into changing this later
-     */
     private RootController controller;
     private PieChartModel pieChartModel;
+    private MetricsModel metricsModel;
+    private ChartHandler chartHandler;
 
     private boolean ctr;
     private boolean cpa;
@@ -39,51 +40,65 @@ public class AdvancedPageController {
 
     public void init(RootController controller) {
         this.controller = controller;
+        this.metricsModel = new MetricsModel();
         this.pieChartModel = new PieChartModel();
+        this.chartHandler = new ChartHandler();
+        this.chartHandler.setMetricsModel(metricsModel);
     }
 
     @FXML
-    public void initialize(){
+    public void initialize() {
+        advancedChart.setAnimated(false);
 
-        //Styling init here
-
+        //Update fxml too!!!
+        this.ctr = true;
+        this.cpa = false;
+        this.cpc = false;
+        this.cpm = false;
+        this.bounceRate = false;
     }
 
-    public void updateData(String campaignName){
-        /*
-        LocalDateTime start = ControllerInjector.getRootController().getPeriodStart();
-        LocalDateTime end = ControllerInjector.getRootController().getPeriodEnd();
+    public void updateData(){
+        String campaignName = controller.getCurrentCampaign();
 
-        String ctrStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getCTR(start, end)));
-        String cpaStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getCPA(start, end)));
-        String cpcStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getCPC(start, end)));
-        String cpmStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getCPM(start, end)));
-        String bounceRateStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getBounceRate(start, end)));
+        LocalDateTime start = controller.getPeriodStart();
+        LocalDateTime end = controller.getPeriodEnd();
+        Duration dur = controller.calcDuration();
 
-        updateLabels(ctrStr, cpaStr, cpcStr,  cpmStr, bounceRateStr);
-        */
-        /*
-        Not sure how the pie chart model works for context stuff at the moment
-
+        metricsModel.setCampaign(campaignName);
         pieChartModel.setCampaign(campaignName);
         pieChartModel.setStart(start);
         pieChartModel.setEnd(end);
-        */
+
+        String ctrStr = String.valueOf(RootController.to2DP(metricsModel.getCTR(start, end)));
+        String cpaStr = String.valueOf(RootController.to2DP(metricsModel.getCPA(start, end)));
+        String cpcStr = String.valueOf(RootController.to2DP(metricsModel.getCPC(start, end)));
+        String cpmStr = String.valueOf(RootController.to2DP(metricsModel.getCPM(start, end)));
+        String bounceRateStr = String.valueOf(RootController.to2DP(metricsModel.getBounceRate(start, end)));
+
+        this.updateLabels(ctrStr, cpaStr, cpcStr,  cpmStr, bounceRateStr);
+
+        updateAdvancedChart();
+
     }
 
-    public void updateLabels(String ctr, String cpa, String cpc,
-                             String cpm, String bounceRate){
+    private void updateAdvancedChart() {
+        List<XYChart.Series> newChartData = chartHandler.getAdvancedChartDataAccordingTo(controller.getCurrentCampaign(),
+                controller.getPeriodStart(), controller.getPeriodEnd(), controller.calcDuration(), ctr, cpa,
+                cpc, cpm, bounceRate);
+
+        updateAdvancedChartGUI(newChartData);
+    }
+
+    private void updateLabels(String ctr, String cpa, String cpc, String cpm, String bounceRate){
 
         this.controller.doGUITask(() -> {
-
             ctrLabel.setText(ctr);
             cpaLabel.setText(cpa);
             cpcLabel.setText(cpc);
             cpmLabel.setText(cpm);
             bounceRateLabel.setText(bounceRate);
-
         });
-
     }
 
     /**
@@ -133,12 +148,20 @@ public class AdvancedPageController {
      *
      * @param data
      */
-    public void updateAdvancedChart(List<XYChart.Series> data){
+    public void updateAdvancedChartGUI(List<XYChart.Series> data){
 
         this.controller.doGUITask(() -> {
 
             advancedChart.getData().clear();
-            advancedChart.getData().addAll(data);
+
+            for(XYChart.Series s: data){
+
+                advancedChart.getData().add(s);
+
+            }
+
+            advancedChart.getXAxis().setLabel(controller.calcMetric());
+
 
         });
 
@@ -163,6 +186,7 @@ public class AdvancedPageController {
     public void toggleCTR(){
 
         ctr = !ctr;
+        updateAdvancedChart();
 
     }
 
@@ -170,6 +194,7 @@ public class AdvancedPageController {
     public void toggleCPA(){
 
         cpa = !cpa;
+        updateAdvancedChart();
 
     }
 
@@ -177,6 +202,7 @@ public class AdvancedPageController {
     public void toggleCPC(){
 
         cpc = !cpc;
+        updateAdvancedChart();
 
     }
 
@@ -184,6 +210,7 @@ public class AdvancedPageController {
     public void toggleCPM(){
 
         cpm = !cpm;
+        updateAdvancedChart();
 
     }
 
@@ -191,6 +218,7 @@ public class AdvancedPageController {
     public void toggleBounceRate(){
 
         bounceRate = !bounceRate;
+        updateAdvancedChart();
 
     }
 
