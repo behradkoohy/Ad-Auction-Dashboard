@@ -43,28 +43,39 @@ public class BasicPageController {
         this.controller = controller;
         this.metricsModel = new MetricsModel();
         this.pieChartModel = new PieChartModel();
+        this.chartHandler = new ChartHandler();
+        this.chartHandler.setMetricsModel(metricsModel);
     }
 
     @FXML
     public void initialize() {
-        //Do any setup of styling here
+
+        basicChart.setAnimated(false);
+        //Change this in the fxml file to match, too lazy to auto do it
+        this.impressions = true;
+        this.conversions = false;
+        this.clicks = false;
+        this.uniques = false;
+        this.bounces = false;
+
     }
 
     /**
      * Called by the root controller, calls all relevant methods to update
      * all information shown on the basic page
      */
-    public void updateData(String campaignName){
-
-        if(chartHandler == null){
-            chartHandler = new ChartHandler(metricsModel);
-        }
+    public void updateData(){
+        String campaignName = controller.getCurrentCampaign();
 
         LocalDateTime start = controller.getPeriodStart();
         LocalDateTime end = controller.getPeriodEnd();
         Duration dur = controller.calcDuration();
 
         metricsModel.setCampaign(campaignName);
+        pieChartModel.setCampaign(campaignName);
+        pieChartModel.setStart(start);
+        pieChartModel.setEnd(end);
+
         System.out.println(metricsModel.getNumImpressions(start, end));
         String numImpressionsStr = String.valueOf(String.valueOf(RootController.to2DP(
                 metricsModel.getNumImpressions(start, end))));
@@ -76,9 +87,6 @@ public class BasicPageController {
 
         this.updateLabels(numImpressionsStr, numClicksStr, numUniqueStr, numBouncesStr, numConversionsStr, totalCostStr);
 
-        pieChartModel.setCampaign(campaignName);
-        pieChartModel.setStart(start);
-        pieChartModel.setEnd(end);
         HashMap<String, Integer> pieChartData = pieChartModel.getDistributions();
         List<PieChart.Data> genderPieData = getGenderPieData(pieChartData.get("men"), pieChartData.get("women"));
         List<PieChart.Data> agePieData = getAgePieData(pieChartData.get("lt25"), pieChartData.get("btwn2534"),
@@ -88,11 +96,16 @@ public class BasicPageController {
 
         updateBasicPieCharts(genderPieData, agePieData, incomePieData);
 
-        List<XYChart.Series> newChartData = chartHandler.getBasicChartDataAccordingTo(campaignName, start, end,
-                dur, impressions, conversions, clicks, uniques, bounces);
-        System.out.println(newChartData);
-        updateBasicGraph(newChartData);
+        updateLineChart();
+    }
 
+    private void updateLineChart() {
+        List<XYChart.Series> newChartData = chartHandler.getBasicChartDataAccordingTo(controller.getCurrentCampaign(),
+                controller.getPeriodStart(), controller.getPeriodEnd(), controller.calcDuration(), impressions,
+                conversions, clicks, uniques, bounces);
+        System.out.println(newChartData);
+
+        updateBasicGraph(newChartData);
     }
 
     private void updateLabels(String impressions, String clicks, String uniques, String bounces, String conversions,
@@ -184,34 +197,35 @@ public class BasicPageController {
     public void toggleImpressions(){
 
         impressions = !impressions;
-
+        updateLineChart();
     }
 
     @FXML
     public void toggleConversions(){
 
         conversions = !conversions;
-
+        updateLineChart();
     }
 
     @FXML
     public void toggleClicks(){
 
         clicks = !clicks;
-
+        updateLineChart();
     }
 
     @FXML
     public void toggleUniques(){
 
         uniques = !uniques;
-
+        updateLineChart();
     }
 
     @FXML
     public void toggleBounces(){
 
         bounces = !bounces;
+        updateLineChart();
 
     }
 

@@ -42,22 +42,22 @@
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>
                                 </JFXCheckBox>
-                                <JFXCheckBox onAction="#toggleConversions" selected="true" text="Conversions">
+                                <JFXCheckBox onAction="#toggleConversions" selected="false" text="Conversions">
                                     <FlowPane.margin>
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>
                                 </JFXCheckBox>
-                                <JFXCheckBox onAction="#toggleClicks" selected="true" text="Clicks">
+                                <JFXCheckBox onAction="#toggleClicks" selected="false" text="Clicks">
                                     <FlowPane.margin>
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>
                                 </JFXCheckBox>
-                                <JFXCheckBox onAction="#toggleUniques" selected="true" text="Unique users">
+                                <JFXCheckBox onAction="#toggleUniques" selected="false" text="Unique users">
                                     <FlowPane.margin>
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>
                                 </JFXCheckBox>
-                                <JFXCheckBox onAction="#toggleBounces" selected="true" text="Bounces">
+                                <JFXCheckBox onAction="#toggleBounces" selected="false" text="Bounces">
                                     <FlowPane.margin>
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>

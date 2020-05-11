@@ -112,6 +112,7 @@ public class RootController {
     @FXML
     public void initialize(){
         granTimeUnit = ChronoUnit.DAYS;
+        granDigit = 1;
 
         circleIsRight = true;
         circleIsClickable = true;
@@ -166,7 +167,7 @@ public class RootController {
         setDateTimeFrom(from);
         setDateTimeTo(to);
 
-        basicStatsPageController.updateData(currentCampaign);
+        basicStatsPageController.updateData();
         //advancedPageController.updateData(currentCampaign);
 
     }
