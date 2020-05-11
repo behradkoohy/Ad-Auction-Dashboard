@@ -15,12 +15,11 @@ public class ChartHandler {
 
     private MetricsModel metricsModel;
 
-    private String campaignName;
     private LocalDateTime start;
     private LocalDateTime end;
     private Duration duration;
 
-    public ChartHandler(MetricsModel metricsModel){
+    public void setMetricsModel(MetricsModel metricsModel) {
 
         this.metricsModel = metricsModel;
 
@@ -29,7 +28,9 @@ public class ChartHandler {
     public List<XYChart.Series> getBasicChartDataAccordingTo(String campaignName, LocalDateTime start, LocalDateTime end,
                                                         Duration duration, boolean impressions, boolean conversions, boolean clicks,
                                                         boolean unique, boolean bounces){
+
         metricsModel.setCampaign(campaignName);
+
         this.start = start;
         this.end = end;
         this.duration = duration;
@@ -95,7 +96,7 @@ public class ChartHandler {
     }
 
     private XYChart.Series getImpressions(){
-
+        System.out.println(metricsModel.getImpressionsPerTime(start, end, duration));
         return metricsModel.getImpressionsPerTime(start, end, duration);
 
     }

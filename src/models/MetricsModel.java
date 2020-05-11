@@ -65,6 +65,13 @@ public class MetricsModel {
         this.campaign = campaign;
     }
 
+    public void setFilter(Filter filter) {
+        System.out.println(this.filter);
+        System.out.println("Change filter");
+        this.filter = filter;
+        System.out.println(this.filter);
+    }
+
     public Double getNumImpressions(LocalDateTime start, LocalDateTime end) {
 //        Tuple tuple = new Tuple(NUMIMPRESS, campaign);
 //        if (cacheSingle.containsKey(tuple)) {
@@ -765,13 +772,6 @@ public class MetricsModel {
 
         return series;
 
-    }
-
-    public void setFilter(Filter filter) {
-        System.out.println(this.filter);
-        System.out.println("Change filter");
-        this.filter = filter;
-        System.out.println(this.filter);
     }
 
     private static class Tuple {
