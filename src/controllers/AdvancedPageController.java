@@ -13,6 +13,7 @@ import models.PieChartModel;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AdvancedPageController {
@@ -78,6 +79,13 @@ public class AdvancedPageController {
 
         this.updateLabels(ctrStr, cpaStr, cpcStr,  cpmStr, bounceRateStr);
 
+        HashMap<String, Integer> pieChartData = pieChartModel.getContextDistributions();
+        List<PieChart.Data> contextPieData = getContextPieData(pieChartData.get("blog"), pieChartData.get("news"),
+                pieChartData.get("socialmedia"), pieChartData.get("shopping"), pieChartData.get("hobbies"),
+                pieChartData.get("travel"));
+
+        updateContextPieChart(contextPieData);
+
         updateAdvancedChart();
 
     }
@@ -104,19 +112,19 @@ public class AdvancedPageController {
     /**
      * Generate the context pie chart data that will populate the context pie chart
      * update. Make sure you add the arguments in the order they are listed
+     * @param blog
      * @param news
+     * @param socialmedia
      * @param shopping
-     * @param socialMedia
-     * @param blogs
      * @param hobbies
      * @param travel
      */
-    public List<PieChart.Data> getContextPieData(int news, int shopping, int socialMedia, int blogs,
+    public List<PieChart.Data> getContextPieData(int blog, int news, int socialmedia, int shopping,
                                                  int hobbies, int travel){
 
         List<PieChart.Data> out = new ArrayList<PieChart.Data>();
         String[] tags = new String[]{"News","Shopping","Social Media", "Blogs", "Hobbies", "Travel"};
-        int[] vals = new int[]{news, shopping, socialMedia, blogs, hobbies, travel};
+        int[] vals = new int[]{news, shopping, socialmedia, blog, hobbies, travel};
 
         for(int i = 0; i < tags.length; i++){
 
