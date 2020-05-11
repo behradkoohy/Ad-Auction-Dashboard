@@ -32,6 +32,9 @@
          <center>
             <JFXTabPane fx:id="tabPane" BorderPane.alignment="CENTER">
                <tabs>
+                  <Tab text="Campaign Management">
+                    <fx:include fx:id="campaignManagerPage" source="CampaignManager.fxml" />
+                  </Tab>
                   <Tab text="Basic Statistics">
                      <fx:include fx:id="basicStatsPage" source="BasicPage.fxml" />
                   </Tab>
@@ -52,11 +55,6 @@
          <bottom>
             <FlowPane prefHeight="47.0" prefWidth="1200.0" style="-fx-background-color: #6d6d6d#6d6d6d;" BorderPane.alignment="CENTER">
                <children>
-                  <JFXButton fx:id="campaignButton" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="SHOW CAMPAIGN MANAGER" textFill="WHITE">
-                     <FlowPane.margin>
-                        <Insets left="10.0" top="10.0" />
-                     </FlowPane.margin>
-                  </JFXButton>
                   <JFXButton fx:id="printButton" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="PRINT MENU" textFill="WHITE">
                      <FlowPane.margin>
                         <Insets left="10.0" top="10.0" />
@@ -76,8 +74,8 @@
             </FlowPane>
          </bottom>
       </BorderPane>
-      <Circle fx:id="circle" fill="#6b6b6bec" radius="100.0" stroke="BLACK" strokeType="INSIDE" StackPane.alignment="CENTER_RIGHT" />
-      <Polygon fx:id="arrow" fill="#adadad76" rotate="-90.0" scaleX="0.6" scaleY="0.6" stroke="BLACK" strokeType="INSIDE" translateX="-90.0" StackPane.alignment="CENTER_RIGHT">
+      <Circle fx:id="circle" fill="#6b6b6bec" radius="100.0" stroke="BLACK" strokeType="INSIDE" visible="false" StackPane.alignment="CENTER_RIGHT" />
+      <Polygon fx:id="arrow" fill="#adadad76" rotate="-90.0" scaleX="0.6" scaleY="0.6" stroke="BLACK" strokeType="INSIDE" translateX="-90.0" visible="false" StackPane.alignment="CENTER_RIGHT">
         <points>
           <Double fx:value="-50.0" />
           <Double fx:value="40.0" />
@@ -87,7 +85,7 @@
           <Double fx:value="-60.0" />
         </points>
       </Polygon>
-      <AnchorPane fx:id="sideAnchor" maxWidth="360.0" prefHeight="800.0" StackPane.alignment="CENTER_RIGHT">
+      <AnchorPane fx:id="sideAnchor" maxWidth="360.0" prefHeight="800.0" visible="false" StackPane.alignment="CENTER_RIGHT">
          <children>
             <FlowPane alignment="CENTER_RIGHT" layoutX="19.0" prefHeight="798.0" prefWidth="381.0">
                <children>

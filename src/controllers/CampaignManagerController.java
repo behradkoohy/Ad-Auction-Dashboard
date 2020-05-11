@@ -9,6 +9,7 @@ import daos.DaoInjector;
 import daos.ImpressionDao;
 import daos.ServerEntryDao;
 import javafx.fxml.FXML;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -37,6 +38,7 @@ public class CampaignManagerController {
     //For the campaign loading indicator
     @FXML private AnchorPane anchorPane;
     @FXML private JFXSpinner spinner;
+    @FXML private ProgressBar progressBar;
 
     private ClickDao clickDao = DaoInjector.newClickDao();
     private ImpressionDao impressionDao = DaoInjector.newImpressionDao();
