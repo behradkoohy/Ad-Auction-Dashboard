@@ -14,12 +14,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
-import models.Metrics;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,9 +39,12 @@ import static java.time.temporal.ChronoUnit.HOURS;
 public class RootController {
 
     //OTHER CONTROLLERS
-    @FXML private BasicPageController basicStatsPageController;
-    @FXML private AdvancedPageController advancedStatsPageController;
+    @FXML private BasicPageController basicPageController;
+    @FXML private AdvancedPageController advancedPageController;
     @FXML private ComparePageController comparePageController;
+    @FXML private CampaignManagerController campaignManagerController;
+
+    //private static WindowController windowController;
 
     //FILTER PANEL
     @FXML private Circle circle;
@@ -69,13 +72,6 @@ public class RootController {
     private ClickDao clickDao;
     private ImpressionDao impressionDao;
     private ServerEntryDao serverEntryDao;
-
-    /*
-    Need to implement using multiple metrics instances somehow so perhaps
-    one metrics instance for basic controller, one for advanced controller,
-    and one each for both compare graphs? Keep like this for now
-    */
-    private Metrics metrics;
 
     //Which campaign's data is currently being shown
     private String currentCampaign;
@@ -124,24 +120,79 @@ public class RootController {
 
         circleIsRight = true;
         circleIsClickable = true;
-        initFilterTab();
-        ControllerInjector.associateRoot(this);
-        metrics = new Metrics();
-        System.out.println("val of basic stats controller: " + basicStatsPageController.toString());
 
-        //Initially the date spinners will be from week ago until now
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime weekAgo = now.minus(1, ChronoUnit.WEEKS);
-        dateToPicker.setValue(now.toLocalDate());
-        updateDTo();
-        timeToPicker.setValue(now.toLocalTime());
-        updateTTo();
-        dateFromPicker.setValue(weekAgo.toLocalDate());
-        updateDFrom();
-        timeFromPicker.setValue(weekAgo.toLocalTime());
-        updateTFrom();
+        this.initFilterTab();
+
+        campaignManagerController.init(this);
+        basicPageController.init(this);
+    }
+
+    /*
+    public static void setWindowController(WindowController ref) {
+        windowController = ref;
+    }
+
+    public static WindowController getWindowController() {
+        return windowController;
+    }
+
+     */
+    /**
+     * Call this method whenever a new / different campaign
+     * has been selected by the user to populate all parts
+     * of the UI with the data of the newly selected campaign
+     *
+     * @param campaign
+     */
+    public void loadCampaignData(String campaign){
+
+        new Thread(() -> {
+
+            currentCampaign = campaign;
+            doGUITask(() -> campaignLabel.setText(currentCampaign));
+            doGUITask(this::loadData);
+
+        }).start();
 
     }
+
+
+    /**
+     * Causes all parts of the app to update their data, ie each controller
+     * to update all the ui components they are responsible for
+     */
+    private void loadData() {
+
+        LocalDateTime from = getFromDateForCampaign(currentCampaign);
+        LocalDateTime to = getToDateForCampaign(currentCampaign);
+        setDateTimeFrom(from);
+        setDateTimeTo(to);
+
+        basicPageController.updateData(currentCampaign);
+        //advancedPageController.updateData(currentCampaign);
+
+    }
+
+    private LocalDateTime getFromDateForCampaign(String campaignName) {
+        ArrayList<LocalDateTime> mins = new ArrayList<>();
+        mins.add(clickDao.getMinDateFromCampaign(campaignName));
+        mins.add(impressionDao.getMinDateFromCampaign(campaignName));
+        mins.add(serverEntryDao.getMinDateFromCampaign(campaignName));
+        Collections.sort(mins);
+        return mins.get(0);
+    }
+
+    private LocalDateTime getToDateForCampaign(String campaignName) {
+
+        ArrayList<LocalDateTime> maxs = new ArrayList<>();
+        maxs.add(clickDao.getMaxDateFromCampaign(campaignName));
+        maxs.add(impressionDao.getMaxDateFromCampaign(campaignName));
+        maxs.add(serverEntryDao.getMaxDateFromCampaign(campaignName));
+        Collections.sort(maxs);
+        return maxs.get(maxs.size() - 1);
+
+    }
+
 
     private void initFilterTab(){
 
@@ -439,42 +490,6 @@ public class RootController {
 
     }
 
-    /**
-     * Call this method whenever a new / different campaign
-     * has been selected by the user to populate all parts
-     * of the UI with the data of the newly selected campaign
-     *
-     * @param campaign
-     */
-    public void loadCampaignData(String campaign){
-
-        new Thread(() -> {
-
-            currentCampaign = campaign;
-            doGUITask(() -> campaignLabel.setText(currentCampaign));
-            updateData();
-
-        }).start();
-
-    }
-
-    /**
-     * Causes all parts of the app to update their data, ie each controller
-     * to update all the ui components they are responsible for
-     */
-    public void updateData(){
-
-        LocalDateTime from = getMin(currentCampaign);
-        LocalDateTime to = getMax(currentCampaign);
-        setDateTimeFrom(from);
-        setDateTimeTo(to);
-
-        basicStatsPageController.updateData(currentCampaign);
-        //advancedStatsPageController.updateData(currentCampaign);
-        //comparePageController.updateData(currentCampaign);
-
-    }
-
     public LocalDateTime getPeriodStart(){
 
         return LocalDateTime.of(dateFrom, timeFrom);
@@ -484,28 +499,6 @@ public class RootController {
     public LocalDateTime getPeriodEnd(){
 
         return LocalDateTime.of(dateTo, timeTo);
-
-    }
-
-    public LocalDateTime getMin(String campaignName) {
-
-        ArrayList<LocalDateTime> mins = new ArrayList<>();
-        mins.add(clickDao.getMinDateFromCampaign(campaignName));
-        mins.add(impressionDao.getMinDateFromCampaign(campaignName));
-        mins.add(serverEntryDao.getMinDateFromCampaign(campaignName));
-        Collections.sort(mins);
-        return mins.get(0);
-
-    }
-
-    public LocalDateTime getMax(String campaignName) {
-
-        ArrayList<LocalDateTime> maxs = new ArrayList<>();
-        maxs.add(clickDao.getMaxDateFromCampaign(campaignName));
-        maxs.add(impressionDao.getMaxDateFromCampaign(campaignName));
-        maxs.add(serverEntryDao.getMaxDateFromCampaign(campaignName));
-        Collections.sort(maxs);
-        return maxs.get(maxs.size() - 1);
 
     }
 
@@ -562,12 +555,6 @@ public class RootController {
         timeToPicker.setValue(to.toLocalTime());
     }
 
-    public Metrics getMetrics(){
-
-        return metrics;
-
-    }
-
     /**
      * WHENEVER YOU ARE CALLING ANY GUI UPDATE METHODS
      * MAKE SURE YOU CALL THEM AS A RUNNABLE INSERTED
@@ -576,7 +563,7 @@ public class RootController {
      * JAVAFX THREAD REGARDLESS OF THREAD IT IS
      * CALLED FROM
      */
-    public static void doGUITask(Runnable runnable){
+    public void doGUITask(Runnable runnable){
 
         if(Platform.isFxApplicationThread()){
 
@@ -590,7 +577,7 @@ public class RootController {
 
     }
 
-    public static void error(String message){
+    public void error(String message){
 
         doGUITask(() -> {
 
@@ -601,6 +588,32 @@ public class RootController {
             alert.showAndWait();
 
         });
+
+    }
+
+    public void success(String message){
+
+        if(Platform.isFxApplicationThread()){
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+
+        } else {
+
+            Platform.runLater(() -> {
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Success");
+                alert.setHeaderText(null);
+                alert.setContentText(message);
+                alert.showAndWait();
+
+            });
+
+        }
 
     }
 

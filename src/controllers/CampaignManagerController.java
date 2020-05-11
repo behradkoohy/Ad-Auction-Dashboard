@@ -13,20 +13,16 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
-import models.Metrics;
 import models.ReaderCSV;
 
-import javax.naming.ldap.Control;
 import java.io.File;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class CampaignManagerController {
+    private RootController controller;
 
     @FXML private JFXTextField newCampaignField;
     @FXML private JFXButton clickButton;
@@ -49,28 +45,25 @@ public class CampaignManagerController {
     private File impressionLog;
     private File serverLog;
 
-    public CampaignManagerController(){
-
-
-
+    public void init(RootController controller){
+        this.controller = controller;
     }
 
     @FXML
     public void initialize(){
 
-        ControllerInjector.associateCampaignManager(this);
-        initComboBox();
+        this.loadPreviousCampaignsCombo();
 
     }
 
-    public void initComboBox(){
+    private void loadPreviousCampaignsCombo(){
 
         new Thread(() -> {
 
             try {
 
                 List<String> l = clickDao.getCampaigns();
-                RootController.doGUITask(() -> populateComboBox(l));
+                controller.doGUITask(() -> populateCampaignChooser(l));
 
             } catch (Exception e) {
 
@@ -82,7 +75,7 @@ public class CampaignManagerController {
 
     }
 
-    public void populateComboBox(List<String> list){
+    private void populateCampaignChooser(List<String> list){
 
         campaignComboBox.getItems().clear();
         campaignComboBox.getItems().addAll(list);
@@ -98,13 +91,13 @@ public class CampaignManagerController {
 
         String newCampaignName = newCampaignField.getText();
         if( newCampaignName.trim().equals("")){
-            RootController.error("Please specify a campaign name, or make sure the campaign name is not empty");
+            this.controller.error("Please specify a campaign name, or make sure the campaign name is not empty");
             return;
         }
 
         // check that all 3 csvs have been uploaded
         if(clickLog == null || impressionLog == null || serverLog == null){
-            RootController.error("Please make sure you have selected the 3 unique csv log files!");
+            this.controller.error("Please make sure you have selected the 3 unique csv log files!");
             return;
         }
 
@@ -119,13 +112,14 @@ public class CampaignManagerController {
             //Pre-fetches to store in cache
             //clickDao.getFromCampaign(newCampaignName);
             //serverEntryDao.getFromCampaign(newCampaignName);
+
             try {
                 if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {
                     readerService.shutdownNow();
-                    RootController.error("The CSV reader timed out! Please try again");
+                    this.controller.error("The CSV reader timed out! Please try again");
                 } else {
 
-                    //RootController.success("CSV files successfully loaded");
+                    this.controller.success("CSV files successfully loaded");
 
                 }
             } catch (InterruptedException ex) {
@@ -133,16 +127,11 @@ public class CampaignManagerController {
                 Thread.currentThread().interrupt();
             }
 
-            /*
-            ReaderCSV.readCSV(clickLoc, campaignName, clickDao, impressionDao, serverEntryDao);
-            ReaderCSV.readCSV(impressionLoc, campaignName, clickDao, impressionDao, serverEntryDao);
-            ReaderCSV.readCSV(serverLoc, campaignName, clickDao, impressionDao, serverEntryDao);
-             */
             System.out.println("Finished importing data for new campaign: " + newCampaignName);
 
             //this.controller.success("Files successfully uploaded, please click \"OK\" to begin loading data");
 
-            RootController.doGUITask(() -> {
+            this.controller.doGUITask(() -> {
 
                 //Refresh the UI
                 campaignComboBox.getItems().add(newCampaignName);
@@ -153,7 +142,7 @@ public class CampaignManagerController {
 
             });
 
-            ControllerInjector.getRootController().loadCampaignData(newCampaignName);
+            this.controller.loadCampaignData(newCampaignName);
 
             //controller.unGreyOtherTabs();
             //this.controller.goToMainPage();
@@ -161,7 +150,7 @@ public class CampaignManagerController {
         } catch(Exception e){
 
             e.printStackTrace();
-            RootController.error("error reading files...");
+            this.controller.error("error reading files...");
 
         }
 
@@ -179,11 +168,11 @@ public class CampaignManagerController {
         //The file choosing was cancelled so do nothing
         if(clickLog == null){
 
-            return;
+            System.out.println("Click selection cancelled");
 
-        } else if((impressionLog != null && clickLog.equals(impressionLog)) || (serverLog != null && clickLog.equals(serverLog))){
+        } else if((clickLog.equals(impressionLog)) || (clickLog.equals(serverLog))){
 
-            RootController.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
+            this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
             clickLog = null;
 
         } else {
@@ -191,7 +180,7 @@ public class CampaignManagerController {
             String str = clickLog.getName();
 
             //Once a file has been loaded then set the button text to display its name
-            RootController.doGUITask(() -> clickButton.setText(str));
+            this.controller.doGUITask(() -> clickButton.setText(str));
 
         }
 
@@ -207,19 +196,18 @@ public class CampaignManagerController {
         impressionLog = chooser.showOpenDialog(null);
 
         //The file choosing was cancelled so do nothing
-        if(impressionLog == null){
+        if(impressionLog == null) {
+            System.out.println("Impression selection cancelled");
 
-            return;
+        } else if((impressionLog.equals(clickLog)) || (impressionLog.equals(serverLog))){
 
-        } else if((clickLog != null && impressionLog.equals(clickLog)) || (serverLog != null && impressionLog.equals(serverLog))){
-
-            RootController.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
+            this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique impression log CSV file");
             impressionLog = null;
 
         } else {
 
             String str = impressionLog.getName();
-            RootController.doGUITask(() -> impressionButton.setText(str));
+            this.controller.doGUITask(() -> impressionButton.setText(str));
 
         }
 
@@ -236,17 +224,17 @@ public class CampaignManagerController {
         //The file choosing was cancelled so do nothing
         if(serverLog == null){
 
-            return;
+            System.out.println("Server log selection cancelled");
 
-        } else if((impressionLog != null && serverLog.equals(impressionLog)) || (clickLog != null && serverLog.equals(clickLog))){
+        } else if((serverLog.equals(impressionLog)) || (serverLog.equals(clickLog))){
 
-            RootController.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
+            this.controller.error("You cannot have the same file for two inputs! Please make sure you have chosen the unique click log CSV file");
             serverLog = null;
 
         } else {
 
             String str = serverLog.getName();
-            RootController.doGUITask(() -> serverButton.setText(str));
+            this.controller.doGUITask(() -> serverButton.setText(str));
 
         }
 
@@ -254,7 +242,6 @@ public class CampaignManagerController {
 
     @FXML
     public void loadPreviousCampaign(){
-
         /*
         Once all the data has loaded ie at the end of all statements in
         the thread, then the main gui can startup
@@ -262,57 +249,13 @@ public class CampaignManagerController {
         new Thread(() -> {
 
             String campaignName = (String) campaignComboBox.getValue();
-            if(campaignName != null){
-
-                ControllerInjector.getRootController().updateData();
-
-                /*
-                Metrics metricsModel = ControllerData.getMetrics();
-                ControllerData.setCurrentCampaign(campaignName);
-                LocalDateTime start = getFromDateForCampaign(campaignName);
-                LocalDateTime end = getToDateForCampaign(campaignName);
-                ControllerData.setDateTimeFrom(start);
-                ControllerData.setDateTimeTo(end);
-                ControllerData.setNumImpressions(String.valueOf(String.valueOf(to2DP(metricsModel.getNumImpressions(start, end)))));
-                ControllerData.setNumClicks(String.valueOf(to2DP(metricsModel.getNumClicks(start, end))));
-                ControllerData.setNumUniques(String.valueOf(to2DP(metricsModel.getNumUniqs(start, end))));
-                ControllerData.setNumBounces(String.valueOf(to2DP(metricsModel.getNumBounces(start, end))));
-                ControllerData.setNumConversions(String.valueOf(to2DP(metricsModel.getConversions(start, end))));
-                ControllerData.setTotalCost(String.valueOf(to2DP(metricsModel.getTotalCost(start, end))));
-                ControllerData.setCtr(String.valueOf(to2DP(metricsModel.getCTR(start, end))));
-                ControllerData.setCpa(String.valueOf(to2DP(metricsModel.getCPA(start, end))));
-                ControllerData.setCpc(String.valueOf(to2DP(metricsModel.getCPC(start, end))));
-                ControllerData.setCpm(String.valueOf(to2DP(metricsModel.getCPM(start, end))));
-                ControllerData.setBounceRate(String.valueOf(to2DP(metricsModel.getBounceRate(start, end))));
-                ControllerData.setBasicChartData(ControllerData.getUpdatedBasicChartData());*/
-
-                //Once all the data has been loaded then the campaign manager can be closed and the main GUI can be shown
-                ControllerInjector.getHandler().closeCampaignManager();
-                ControllerInjector.getHandler().showMainGUI();
-
+            if(campaignName != null) {
+                this.controller.loadCampaignData(campaignName);
+                //RootController.getWindowController().closeCampaignManager();
+                //RootController.getWindowController().showMainGUI();
             }
 
         }).start();
-    }
-
-    public LocalDateTime getFromDateForCampaign(String campaignName) {
-        ArrayList<LocalDateTime> mins = new ArrayList<>();
-        mins.add(clickDao.getMinDateFromCampaign(campaignName));
-        mins.add(impressionDao.getMinDateFromCampaign(campaignName));
-        mins.add(serverEntryDao.getMinDateFromCampaign(campaignName));
-        Collections.sort(mins);
-        return mins.get(0);
-    }
-
-    public LocalDateTime getToDateForCampaign(String campaignName) {
-
-        ArrayList<LocalDateTime> maxs = new ArrayList<>();
-        maxs.add(clickDao.getMaxDateFromCampaign(campaignName));
-        maxs.add(impressionDao.getMaxDateFromCampaign(campaignName));
-        maxs.add(serverEntryDao.getMaxDateFromCampaign(campaignName));
-        Collections.sort(maxs);
-        return maxs.get(maxs.size() - 1);
-
     }
 
     /**
@@ -333,7 +276,7 @@ public class CampaignManagerController {
      */
     public void startLoadingIndicator(){
 
-        RootController.doGUITask(() -> {
+        this.controller.doGUITask(() -> {
 
             spinner.setDisable(false);
             spinner.setVisible(true);
@@ -348,7 +291,7 @@ public class CampaignManagerController {
      */
     public void endLoadingIndicator(){
 
-        RootController.doGUITask(() -> {
+        this.controller.doGUITask(() -> {
 
             spinner.setDisable(true);
             spinner.setVisible(false);

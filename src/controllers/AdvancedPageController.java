@@ -8,7 +8,6 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import models.PieChartModel;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +28,7 @@ public class AdvancedPageController {
     the one in the basic page controller, perhaps we
     only need one shared one? look into changing this later
      */
+    private RootController controller;
     private PieChartModel pieChartModel;
 
     private boolean ctr;
@@ -37,15 +37,20 @@ public class AdvancedPageController {
     private boolean cpm;
     private boolean bounceRate;
 
+    public void init(RootController controller) {
+        this.controller = controller;
+        this.pieChartModel = new PieChartModel();
+    }
+
     @FXML
     public void initialize(){
 
-        pieChartModel = new PieChartModel();
+        //Styling init here
 
     }
 
     public void updateData(String campaignName){
-
+        /*
         LocalDateTime start = ControllerInjector.getRootController().getPeriodStart();
         LocalDateTime end = ControllerInjector.getRootController().getPeriodEnd();
 
@@ -56,7 +61,7 @@ public class AdvancedPageController {
         String bounceRateStr = String.valueOf(RootController.to2DP(ControllerInjector.getRootController().getMetrics().getBounceRate(start, end)));
 
         updateLabels(ctrStr, cpaStr, cpcStr,  cpmStr, bounceRateStr);
-
+        */
         /*
         Not sure how the pie chart model works for context stuff at the moment
 
@@ -69,7 +74,7 @@ public class AdvancedPageController {
     public void updateLabels(String ctr, String cpa, String cpc,
                              String cpm, String bounceRate){
 
-        RootController.doGUITask(() -> {
+        this.controller.doGUITask(() -> {
 
             ctrLabel.setText(ctr);
             cpaLabel.setText(cpa);
@@ -114,7 +119,7 @@ public class AdvancedPageController {
      */
     public void updateContextPieChart(List<PieChart.Data> contextData){
 
-        RootController.doGUITask(() -> {
+        this.controller.doGUITask(() -> {
 
             contextPie.getData().clear();
             contextPie.getData().addAll(contextData);
@@ -130,7 +135,7 @@ public class AdvancedPageController {
      */
     public void updateAdvancedChart(List<XYChart.Series> data){
 
-        RootController.doGUITask(() -> {
+        this.controller.doGUITask(() -> {
 
             advancedChart.getData().clear();
             advancedChart.getData().addAll(data);
@@ -145,7 +150,7 @@ public class AdvancedPageController {
      */
     public void updateHistogram(XYChart.Series data){
 
-        RootController.doGUITask(() -> {
+        this.controller.doGUITask(() -> {
 
             histogram.getData().clear();
             histogram.getData().add(data);
