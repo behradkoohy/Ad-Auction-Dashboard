@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Seperate class for handling all the data that will be displayed
@@ -14,14 +13,14 @@ import java.util.Random;
  */
 public class ChartHandler {
 
-    private Metrics metricsModel;
+    private MetricsModel metricsModel;
 
     private String campaignName;
     private LocalDateTime start;
     private LocalDateTime end;
     private Duration duration;
 
-    public ChartHandler(Metrics metricsModel){
+    public ChartHandler(MetricsModel metricsModel){
 
         this.metricsModel = metricsModel;
 
