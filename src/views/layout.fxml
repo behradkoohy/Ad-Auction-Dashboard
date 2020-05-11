@@ -28,7 +28,7 @@
 
 <StackPane fx:id="rootPane" prefHeight="794.0" prefWidth="1158.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RootController">
    <children>
-      <BorderPane fx:id="mainApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1158.0">
+      <BorderPane fx:id="mainApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="836.0" prefWidth="1158.0">
          <center>
             <JFXTabPane fx:id="tabPane" BorderPane.alignment="CENTER">
                <tabs>
@@ -40,6 +40,15 @@
                   </Tab>
                   <Tab text="Advanced Statistics">
                      <fx:include fx:id="advancedStatsPage" source="AdvancedPage.fxml" />
+                  </Tab>
+                  <Tab text="Detailed Pie Charts">
+                    <content>
+                        <ScrollPane>
+                           <content>
+                              <fx:include fx:id="detailedPieChartsPage" source="DetailedPieCharts.fxml" />
+                           </content>
+                        </ScrollPane>
+                    </content>
                   </Tab>
                   <Tab text="Compare">
                      <fx:include fx:id="comparePage" source="ComparePage.fxml" />
@@ -53,7 +62,7 @@
             </JFXTabPane>
          </center>
          <bottom>
-            <FlowPane prefHeight="47.0" prefWidth="1200.0" style="-fx-background-color: #6d6d6d#6d6d6d;" BorderPane.alignment="CENTER">
+            <FlowPane prefHeight="47.0" prefWidth="1158.0" style="-fx-background-color: #6d6d6d#6d6d6d;" BorderPane.alignment="CENTER">
                <children>
                   <JFXButton fx:id="printButton" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="PRINT MENU" textFill="WHITE">
                      <FlowPane.margin>
@@ -85,7 +94,7 @@
           <Double fx:value="-60.0" />
         </points>
       </Polygon>
-      <AnchorPane fx:id="sideAnchor" maxWidth="360.0" prefHeight="800.0" visible="true" StackPane.alignment="CENTER_RIGHT">
+      <AnchorPane fx:id="sideAnchor" maxWidth="360.0" prefHeight="800.0" StackPane.alignment="CENTER_RIGHT">
          <children>
             <FlowPane alignment="CENTER_RIGHT" layoutX="19.0" prefHeight="798.0" prefWidth="381.0">
                <children>

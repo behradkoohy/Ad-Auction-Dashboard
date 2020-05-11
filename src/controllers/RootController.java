@@ -9,10 +9,13 @@ import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -111,8 +114,22 @@ public class RootController {
 
     @FXML
     public void initialize(){
+
         granTimeUnit = ChronoUnit.DAYS;
         granDigit = 1;
+
+        //Keep this in the fxml initialize method
+        granDigit = 1;
+        granTimeUnit = ChronoUnit.DAYS;
+
+        ObservableList<String> timeUnits = FXCollections.observableArrayList("Hours", "Days", "Weeks");
+        granularityComboBox.setItems(timeUnits);
+
+        granularitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,100) {
+        });
+
+        //By default combo box will show hours
+        granularityComboBox.getSelectionModel().selectFirst();
 
         circleIsRight = true;
         circleIsClickable = true;
