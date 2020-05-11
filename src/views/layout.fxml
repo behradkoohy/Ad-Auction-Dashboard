@@ -74,8 +74,8 @@
             </FlowPane>
          </bottom>
       </BorderPane>
-      <Circle fx:id="circle" fill="#6b6b6bec" radius="100.0" stroke="BLACK" strokeType="INSIDE" visible="false" StackPane.alignment="CENTER_RIGHT" />
-      <Polygon fx:id="arrow" fill="#adadad76" rotate="-90.0" scaleX="0.6" scaleY="0.6" stroke="BLACK" strokeType="INSIDE" translateX="-90.0" visible="false" StackPane.alignment="CENTER_RIGHT">
+      <Circle fx:id="circle" fill="#6b6b6bec" radius="100.0" stroke="BLACK" strokeType="INSIDE" visible="true" StackPane.alignment="CENTER_RIGHT" />
+      <Polygon fx:id="arrow" fill="#adadad76" rotate="-90.0" scaleX="0.6" scaleY="0.6" stroke="BLACK" strokeType="INSIDE" translateX="-90.0" visible="true" StackPane.alignment="CENTER_RIGHT">
         <points>
           <Double fx:value="-50.0" />
           <Double fx:value="40.0" />
@@ -85,7 +85,7 @@
           <Double fx:value="-60.0" />
         </points>
       </Polygon>
-      <AnchorPane fx:id="sideAnchor" maxWidth="360.0" prefHeight="800.0" visible="false" StackPane.alignment="CENTER_RIGHT">
+      <AnchorPane fx:id="sideAnchor" maxWidth="360.0" prefHeight="800.0" visible="true" StackPane.alignment="CENTER_RIGHT">
          <children>
             <FlowPane alignment="CENTER_RIGHT" layoutX="19.0" prefHeight="798.0" prefWidth="381.0">
                <children>
