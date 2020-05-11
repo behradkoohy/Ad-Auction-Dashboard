@@ -96,16 +96,15 @@ public class BasicPageController {
 
         updateBasicPieCharts(genderPieData, agePieData, incomePieData);
 
-        updateLineChart();
+        updateBasicChart();
     }
 
-    private void updateLineChart() {
+    private void updateBasicChart() {
         List<XYChart.Series> newChartData = chartHandler.getBasicChartDataAccordingTo(controller.getCurrentCampaign(),
                 controller.getPeriodStart(), controller.getPeriodEnd(), controller.calcDuration(), impressions,
                 conversions, clicks, uniques, bounces);
-        System.out.println(newChartData);
 
-        updateBasicGraph(newChartData);
+        updateBasicChartGUI(newChartData);
     }
 
     private void updateLabels(String impressions, String clicks, String uniques, String bounces, String conversions,
@@ -175,7 +174,7 @@ public class BasicPageController {
      * Update the basic chart to show the given data
      * @param data
      */
-    private void updateBasicGraph(List<XYChart.Series> data){
+    private void updateBasicChartGUI(List<XYChart.Series> data){
 
         this.controller.doGUITask(() -> {
 
@@ -197,35 +196,35 @@ public class BasicPageController {
     public void toggleImpressions(){
 
         impressions = !impressions;
-        updateLineChart();
+        updateBasicChart();
     }
 
     @FXML
     public void toggleConversions(){
 
         conversions = !conversions;
-        updateLineChart();
+        updateBasicChart();
     }
 
     @FXML
     public void toggleClicks(){
 
         clicks = !clicks;
-        updateLineChart();
+        updateBasicChart();
     }
 
     @FXML
     public void toggleUniques(){
 
         uniques = !uniques;
-        updateLineChart();
+        updateBasicChart();
     }
 
     @FXML
     public void toggleBounces(){
 
         bounces = !bounces;
-        updateLineChart();
+        updateBasicChart();
 
     }
 
