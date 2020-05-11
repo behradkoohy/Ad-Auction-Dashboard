@@ -70,6 +70,7 @@ public class AdvancedPageController {
         pieChartModel.setCampaign(campaignName);
         pieChartModel.setStart(start);
         pieChartModel.setEnd(end);
+        metricsModel.setFilter(controller.getFilter());
 
         String ctrStr = String.valueOf(RootController.to2DP(metricsModel.getCTR(start, end)));
         String cpaStr = String.valueOf(RootController.to2DP(metricsModel.getCPA(start, end)));

@@ -20,6 +20,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
+import models.Filter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -134,6 +135,22 @@ public class RootController {
         updateDFrom();
         timeFromPicker.setValue(weekAgo.toLocalTime());
         updateTFrom();
+        male = true;
+        female = true;
+        lt25 = true;
+        btwn2534 = true;
+        btwn3544 = true;
+        btwn4554 = true;
+        gt55 = true;
+        lowIncome = true;
+        medIncome = true;
+        highIncome = true;
+        news = true;
+        shopping = true;
+        socialMedia = true;
+        blog = true;
+        hobbies = true;
+        travel = true;
 
     }
 
@@ -150,6 +167,10 @@ public class RootController {
             startLoadingIndicator();
             currentCampaign = campaign;
             doGUITask(() -> campaignLabel.setText(currentCampaign));
+            LocalDateTime from = getFromDateForCampaign(currentCampaign);
+            LocalDateTime to = getToDateForCampaign(currentCampaign);
+            setDateTimeFrom(from);
+            setDateTimeTo(to);
             this.loadData();
             endLoadingIndicator();
 
@@ -163,15 +184,8 @@ public class RootController {
      * to update all the ui components they are responsible for
      */
     private void loadData() {
-
-        LocalDateTime from = getFromDateForCampaign(currentCampaign);
-        LocalDateTime to = getToDateForCampaign(currentCampaign);
-        setDateTimeFrom(from);
-        setDateTimeTo(to);
-
         basicStatsPageController.updateData();
         advancedStatsPageController.updateData();
-
     }
 
     private LocalDateTime getFromDateForCampaign(String campaignName) {
@@ -446,7 +460,9 @@ public class RootController {
     }
 
     @FXML
-    public void reloadDataButtonMethod(){}
+    public void reloadDataButtonMethod() {
+        this.loadData();
+    }
 
     @FXML
     public void updateBouncePageLabel(){}
@@ -718,7 +734,8 @@ public class RootController {
 
     }
 
-    private int granDigit = 0;
+
+    private int granDigit = 1;
     private ChronoUnit granTimeUnit;
 
     @FXML
@@ -765,6 +782,11 @@ public class RootController {
         x /= 100;
         return x;
 
+    }
+
+    public Filter getFilter() {
+        return new Filter(male, female, lt25, btwn2534, btwn3544, btwn4554, gt55, lowIncome, medIncome, highIncome,
+                news, shopping, socialMedia, blog, hobbies, travel);
     }
 
 }

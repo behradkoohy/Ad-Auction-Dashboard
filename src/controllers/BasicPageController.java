@@ -69,12 +69,12 @@ public class BasicPageController {
 
         LocalDateTime start = controller.getPeriodStart();
         LocalDateTime end = controller.getPeriodEnd();
-        Duration dur = controller.calcDuration();
 
         metricsModel.setCampaign(campaignName);
         pieChartModel.setCampaign(campaignName);
         pieChartModel.setStart(start);
         pieChartModel.setEnd(end);
+        metricsModel.setFilter(controller.getFilter());
 
         System.out.println(metricsModel.getNumImpressions(start, end));
         String numImpressionsStr = String.valueOf(String.valueOf(RootController.to2DP(
