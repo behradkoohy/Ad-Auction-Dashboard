@@ -62,27 +62,27 @@
                                 <Label text="Toggle graph legend" underline="true" />
                                 <FlowPane prefHeight="106.0" prefWidth="340.0">
                                     <children>
-                                        <JFXCheckBox onAction="#toggleCTR" selected="true" text="CTR">
+                                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleCTR" selected="true" text="CTR">
                                             <FlowPane.margin>
                                                 <Insets left="10.0" top="15.0" />
                                             </FlowPane.margin>
                                         </JFXCheckBox>
-                                        <JFXCheckBox onAction="#toggleCPA" selected="false" text="CPA">
+                                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleCPA" selected="false" text="CPA">
                                             <FlowPane.margin>
                                                 <Insets left="10.0" top="15.0" />
                                             </FlowPane.margin>
                                         </JFXCheckBox>
-                                        <JFXCheckBox onAction="#toggleCPC" selected="false" text="CPC">
+                                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleCPC" selected="false" text="CPC">
                                             <FlowPane.margin>
                                                 <Insets left="10.0" top="15.0" />
                                             </FlowPane.margin>
                                         </JFXCheckBox>
-                                        <JFXCheckBox onAction="#toggleCPM" selected="false" text="CPM">
+                                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleCPM" selected="false" text="CPM">
                                             <FlowPane.margin>
                                                 <Insets left="10.0" top="15.0" />
                                             </FlowPane.margin>
                                         </JFXCheckBox>
-                                        <JFXCheckBox onAction="#toggleBounceRate" selected="false" text="Bounce rate">
+                                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBounceRate" selected="false" text="Bounce rate">
                                             <FlowPane.margin>
                                                 <Insets left="10.0" top="15.0" />
                                             </FlowPane.margin>
