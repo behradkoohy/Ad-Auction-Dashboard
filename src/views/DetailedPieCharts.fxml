@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+
+<AnchorPane fx:id = "detailedPieChartsPage" xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.DetailedPieChartsController">
+<children>
+    <GridPane alignment="CENTER" gridLinesVisible="true" layoutY="-12.0" prefHeight="1461.0" prefWidth="1158.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="271.0" minWidth="0.0" prefWidth="58.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="550.0" minWidth="10.0" prefWidth="356.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="455.0" minWidth="10.0" prefWidth="335.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="347.0" minWidth="10.0" prefWidth="337.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="432.0" minHeight="0.0" prefHeight="27.333335876464844" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="432.0" minHeight="0.0" prefHeight="329.33331298828125" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="531.0" minHeight="10.0" prefHeight="329.83331298828125" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="667.6666870117188" minHeight="10.0" prefHeight="338.66668701171875" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="405.333251953125" minHeight="10.0" prefHeight="374.8333740234375" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <padding>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+        </padding>
+        <children>
+            <Label alignment="CENTER" text="Click data" underline="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+            <Label alignment="CENTER" text="Impression data" underline="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+            <Label alignment="CENTER" text="Server Data" underline="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" />
+            <PieChart fx:id="clickGender" maxHeight="300.0" maxWidth="300.0" prefHeight="200.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <GridPane.margin>
+                    <Insets top="10.0" />
+                </GridPane.margin>
+            </PieChart>
+            <PieChart fx:id="impressionGender" maxHeight="300.0" maxWidth="300.0" prefHeight="200.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <GridPane.margin>
+                    <Insets top="10.0" />
+                </GridPane.margin>
+            </PieChart>
+            <PieChart fx:id="serverGender" maxHeight="300.0" maxWidth="300.0" prefHeight="200.0" prefWidth="300.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <GridPane.margin>
+                    <Insets top="10.0" />
+                </GridPane.margin>
+            </PieChart>
+            <Label alignment="CENTER" text="Age" underline="true" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                <GridPane.margin>
+                    <Insets />
+                </GridPane.margin>
+            </Label>
+            <Label alignment="CENTER" text="Gender" underline="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <PieChart fx:id="clickAge" maxHeight="300.0" maxWidth="300.0" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <PieChart fx:id="impressionAge" maxHeight="300.0" maxWidth="300.0" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <PieChart fx:id="serverAge" maxHeight="300.0" maxWidth="300.0" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <PieChart fx:id="clickIncome" maxHeight="300.0" maxWidth="300.0" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+            <PieChart fx:id="impressionIncome" maxHeight="300.0" maxWidth="300.0" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+            <PieChart fx:id="serverIncome" maxHeight="300.0" maxWidth="300.0" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+            <PieChart fx:id="clickContext" maxHeight="300.0" maxWidth="300.0" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+            <PieChart fx:id="impressionContext" maxHeight="300.0" maxWidth="300.0" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+            <PieChart fx:id="serverContext" maxHeight="300.0" maxWidth="300.0" prefHeight="300.0" prefWidth="300.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+            <Label alignment="CENTER" text="Income" underline="true" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+            <Label alignment="CENTER" text="Context" underline="true" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
+        </children>
+    </GridPane>
+</children>
+</AnchorPane>
+
