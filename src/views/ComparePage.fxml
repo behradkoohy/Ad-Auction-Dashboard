@@ -213,12 +213,12 @@
                                         <Insets left="5.0" right="5.0" />
                                     </GridPane.margin>
                                 </Label>
-                                <Label text="1st CAMPAIGN LABEL" wrapText="true" GridPane.rowIndex="1">
+                                <Label fx:id="firstCampaignLabel"  text="" wrapText="true" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="10.0" top="10.0" />
                                     </GridPane.margin>
                                 </Label>
-                                <Label prefHeight="41.0" prefWidth="100.0" text="2nd CAMPAIGN LABEL" wrapText="true" GridPane.rowIndex="2">
+                                <Label fx:id="secondCampaignLabel"  prefHeight="41.0" prefWidth="100.0" text="" wrapText="true" GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets left="10.0" top="10.0" />
                                     </GridPane.margin>

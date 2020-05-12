@@ -44,6 +44,8 @@ public class ComparePageController {
     @FXML private Label secondBounceRateLabel;
 
     @FXML private Label campaignLabel;
+    @FXML private Label firstCampaignLabel;
+    @FXML private Label secondCampaignLabel;
 
     //Checkbox values for the compare page
     private boolean impressions;
@@ -102,6 +104,7 @@ public class ComparePageController {
         String campaignNameSecond = "";
         if(secondCampaignComboBox.getValue() != null) {
              campaignNameSecond = secondCampaignComboBox.getValue().toString();
+
         }
 
         metricsModelFirst.setCampaign(campaignNameFirst);
@@ -109,9 +112,54 @@ public class ComparePageController {
         metricsModelSecond.setCampaign(campaignNameSecond);
         metricsModelSecond.setFilter(controller.getFilter());
 
+        updateFirstStatistics(metricsModelFirst);
+        updateSecondStatistics(metricsModelSecond, campaignNameSecond);
+
         updateFirstChartGUI(getChartXYData(campaignNameFirst, chartHandlerFirst));
         updateSecondChartGUI(getChartXYData(campaignNameSecond, chartHandlerSecond));
 
+    }
+
+    private void updateFirstStatistics(MetricsModel metricsModel) {
+        LocalDateTime start = controller.getPeriodStart();
+        LocalDateTime end = controller.getPeriodEnd();
+
+        String numImpressionsStr = String.valueOf(String.valueOf(RootController.to2DP(
+                metricsModel.getNumImpressions(start, end))));
+        String numClicksStr = String.valueOf(RootController.to2DP(metricsModel.getNumClicks(start, end)));
+        String numUniqueStr = String.valueOf(RootController.to2DP(metricsModel.getNumUniqs(start, end)));
+        String numBouncesStr = String.valueOf(RootController.to2DP(metricsModel.getNumBounces(start, end)));
+        String numConversionsStr = String.valueOf(RootController.to2DP(metricsModel.getConversions(start, end)));
+        String totalCostStr = String.valueOf(RootController.to2DP(metricsModel.getTotalCost(start, end)));
+        String ctrStr = String.valueOf(RootController.to2DP(metricsModel.getCTR(start, end)));
+        String cpaStr = String.valueOf(RootController.to2DP(metricsModel.getCPA(start, end)));
+        String cpcStr = String.valueOf(RootController.to2DP(metricsModel.getCPC(start, end)));
+        String cpmStr = String.valueOf(RootController.to2DP(metricsModel.getCPM(start, end)));
+        String bounceRateStr = String.valueOf(RootController.to2DP(metricsModel.getBounceRate(start, end)));
+
+        this.updateFirstLabels(numImpressionsStr, numClicksStr, numUniqueStr, numBouncesStr, numConversionsStr,
+                totalCostStr, ctrStr, cpaStr, cpcStr,  cpmStr, bounceRateStr);
+    }
+
+    private void updateSecondStatistics(MetricsModel metricsModel, String campaignName) {
+        LocalDateTime start = controller.getPeriodStart();
+        LocalDateTime end = controller.getPeriodEnd();
+
+        String numImpressionsStr = String.valueOf(String.valueOf(RootController.to2DP(
+                metricsModel.getNumImpressions(start, end))));
+        String numClicksStr = String.valueOf(RootController.to2DP(metricsModel.getNumClicks(start, end)));
+        String numUniqueStr = String.valueOf(RootController.to2DP(metricsModel.getNumUniqs(start, end)));
+        String numBouncesStr = String.valueOf(RootController.to2DP(metricsModel.getNumBounces(start, end)));
+        String numConversionsStr = String.valueOf(RootController.to2DP(metricsModel.getConversions(start, end)));
+        String totalCostStr = String.valueOf(RootController.to2DP(metricsModel.getTotalCost(start, end)));
+        String ctrStr = String.valueOf(RootController.to2DP(metricsModel.getCTR(start, end)));
+        String cpaStr = String.valueOf(RootController.to2DP(metricsModel.getCPA(start, end)));
+        String cpcStr = String.valueOf(RootController.to2DP(metricsModel.getCPC(start, end)));
+        String cpmStr = String.valueOf(RootController.to2DP(metricsModel.getCPM(start, end)));
+        String bounceRateStr = String.valueOf(RootController.to2DP(metricsModel.getBounceRate(start, end)));
+
+        this.updateSecondLabels(campaignName, numImpressionsStr, numClicksStr, numUniqueStr, numBouncesStr, numConversionsStr,
+                totalCostStr, ctrStr, cpaStr, cpcStr,  cpmStr, bounceRateStr);
     }
 
     private List<XYChart.Series> getChartXYData(String campaignName, ChartHandler chartHandler) {
@@ -162,10 +210,50 @@ public class ComparePageController {
 
     }
 
+    private void updateSecondLabels(String campaignName,String impressions, String clicks, String uniques,
+                                    String bounces, String conversions, String totCost, String ctr, String cpa,
+                                    String cpc, String cpm, String bounceRate) {
+
+        this.controller.doGUITask(() -> {
+            secondCampaignLabel.setText(campaignName);
+            secondNumImpressionsLabel.setText(impressions);
+            secondNumClicksLabel.setText(clicks);
+            secondNumUniquesLabel.setText(uniques);
+            secondNumBouncesLabel.setText(bounces);
+            secondNumConversionsLabel.setText(conversions);
+            secondTotCostLabel.setText(totCost);
+            secondCtrLabel.setText(ctr);
+            secondCpaLabel.setText(cpa);
+            secondCpcLabel.setText(cpc);
+            secondCpmLabel.setText(cpm);
+            secondBounceRateLabel.setText(bounceRate);
+        });
+    }
+
+    private void updateFirstLabels(String impressions, String clicks, String uniques, String bounces, String conversions,
+                                   String totCost, String ctr, String cpa, String cpc, String cpm, String bounceRate) {
+
+        this.controller.doGUITask(() -> {
+            firstNumImpressionsLabel.setText(impressions);
+            firstNumClicksLabel.setText(clicks);
+            firstNumUniquesLabel.setText(uniques);
+            firstNumBouncesLabel.setText(bounces);
+            firstNumConversionsLabel.setText(conversions);
+            firstTotCostLabel.setText(totCost);
+            firstCtrLabel.setText(ctr);
+            firstCpaLabel.setText(cpa);
+            firstCpcLabel.setText(cpc);
+            firstCpmLabel.setText(cpm);
+            firstBounceRateLabel.setText(bounceRate);
+        });
+    }
+
+
 
     public void setFirstChartLabel(String campaignName) {
         controller.doGUITask(() -> campaignLabel.setText(campaignName));
         controller.doGUITask(() -> campaignLabel.setTextFill(Color.web("#000000")));
+        controller.doGUITask(() -> firstCampaignLabel.setText(campaignName));
     }
 
     //Called on combobox change
