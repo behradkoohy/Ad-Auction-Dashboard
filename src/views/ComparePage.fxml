@@ -58,7 +58,7 @@
                                                 <Insets right="20.0" />
                                             </FlowPane.margin>
                                         </Label>
-                                        <JFXComboBox fx:id="secondCampaignComboBox" promptText="CHOOSE CAMPAIGN" onAction="#updateSecond"/>
+                                        <JFXComboBox fx:id="secondCampaignComboBox" onAction="#updateSecond" promptText="CHOOSE CAMPAIGN" />
                                     </children>
                                     <VBox.margin>
                                         <Insets bottom="10.0" top="15.0" />
@@ -83,52 +83,52 @@
                                 <Insets left="30.0" />
                             </FlowPane.margin>
                         </Label>
-                        <JFXCheckBox onAction="#toggleImpressions" selected="true" text="Impressions">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleImpressions" selected="true" text="Impressions">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox onAction="#toggleConversions" selected="true" text="Conversions">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleConversions" selected="true" text="Conversions">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox onAction="#toggleClicks" selected="true" text="Clicks">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleClicks" selected="true" text="Clicks">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox onAction="#toggleUniques" selected="true" text="Unique users">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleUniques" selected="true" text="Unique users">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox onAction="#toggleBounces" selected="true" text="Bounces">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBounces" selected="true" text="Bounces">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox onAction="#toggleCtr" selected="true" text="CTR">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleCtr" selected="true" text="CTR">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox onAction="#toggleCpa" selected="true" text="CPA">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleCpa" selected="true" text="CPA">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox onAction="#toggleCpc" selected="true" text="CPC">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleCpc" selected="true" text="CPC">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox onAction="#toggleCpm" selected="true" text="CPM">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleCpm" selected="true" text="CPM">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
                         </JFXCheckBox>
-                        <JFXCheckBox onAction="#toggleBounceRate" selected="true" text="Bounce rate">
+                        <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBounceRate" selected="true" text="Bounce rate">
                             <FlowPane.margin>
                                 <Insets left="15.0" />
                             </FlowPane.margin>
@@ -213,12 +213,12 @@
                                         <Insets left="5.0" right="5.0" />
                                     </GridPane.margin>
                                 </Label>
-                                <Label fx:id="firstCampaignLabel"  text="" wrapText="true" GridPane.rowIndex="1">
+                                <Label fx:id="firstCampaignLabel" text="" wrapText="true" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="10.0" top="10.0" />
                                     </GridPane.margin>
                                 </Label>
-                                <Label fx:id="secondCampaignLabel"  prefHeight="41.0" prefWidth="100.0" text="" wrapText="true" GridPane.rowIndex="2">
+                                <Label fx:id="secondCampaignLabel" prefHeight="41.0" prefWidth="100.0" text="" wrapText="true" GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets left="10.0" top="10.0" />
                                     </GridPane.margin>

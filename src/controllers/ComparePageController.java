@@ -301,6 +301,19 @@ public class ComparePageController {
         }).start();
     }
 
+    public MetricsModel getMetricsModelFirst(){
+
+        return metricsModelFirst;
+
+    }
+
+    public MetricsModel getMetricsModelSecond(){
+
+        return metricsModelSecond;
+
+    }
+
+
     @FXML
     public void toggleImpressions(){
 

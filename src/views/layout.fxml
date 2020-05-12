@@ -26,7 +26,7 @@
 <?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="rootPane" prefHeight="794.0" prefWidth="1158.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RootController">
+<StackPane fx:id="rootPane" prefHeight="831.0" prefWidth="1158.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RootController">
    <children>
       <BorderPane fx:id="mainApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="836.0" prefWidth="1158.0">
          <center>
@@ -64,7 +64,7 @@
          <bottom>
             <FlowPane prefHeight="47.0" prefWidth="1158.0" style="-fx-background-color: #6d6d6d#6d6d6d;" BorderPane.alignment="CENTER">
                <children>
-                  <JFXButton fx:id="printButton" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="PRINT MENU" textFill="WHITE">
+                  <JFXButton onAction="#print" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="PRINT MENU" textFill="WHITE">
                      <FlowPane.margin>
                         <Insets left="10.0" top="10.0" />
                      </FlowPane.margin>
@@ -94,15 +94,15 @@
           <Double fx:value="-60.0" />
         </points>
       </Polygon>
-      <AnchorPane fx:id="sideAnchor" maxWidth="360.0" prefHeight="800.0" StackPane.alignment="CENTER_RIGHT">
+      <AnchorPane fx:id="sideAnchor" maxWidth="400.0" prefHeight="858.0" prefWidth="400.0" StackPane.alignment="CENTER_RIGHT">
          <children>
             <FlowPane alignment="CENTER_RIGHT" layoutX="19.0" prefHeight="798.0" prefWidth="381.0">
                <children>
-                  <ScrollPane fx:id="sideScrollPane" prefHeight="800.0" prefWidth="363.0">
+                  <ScrollPane fx:id="sideScrollPane" prefHeight="836.0" prefWidth="379.0">
                      <content>
                         <StackPane prefHeight="945.0" prefWidth="361.0">
                            <children>
-                              <VBox fx:id="filterVBox" prefWidth="376.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;">
+                              <VBox fx:id="filterVBox" prefHeight="945.0" prefWidth="352.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;">
                                  <children>
                                     <Label fx:id="genderTitle1" text="Filter target" underline="true">
                                        <font>
@@ -406,12 +406,12 @@
                                           <JFXSlider fx:id="bounceDurationSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minorTickCount="1" onMouseReleased="#updateBounceDurationLabel" snapToTicks="true" value="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                           <Label text="Minimum pages visited" wrapText="true" />
                                           <Label text="Minimum visit time (minutes)" wrapText="true" GridPane.rowIndex="1" />
-                                          <Label text="2" GridPane.columnIndex="2">
+                                          <Label fx:id="bouncePageLabel" text="2" GridPane.columnIndex="2">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>
                                           </Label>
-                                          <Label text="3" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                          <Label fx:id="bounceDurationLabel" text="3" GridPane.columnIndex="2" GridPane.rowIndex="1">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin>

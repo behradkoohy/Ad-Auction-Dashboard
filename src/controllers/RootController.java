@@ -12,10 +12,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -24,6 +21,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 import models.Filter;
+import popups.PrintPopup;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,7 +46,7 @@ public class RootController {
     @FXML private ComparePageController comparePageController;
     @FXML private CampaignManagerController campaignManagerPageController;
 
-    //private static WindowController windowController;
+    @FXML private JFXTabPane tabPane;
 
     //FILTER PANEL
     @FXML private Circle circle;
@@ -63,6 +61,8 @@ public class RootController {
     @FXML private JFXComboBox granularityComboBox;
     @FXML private JFXSlider bouncePageSlider;
     @FXML private JFXSlider bounceDurationSlider;
+    @FXML private Label bouncePageLabel;
+    @FXML private Label bounceDurationLabel;
 
     //BOTTOM BAR
     @FXML private JFXButton campaignButton;
@@ -116,6 +116,8 @@ public class RootController {
     @FXML
     public void initialize(){
 
+        disableOtherTabs();
+
         granTimeUnit = ChronoUnit.DAYS;
         granDigit = 1;
         ObservableList<String> timeUnits = FXCollections.observableArrayList("Hours", "Days", "Weeks");
@@ -165,6 +167,41 @@ public class RootController {
 
     }
 
+    public void disableOtherTabs(){
+
+        doGUITask(() -> {
+
+            for(int i = 1; i < 6; i++){
+
+                tabPane.getTabs().get(i).setDisable(true);
+
+            }
+
+        });
+
+    }
+
+    public void enableOtherTabs(){
+
+        doGUITask(() -> {
+
+            for(int i = 1; i < 6; i++){
+
+                tabPane.getTabs().get(i).setDisable(false);
+
+            }
+
+        });
+
+    }
+
+    public void goToBasicsPage(){
+
+        SingleSelectionModel<Tab> model = tabPane.getSelectionModel();
+        doGUITask(() -> model.select(1));
+
+    }
+
     /**
      * Call this method whenever a new / different campaign
      * has been selected by the user to populate all parts
@@ -175,6 +212,7 @@ public class RootController {
     public void loadCampaignData(String campaign){
 
         new Thread(() -> {
+
             startLoadingIndicator();
             currentCampaign = campaign;
             doGUITask(() -> campaignLabel.setText(currentCampaign));
@@ -186,6 +224,8 @@ public class RootController {
             setDateTimeTo(to);
             this.loadData();
             endLoadingIndicator();
+            enableOtherTabs();
+            goToBasicsPage();
 
         }).start();
 
@@ -205,7 +245,7 @@ public class RootController {
     @FXML
     public void reloadDataButtonMethod() {
         new Thread(() -> {
-            this.handleCircleClick();
+            //this.handleCircleClick();
             startLoadingIndicator();
             this.loadData();
             endLoadingIndicator();
@@ -238,10 +278,10 @@ public class RootController {
         double val = circle.getRadius();
 
         Translate circleTrans = new Translate();
-        circleTrans.setX(val);
+        circleTrans.setX(val + 20);
 
         Translate arrowTrans = new Translate();
-        arrowTrans.setY(val + (val / 3));
+        arrowTrans.setY(val + (val / 3) + 40);
 
         circle.getTransforms().add(circleTrans);
         arrow.getTransforms().add(arrowTrans);
@@ -484,9 +524,26 @@ public class RootController {
     }
 
     @FXML
-    public void updateBouncePageLabel(){}
+    public void updateBouncePageLabel(){
+
+        bouncePageLabel.setText(String.valueOf(Math.round(bouncePageSlider.getValue())));
+        basicStatsPageController.getMetricsModel().setBouncePages((int) Math.round(bouncePageSlider.getValue()));
+        advancedStatsPageController.getMetricsModel().setBouncePages((int) Math.round(bouncePageSlider.getValue()));
+        comparePageController.getMetricsModelFirst().setBouncePages((int) Math.round(bouncePageSlider.getValue()));
+        comparePageController.getMetricsModelSecond().setBouncePages((int) Math.round(bouncePageSlider.getValue()));
+
+    }
+
     @FXML
-    public void updateBounceDurationLabel(){}
+    public void updateBounceDurationLabel(){
+
+        bounceDurationLabel.setText(String.valueOf(Math.round(bounceDurationSlider.getValue())));
+        basicStatsPageController.getMetricsModel().setBounceTime(java.time.Duration.ofSeconds((int) Math.round(bounceDurationSlider.getValue())));
+        advancedStatsPageController.getMetricsModel().setBounceTime(java.time.Duration.ofSeconds((int) Math.round(bounceDurationSlider.getValue())));
+        comparePageController.getMetricsModelFirst().setBounceTime(java.time.Duration.ofSeconds((int) Math.round(bounceDurationSlider.getValue())));
+        comparePageController.getMetricsModelSecond().setBounceTime(java.time.Duration.ofSeconds((int) Math.round(bounceDurationSlider.getValue())));
+
+    }
 
     /**
      * Shows the spinner loading indicator and blurs the app
@@ -579,16 +636,31 @@ public class RootController {
 
     }
 
+    @FXML
+    /**
+     * Called by the print button
+     */
+    public void print(){
+
+        System.out.println("print method called");
+        new PrintPopup(this);
+
+    }
+
     public void setDateTimeFrom(LocalDateTime from) {
+
         //Updates tFrom and dFrom automatically
         dateFromPicker.setValue(from.toLocalDate());
         timeFromPicker.setValue(from.toLocalTime());
+
     }
 
     public void setDateTimeTo(LocalDateTime to) {
+
         //Updates tFrom and dFrom automatically
         dateToPicker.setValue(to.toLocalDate());
         timeToPicker.setValue(to.toLocalTime());
+
     }
 
     /**
@@ -599,7 +671,7 @@ public class RootController {
      * JAVAFX THREAD REGARDLESS OF THREAD IT IS
      * CALLED FROM
      */
-    public void doGUITask(Runnable runnable){
+    public static void doGUITask(Runnable runnable){
 
         if(Platform.isFxApplicationThread()){
 
@@ -607,6 +679,7 @@ public class RootController {
 
         } else {
 
+            //This makes the runnable instead be added to the javafx queue and run on javafx thread
             Platform.runLater(runnable);
 
         }
@@ -629,7 +702,7 @@ public class RootController {
 
     public void success(String message){
 
-        if(Platform.isFxApplicationThread()){
+        doGUITask(() -> {
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Success");
@@ -637,19 +710,7 @@ public class RootController {
             alert.setContentText(message);
             alert.showAndWait();
 
-        } else {
-
-            Platform.runLater(() -> {
-
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Success");
-                alert.setHeaderText(null);
-                alert.setContentText(message);
-                alert.showAndWait();
-
-            });
-
-        }
+        });
 
     }
 
