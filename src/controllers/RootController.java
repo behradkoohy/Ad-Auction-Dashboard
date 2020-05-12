@@ -118,19 +118,12 @@ public class RootController {
 
         granTimeUnit = ChronoUnit.DAYS;
         granDigit = 1;
-
-        //Keep this in the fxml initialize method
-        granDigit = 1;
-        granTimeUnit = ChronoUnit.DAYS;
-
         ObservableList<String> timeUnits = FXCollections.observableArrayList("Hours", "Days", "Weeks");
         granularityComboBox.setItems(timeUnits);
-
         granularitySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1,100) {
         });
-
-        //By default combo box will show hours
-        granularityComboBox.getSelectionModel().selectFirst();
+        //Set default to days
+        granularityComboBox.getSelectionModel().select(1);
 
         circleIsRight = true;
         circleIsClickable = true;
