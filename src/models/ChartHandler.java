@@ -6,7 +6,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Seperate class for handling all the data that will be displayed
@@ -14,25 +13,24 @@ import java.util.Random;
  */
 public class ChartHandler {
 
-    private Metrics metricsModel;
+    private MetricsModel metricsModel;
 
-    private String campaignName;
     private LocalDateTime start;
     private LocalDateTime end;
     private Duration duration;
 
-    public ChartHandler(Metrics metricsModel){
+    public void setMetricsModel(MetricsModel metricsModel) {
 
         this.metricsModel = metricsModel;
 
     }
 
-    public List<XYChart.Series> getChartDataAccordingTo(String campaignName, LocalDateTime start, LocalDateTime end,
+    public List<XYChart.Series> getBasicChartDataAccordingTo(String campaignName, LocalDateTime start, LocalDateTime end,
                                                         Duration duration, boolean impressions, boolean conversions, boolean clicks,
-                                                        boolean unique, boolean bounces, boolean CTR, boolean CPA, boolean CPC,
-                                                        boolean CPM, boolean bounceRate){
+                                                        boolean unique, boolean bounces){
 
         metricsModel.setCampaign(campaignName);
+
         this.start = start;
         this.end = end;
         this.duration = duration;
@@ -59,6 +57,20 @@ public class ChartHandler {
             seriesList.add(getBounces());
         }
 
+        return seriesList;
+
+    }
+
+    public List<XYChart.Series> getAdvancedChartDataAccordingTo(String campaignName, LocalDateTime start, LocalDateTime end,
+                                                             Duration duration, boolean CTR, boolean CPA, boolean CPC,
+                                                             boolean CPM, boolean bounceRate){
+        metricsModel.setCampaign(campaignName);
+        this.start = start;
+        this.end = end;
+        this.duration = duration;
+
+        List<XYChart.Series> seriesList = new ArrayList<XYChart.Series>();
+
         if(CTR) {
             seriesList.add(getCTR());
         }
@@ -84,7 +96,7 @@ public class ChartHandler {
     }
 
     private XYChart.Series getImpressions(){
-
+        System.out.println(metricsModel.getImpressionsPerTime(start, end, duration));
         return metricsModel.getImpressionsPerTime(start, end, duration);
 
     }

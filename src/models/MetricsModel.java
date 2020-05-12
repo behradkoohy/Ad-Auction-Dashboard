@@ -11,7 +11,6 @@ import entities.Impression;
 import entities.ServerEntry;
 import javafx.scene.chart.XYChart;
 
-import java.beans.IntrospectionException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +20,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 
-public class Metrics {
+public class MetricsModel {
 
     //false = pages -- true = time spent -- change
     private String campaign = null;
@@ -55,7 +54,7 @@ public class Metrics {
     private static int CPM = 10;
     private static int BOUNCE = 11;
 
-    public Metrics() {
+    public MetricsModel() {
         this.filter = new Filter(true, true,
                 true, true, true, true, true,
                 true, true, true,
@@ -64,6 +63,13 @@ public class Metrics {
 
     public void setCampaign(String campaign) {
         this.campaign = campaign;
+    }
+
+    public void setFilter(Filter filter) {
+        System.out.println(this.filter);
+        System.out.println("Change filter");
+        this.filter = filter;
+        System.out.println(this.filter);
     }
 
     public Double getNumImpressions(LocalDateTime start, LocalDateTime end) {
@@ -766,13 +772,6 @@ public class Metrics {
 
         return series;
 
-    }
-
-    public void setFilter(Filter filter) {
-        System.out.println(this.filter);
-        System.out.println("Change filter");
-        this.filter = filter;
-        System.out.println(this.filter);
     }
 
     private static class Tuple {

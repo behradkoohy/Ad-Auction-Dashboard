@@ -3,6 +3,7 @@ package models;
 import daos.DaoInjector;
 import daos.ImpressionDao;
 import entities.Impression;
+import entities.User;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -22,8 +23,6 @@ public class PieChartModel {
     public void setEnd(LocalDateTime end) { this.end = end; }
 
     public HashMap<String, Integer> getDistributions() {
-        System.out.println(start);
-        System.out.println(end);
         List<Impression> impressions = this.impressionDao.getByDateAndCampaign(campaign, start, end);
         int nrImpressions = impressions.size();
         HashMap<String, Integer> distr = new HashMap<String, Integer>();
@@ -83,6 +82,45 @@ public class PieChartModel {
         distr.put("low", (int) ((double) incomes[0] / (double) nrImpressions * 100));
         distr.put("medium", (int) ((double) incomes[1] / (double) nrImpressions * 100));
         distr.put("high", (int) ((double) incomes[2] / (double) nrImpressions * 100));
+
+        return distr;
+    }
+
+    public HashMap<String, Integer> getContextDistributions() {
+        List<Impression> impressions = this.impressionDao.getByDateAndCampaign(campaign, start, end);
+        int nrImpressions = impressions.size();
+        HashMap<String, Integer> distr = new HashMap<String, Integer>();
+
+        int[] contexts = {0, 0, 0, 0, 0, 0};
+
+        for(Impression impression : impressions){
+            switch(impression.getContext()) {
+                case BLOG:
+                    contexts[0]++;
+                    break;
+                case NEWS:
+                    contexts[1]++;
+                    break;
+                case SOCIALMEDIA:
+                    contexts[2]++;
+                    break;
+                case SHOPPING:
+                    contexts[3]++;
+                    break;
+                case HOBBIES:
+                    contexts[4]++;
+                    break;
+                case TRAVEL:
+                    contexts[5]++;
+                    break;
+            }
+        }
+        distr.put("blog", (int) ((double) contexts[0] / (double) nrImpressions * 100));
+        distr.put("news", (int) ((double) contexts[1] / (double) nrImpressions * 100));
+        distr.put("socialmedia", (int) ((double) contexts[2] / (double) nrImpressions * 100));
+        distr.put("shopping", (int) ((double) contexts[3] / (double) nrImpressions * 100));
+        distr.put("hobbies", (int) ((double) contexts[4] / (double) nrImpressions * 100));
+        distr.put("travel", (int) ((double) contexts[5] / (double) nrImpressions * 100));
 
         return distr;
     }

@@ -1,117 +1,436 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXSpinner?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<?import java.lang.Double?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="612.0" prefWidth="1011.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.Controller">
-    <top>
-        <GridPane fx:id="gridPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="652.0" prefWidth="1011.0" BorderPane.alignment="CENTER">
-            <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="733.0" minWidth="10.0" prefWidth="733.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="296.0" minWidth="10.0" prefWidth="241.0" />
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            </rowConstraints>
-
-            <children>
-                <JFXTabPane fx:id="LHS" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="586.0" prefWidth="661.0">
-                    <tabs>
-                        <Tab id="campTabButton" text="Campaign Management">
-                            <fx:include fx:id="campaignTab" source="tabs/CampaignTab.fxml" />
-                        </Tab>
-                        <Tab id="statsTabButton" text="Statistics">
-                            <fx:include fx:id="statisticsTab" source="tabs/StatisticsTab.fxml" />
-                        </Tab>
-                        <Tab id="graphTabButton" text="Graphs">
-                            <fx:include fx:id="graphsTab" source="tabs/GraphsTab.fxml" />
-                        </Tab>
-                        <Tab id="histoTabButton" text="Histogram">
-                            <fx:include fx:id="histogramTab" source="tabs/HistogramTab.fxml" />
-                        </Tab>
-                  <Tab fx:id="bounceTabButton" text="Bounces">
+<StackPane fx:id="rootPane" prefHeight="794.0" prefWidth="1158.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RootController">
+   <children>
+      <BorderPane fx:id="mainApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="836.0" prefWidth="1158.0">
+         <center>
+            <JFXTabPane fx:id="tabPane" BorderPane.alignment="CENTER">
+               <tabs>
+                  <Tab text="Campaign Management">
+                    <fx:include fx:id="campaignManagerPage" source="CampaignManager.fxml" />
+                  </Tab>
+                  <Tab text="Basic Statistics">
+                     <fx:include fx:id="basicStatsPage" source="BasicPage.fxml" />
+                  </Tab>
+                  <Tab text="Advanced Statistics">
+                     <fx:include fx:id="advancedStatsPage" source="AdvancedPage.fxml" />
+                  </Tab>
+                  <Tab text="Detailed Pie Charts">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <ScrollPane>
+                           <content>
+                              <fx:include fx:id="detailedPieChartsPage" source="DetailedPieCharts.fxml" />
+                           </content>
+                        </ScrollPane>
+                    </content>
+                  </Tab>
+                  <Tab text="Compare">
+                     <fx:include fx:id="comparePage" source="ComparePage.fxml" />
+                  </Tab>
+                  <Tab text="Settings">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
+               </tabs>
+            </JFXTabPane>
+         </center>
+         <bottom>
+            <FlowPane prefHeight="47.0" prefWidth="1158.0" style="-fx-background-color: #6d6d6d#6d6d6d;" BorderPane.alignment="CENTER">
+               <children>
+                  <JFXButton fx:id="printButton" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="PRINT MENU" textFill="WHITE">
+                     <FlowPane.margin>
+                        <Insets left="10.0" top="10.0" />
+                     </FlowPane.margin>
+                  </JFXButton>
+                  <Label text="Currently showing data for: " textFill="WHITE">
+                     <FlowPane.margin>
+                        <Insets left="10.0" top="10.0" />
+                     </FlowPane.margin>
+                  </Label>
+                  <Label fx:id="campaignLabel" text="None" textFill="WHITE">
+                     <FlowPane.margin>
+                        <Insets left="10.0" top="10.0" />
+                     </FlowPane.margin>
+                  </Label>
+               </children>
+            </FlowPane>
+         </bottom>
+      </BorderPane>
+      <Circle fx:id="circle" fill="#6b6b6bec" radius="100.0" stroke="BLACK" strokeType="INSIDE" visible="true" StackPane.alignment="CENTER_RIGHT" />
+      <Polygon fx:id="arrow" fill="#adadad76" rotate="-90.0" scaleX="0.6" scaleY="0.6" stroke="BLACK" strokeType="INSIDE" translateX="-90.0" visible="true" StackPane.alignment="CENTER_RIGHT">
+        <points>
+          <Double fx:value="-50.0" />
+          <Double fx:value="40.0" />
+          <Double fx:value="50.0" />
+          <Double fx:value="40.0" />
+          <Double fx:value="0.0" />
+          <Double fx:value="-60.0" />
+        </points>
+      </Polygon>
+      <AnchorPane fx:id="sideAnchor" maxWidth="360.0" prefHeight="800.0" StackPane.alignment="CENTER_RIGHT">
+         <children>
+            <FlowPane alignment="CENTER_RIGHT" layoutX="19.0" prefHeight="798.0" prefWidth="381.0">
+               <children>
+                  <ScrollPane fx:id="sideScrollPane" prefHeight="800.0" prefWidth="363.0">
+                     <content>
+                        <StackPane prefHeight="945.0" prefWidth="361.0">
                            <children>
-                              <VBox prefHeight="554.0" prefWidth="704.0">
+                              <VBox fx:id="filterVBox" prefWidth="376.0" style="-fx-background-color: #e0e0e0#e0e0e0 #e0e0e0#e0e0e0;">
                                  <children>
-                                    <Label text="Configure the settings of how a bounce is defined:" underline="true">
+                                    <Label fx:id="genderTitle1" text="Filter target" underline="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
                                        <VBox.margin>
-                                          <Insets left="40.0" top="40.0" />
+                                          <Insets left="20.0" top="10.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <GridPane>
-                                      <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="420.0" minWidth="10.0" prefWidth="360.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="308.0" minWidth="10.0" prefWidth="142.0" />
-                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="308.0" minWidth="10.0" prefWidth="125.0" />
-                                      </columnConstraints>
-                                      <rowConstraints>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                      </rowConstraints>
+                                    <JFXComboBox fx:id="filterTargetComboBox" prefHeight="27.0" prefWidth="276.0" promptText="WHOLE APPLICATION">
                                        <VBox.margin>
-                                          <Insets left="20.0" right="20.0" top="20.0" />
+                                          <Insets left="20.0" top="10.0" />
                                        </VBox.margin>
+                                    </JFXComboBox>
+                                    <Label fx:id="genderTitle" text="Gender" underline="true">
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="20.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <FlowPane prefHeight="23.0" prefWidth="268.0">
                                        <children>
-                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="358.0" text="Minimum number of pages visited to denote no bounce:" GridPane.halignment="CENTER" />
-                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="366.0" text="Minimum duration of visit on site to denote no bounce (seconds):" GridPane.rowIndex="1" />
-                                          <JFXSlider fx:id="bouncePageSlider" blockIncrement="1.0" majorTickUnit="1.0" max="30.0" minorTickCount="1" onMouseReleased="#updateBouncePageLabel" snapToTicks="true" value="2.0" GridPane.columnIndex="1">
-                                             <GridPane.margin>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleMale" selected="true" text="Male     ">
+                                             <FlowPane.margin>
                                                 <Insets left="10.0" />
-                                             </GridPane.margin>
-                                          </JFXSlider>
-                                          <JFXSlider fx:id="bounceDurationSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minorTickCount="1" onMouseReleased="#updateBounceDurationLabel" snapToTicks="true" value="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                             <GridPane.margin>
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleFemale" selected="true" text="Female">
+                                             <FlowPane.margin>
+                                                <Insets />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="20.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
+                                    <Label fx:id="ageTitle" text="Age range" underline="true">
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="20.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <FlowPane prefHeight="25.0" prefWidth="248.0">
+                                       <children>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleLt25" selected="true" text="&lt;25  ">
+                                             <FlowPane.margin>
                                                 <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBtwn2534" selected="true" text="25-34">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBtwn3544" selected="true" text="35 - 44">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="20.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
+                                    <FlowPane prefHeight="25.0" prefWidth="248.0">
+                                       <children>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBtwn4554" selected="true" text="45 - 54">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleGt55" selected="true" text="&gt;54">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="10.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
+                                    <Label fx:id="incomeTitle" text="Income range" underline="true">
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="20.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <FlowPane prefHeight="26.0" prefWidth="248.0">
+                                       <children>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleLow" selected="true" text="Low">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleMed" selected="true" text="Medium">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleHigh" selected="true" text="High">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="15.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
+                                    <Label fx:id="incomeTitle1" text="Context" underline="true">
+                                       <padding>
+                                          <Insets left="10.0" />
+                                       </padding>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <FlowPane prefHeight="26.0" prefWidth="248.0">
+                                       <children>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleNews" selected="true" text="News">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleShopping" selected="true" text="Shopping">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleSocialMedia" selected="true" text="Social Media">
+                                             <FlowPane.margin>
+                                                <Insets left="10.0" />
+                                             </FlowPane.margin>
+                                          </JFXCheckBox>
+                                          <FlowPane prefHeight="26.0" prefWidth="248.0">
+                                             <children>
+                                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBlog" selected="true" text="Blog">
+                                                   <FlowPane.margin>
+                                                      <Insets left="10.0" />
+                                                   </FlowPane.margin>
+                                                </JFXCheckBox>
+                                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleHobbies" selected="true" text="Hobbies">
+                                                   <FlowPane.margin>
+                                                      <Insets left="10.0" />
+                                                   </FlowPane.margin>
+                                                </JFXCheckBox>
+                                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleTravel" selected="true" text="Travel">
+                                                   <FlowPane.margin>
+                                                      <Insets left="10.0" />
+                                                   </FlowPane.margin>
+                                                </JFXCheckBox>
+                                             </children>
+                                             <FlowPane.margin>
+                                                <Insets top="15.0" />
+                                             </FlowPane.margin>
+                                          </FlowPane>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="20.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
+                                    <Label text="Date range" underline="true">
+                                       <VBox.margin>
+                                          <Insets left="20.0" top="15.0" />
+                                       </VBox.margin>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <GridPane maxHeight="202.0" minHeight="141.0" prefHeight="187.0" prefWidth="316.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="133.0" minWidth="10.0" prefWidth="54.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="275.33331298828125" minWidth="10.0" prefWidth="262.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints maxHeight="160.5" minHeight="10.0" prefHeight="79.16668701171875" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="143.66668701171875" minHeight="9.0" prefHeight="90.33331298828125" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <VBox maxHeight="63.0" prefHeight="50.0" prefWidth="262.0" GridPane.columnIndex="1">
+                                             <children>
+                                                <JFXDatePicker fx:id="dateFromPicker" onAction="#updateDFrom" prefHeight="29.0" prefWidth="254.0" promptText="Date From">
+                                                   <VBox.margin>
+                                                      <Insets left="10.0" right="20.0" />
+                                                   </VBox.margin>
+                                                </JFXDatePicker>
+                                                <JFXTimePicker fx:id="timeFromPicker" onAction="#updateTFrom" prefHeight="29.0" prefWidth="247.0" promptText="Time From">
+                                                   <VBox.margin>
+                                                      <Insets left="10.0" right="20.0" top="10.0" />
+                                                   </VBox.margin>
+                                                </JFXTimePicker>
+                                             </children>
+                                          </VBox>
+                                          <VBox maxHeight="63.0" prefHeight="63.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                             <children>
+                                                <JFXDatePicker fx:id="dateToPicker" onAction="#updateDTo" prefHeight="29.0" prefWidth="266.0" promptText="Date To">
+                                                   <VBox.margin>
+                                                      <Insets left="10.0" right="20.0" top="10.0" />
+                                                   </VBox.margin>
+                                                </JFXDatePicker>
+                                                <JFXTimePicker fx:id="timeToPicker" onAction="#updateTTo" prefHeight="29.0" prefWidth="260.0" promptText="Time To">
+                                                   <VBox.margin>
+                                                      <Insets left="10.0" right="20.0" top="10.0" />
+                                                   </VBox.margin>
+                                                </JFXTimePicker>
+                                             </children>
+                                          </VBox>
+                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="116.0" text="From:">
+                                             <GridPane.margin>
+                                                <Insets right="10.0" />
                                              </GridPane.margin>
-                                          </JFXSlider>
-                                          <Label fx:id="bouncePagesLabel" text="2" GridPane.columnIndex="2">
-                                             <padding>
-                                                <Insets left="20.0" />
-                                             </padding>
                                           </Label>
-                                          <Label fx:id="bounceDurationLabel" text="2" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                             <padding>
-                                                <Insets left="20.0" />
-                                             </padding>
+                                          <Label alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="126.0" text="Until:" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets right="10.0" />
+                                             </GridPane.margin>
                                           </Label>
                                        </children>
-                                    </GridPane>
-                                    <Label alignment="CENTER" prefHeight="17.0" prefWidth="369.0" text="Any visit below these parameters will be recorded as a bounce.">
                                        <VBox.margin>
-                                          <Insets left="20.0" />
+                                          <Insets left="10.0" top="10.0" />
+                                       </VBox.margin>
+                                    </GridPane>
+                                    <VBox alignment="CENTER">
+                                       <children>
+                                          <JFXButton onAction="#reloadDataButtonMethod" prefHeight="27.0" prefWidth="255.0" style="-fx-background-color: #9575cd#9575cd;" text="RELOAD DATA" textFill="WHITE" />
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="10.0" top="20.0" />
+                                       </VBox.margin>
+                                    </VBox>
+                                    <Label prefHeight="18.0" prefWidth="150.0" text="Time granularity" underline="true">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                       <VBox.margin>
+                                          <Insets left="20.0" top="15.0" />
                                        </VBox.margin>
                                     </Label>
+                                    <FlowPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="54.0" prefWidth="347.0">
+                                       <children>
+                                          <Spinner fx:id="granularitySpinner" onKeyReleased="#updateGranSpin" onMouseClicked="#updateGranSpin" prefHeight="26.0" prefWidth="70.0">
+                                             <FlowPane.margin>
+                                                <Insets />
+                                             </FlowPane.margin>
+                                          </Spinner>
+                                          <JFXComboBox fx:id="granularityComboBox" onAction="#updateGranCombo" prefHeight="27.0" prefWidth="228.0">
+                                             <FlowPane.margin>
+                                                <Insets left="15.0" />
+                                             </FlowPane.margin>
+                                          </JFXComboBox>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="5.0" top="15.0" />
+                                       </VBox.margin>
+                                    </FlowPane>
+                                    <Label text="Bounce definition" underline="true">
+                                       <VBox.margin>
+                                          <Insets left="20.0" top="15.0" />
+                                       </VBox.margin>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </Label>
+                                    <Label style="-fx-font-weight: bold;" text="Choose ONE of:">
+                                       <VBox.margin>
+                                          <Insets left="20.0" top="15.0" />
+                                       </VBox.margin>
+                                    </Label>
+                                    <GridPane prefHeight="98.0" prefWidth="306.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="157.0" minWidth="10.0" prefWidth="157.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="94.0" minWidth="10.0" prefWidth="48.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints maxHeight="52.0" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="54.0" minHeight="10.0" prefHeight="44.0" vgrow="SOMETIMES" />
+                                          <RowConstraints maxHeight="22.0" minHeight="6.0" prefHeight="6.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <JFXSlider fx:id="bouncePageSlider" blockIncrement="1.0" majorTickUnit="1.0" max="30.0" minorTickCount="1" onMouseReleased="#updateBouncePageLabel" snapToTicks="true" value="2.0" GridPane.columnIndex="1" />
+                                          <JFXSlider fx:id="bounceDurationSlider" blockIncrement="1.0" majorTickUnit="1.0" max="10.0" minorTickCount="1" onMouseReleased="#updateBounceDurationLabel" snapToTicks="true" value="2.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Label text="Minimum pages visited" wrapText="true" />
+                                          <Label text="Minimum visit time (minutes)" wrapText="true" GridPane.rowIndex="1" />
+                                          <Label text="2" GridPane.columnIndex="2">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                          <Label text="3" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                             <GridPane.margin>
+                                                <Insets left="10.0" />
+                                             </GridPane.margin>
+                                          </Label>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets left="20.0" top="10.0" />
+                                       </VBox.margin>
+                                    </GridPane>
                                  </children>
                               </VBox>
                            </children>
-                        </AnchorPane>
-                    </content>
-                  </Tab>
-                    </tabs>
-                </JFXTabPane>
-                <VBox prefHeight="588.0" prefWidth="264.0" GridPane.columnIndex="1">
-                    <children>
-                        <JFXTabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="653.0" prefWidth="278.0" style="-fx-background-color: #e0e0e0#e0e0e0;">
-                            <tabs>
-                                <Tab fx:id="filterTabBtn" text="Filter">
-                                    <fx:include fx:id="filterTab" source="menus/FilterTab.fxml" />
-                                </Tab>
-                                <Tab text="Accessibility">
-                                    <fx:include fx:id="accessibilityTab" source="menus/AccessibilityTab.fxml" />
-                                </Tab>
-                                <Tab fx:id="printTabBtn" text="Print">
-                                    <fx:include fx:id="printTab" source="tabs/PrintTab.fxml" />
-                                </Tab>
-                            </tabs>
-                        </JFXTabPane>
-                    </children>
-                </VBox>
-            </children>
-        </GridPane>
-    </top>
-</BorderPane>
+                        </StackPane>
+                     </content>
+                  </ScrollPane>
+               </children>
+            </FlowPane>
+         </children>
+      </AnchorPane>
+      <JFXSpinner fx:id="spinner" disable="true" scaleX="0.5" scaleY="0.5" visible="false" />
+   </children>
+</StackPane>
