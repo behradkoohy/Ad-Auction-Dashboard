@@ -1,0 +1,29 @@
+/*
+    Document   : highContrast
+*/
+
+.root{
+
+    -fx-background: #093145;
+    -fx-focus-color: #EFD469;
+
+}
+
+.chart-legend {
+
+    -fx-text-fill: #FFFFFF;
+
+}
+
+.jfx-button{
+    -fx-text-fill: #EFD469;
+    -fx-background-color: #9A2617;
+}
+
+.jfx-combo
+
+.slider{
+    -fx-border-color: white;
+    -fx-border-style: dashed;
+    -fx-border-width: 2;
+}

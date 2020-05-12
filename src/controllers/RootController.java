@@ -12,10 +12,13 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Translate;
@@ -45,7 +48,9 @@ public class RootController {
     @FXML private AdvancedPageController advancedStatsPageController;
     @FXML private ComparePageController comparePageController;
     @FXML private CampaignManagerController campaignManagerPageController;
+    @FXML private AccessibilityPageController accessibilityPageController;
 
+    @FXML private StackPane rootPane;
     @FXML private JFXTabPane tabPane;
 
     //FILTER PANEL
@@ -136,6 +141,7 @@ public class RootController {
         basicStatsPageController.init(this);
         advancedStatsPageController.init(this);
         comparePageController.init(this);
+        accessibilityPageController.init(this);
 
         //Initially the date spinners will be from week ago until now
         LocalDateTime now = LocalDateTime.now();
@@ -867,6 +873,12 @@ public class RootController {
     public Filter getFilter() {
         return new Filter(male, female, lt25, btwn2534, btwn3544, btwn4554, gt55, lowIncome, medIncome, highIncome,
                 news, shopping, socialMedia, blog, hobbies, travel);
+    }
+
+    public Node getRoot(){
+
+        return rootPane;
+
     }
 
 }
