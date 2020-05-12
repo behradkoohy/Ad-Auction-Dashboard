@@ -15,24 +15,24 @@
 
 <ScrollPane fx:id="basicStatsPage" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BasicPageController">
     <content>
-        <FlowPane prefHeight="750.0" prefWidth="1104.0">
+        <FlowPane fx:id="basicStatsContent" prefHeight="750.0" prefWidth="1104.0">
             <children>
                 <VBox prefHeight="538.0" prefWidth="782.0">
-                    <children>
-                        <LineChart fx:id="basicChart" animated="false" prefHeight="528.0" prefWidth="782.0">
-                            <xAxis>
-                                <CategoryAxis side="BOTTOM" />
-                            </xAxis>
-                            <yAxis>
-                                <NumberAxis side="LEFT" />
-                            </yAxis>
-                        </LineChart>
-                    </children>
-                    <FlowPane.margin>
-                        <Insets left="10.0" top="40.0" />
-                    </FlowPane.margin>
+                        <children>
+                            <LineChart fx:id="basicChart" animated="false" prefHeight="528.0" prefWidth="782.0">
+                                <xAxis>
+                                    <CategoryAxis side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis side="LEFT" />
+                                </yAxis>
+                            </LineChart>
+                        </children>
+                        <FlowPane.margin>
+                            <Insets left="10.0" top="40.0" />
+                        </FlowPane.margin>
                 </VBox>
-                <VBox prefHeight="516.0" prefWidth="310.0">
+                <VBox fx:id="chartInfo" prefHeight="516.0" prefWidth="310.0">
                     <children>
                         <Label text="Toggle graph legend" underline="true" />
                         <FlowPane prefHeight="106.0" prefWidth="340.0">
@@ -201,7 +201,7 @@
                         <Insets left="10.0" top="40.0" />
                     </FlowPane.margin>
                 </VBox>
-                <FlowPane alignment="CENTER" prefHeight="372.0" prefWidth="1152.0">
+                <FlowPane fx:id="pieChartLayout" alignment="CENTER" prefHeight="372.0" prefWidth="1152.0">
                     <children>
                         <PieChart fx:id="genderPie" prefHeight="340.0" prefWidth="340.0" title="Gender">
                             <FlowPane.margin>

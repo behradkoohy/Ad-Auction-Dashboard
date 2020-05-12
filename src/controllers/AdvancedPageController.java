@@ -8,12 +8,14 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import models.ChartHandler;
+import models.HistogramModel;
 import models.MetricsModel;
 import models.PieChartModel;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,6 +40,7 @@ public class AdvancedPageController {
     private PieChartModel pieChartModel;
     private MetricsModel metricsModel;
     private ChartHandler chartHandler;
+    private HistogramModel histogramModel;
 
     private boolean ctr;
     private boolean cpa;
@@ -51,6 +54,7 @@ public class AdvancedPageController {
         this.pieChartModel = new PieChartModel();
         this.chartHandler = new ChartHandler();
         this.chartHandler.setMetricsModel(metricsModel);
+        this.histogramModel = new HistogramModel();
     }
 
     @FXML
@@ -63,6 +67,16 @@ public class AdvancedPageController {
         this.cpc = false;
         this.cpm = false;
         this.bounceRate = false;
+
+        /* set some styling properties for the histogram */
+        this.controller.doGUITask(() -> {
+            histogram.getData().clear();
+            histogram.setLegendVisible(false);
+            histogram.setAnimated(false);
+            histogram.setBarGap(0);
+            histogram.setCategoryGap(0);
+        });
+
     }
 
     public void updateData(){
@@ -94,6 +108,10 @@ public class AdvancedPageController {
         updateContextPieChart(contextPieData);
 
         updateAdvancedChart();
+
+        this.histogramModel.setCampaign(campaignName);
+        HashMap<Double, Integer> barChartData = this.histogramModel.getData(0, null, 1);
+        updateHistogram(barChartData);
 
     }
 
@@ -186,12 +204,21 @@ public class AdvancedPageController {
      * Update the histogram to show the new data specified,
      * note that the histogram only ever has one series of data
      */
-    public void updateHistogram(XYChart.Series data){
+    public void updateHistogram(HashMap<Double, Integer> data){
+
+        XYChart.Series series = new XYChart.Series();
+        List<Double> keys = new ArrayList<Double>(data.keySet());
+        Collections.sort(keys);
+
+        for(double categoryIndex : keys){
+            series.getData().add(new XYChart.Data(String.valueOf(categoryIndex), data.get(categoryIndex)));
+        }
 
         this.controller.doGUITask(() -> {
 
+            updateHistogramGraphics();
             histogram.getData().clear();
-            histogram.getData().add(data);
+            histogram.getData().add(series);
 
         });
 
@@ -205,12 +232,31 @@ public class AdvancedPageController {
         }).start();
     }
 
+    /* Histogram helper method */
+
+    public void updateHistogramGraphics(){
+        histogram.setLegendVisible(false);
+        histogram.setAnimated(false);
+        histogram.setBarGap(0);
+        histogram.setCategoryGap(0);
+    }
+
     @FXML
     /**
      * Histogram method
      */
     public void refreshData(){
+        try{
+            double minCost = Double.valueOf(minValue.getText());
+            Double maxCost = Double.valueOf(maxValue.getText());
+            double bandLengthValue = Double.valueOf(bandLength.getText());
 
+            HashMap<Double, Integer> barChartData = this.histogramModel.getData(minCost, maxCost, bandLengthValue);
+            updateHistogram(barChartData);
+
+        }catch(NumberFormatException e){
+            this.controller.error("Please only input numbers");
+        }
     }
 
     @FXML
@@ -218,7 +264,16 @@ public class AdvancedPageController {
      *Histogram method
      */
     public void redrawDefault(){
+        HashMap<Double, Integer> barChartData = this.histogramModel.getData(0, null, 1);
+        updateHistogram(barChartData);
 
+        this.controller.doGUITask(() -> {
+
+            minValue.setText("");
+            maxValue.setText("");
+            bandLength.setText("");
+
+        });
     }
 
     @FXML
