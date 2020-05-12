@@ -29,7 +29,6 @@ public class CampaignManagerController {
     @FXML private JFXButton impressionButton;
     @FXML private JFXButton serverButton;
     @FXML private JFXComboBox campaignComboBox;
-    @FXML private JFXTextField editCampaignField;
 
     //For the campaign loading indicator
     @FXML private AnchorPane anchorPane;
@@ -269,15 +268,6 @@ public class CampaignManagerController {
         x = (double) Math.round(x * 100);
         x /= 100;
         return x;
-
-    }
-
-    @FXML
-    /**
-     * Called when the user clicks the "save changes"
-     * button ie they have edited the name of the campaign
-     */
-    public void updateCampaign(){
 
     }
 
