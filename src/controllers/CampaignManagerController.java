@@ -100,61 +100,65 @@ public class CampaignManagerController {
             return;
         }
 
-        try {
-
-            controller.startLoadingIndicator();
-
-            //Concurrency offers small benefit for this test set but may have much better improvements for other sets
-            //TODO technically daos not thread safe but since atm each executes on different dao alright
-            ExecutorService readerService = Executors.newCachedThreadPool();
-            readerService.execute(() -> ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName));
-            readerService.execute(() -> ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName));
-            readerService.execute(() -> ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName));
-            readerService.shutdown();
-            //Pre-fetches to store in cache
-            //clickDao.getFromCampaign(newCampaignName);
-            //serverEntryDao.getFromCampaign(newCampaignName);
+        new Thread(() -> {
 
             try {
-                if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {
+
+                controller.startLoadingIndicator();
+
+                //Concurrency offers small benefit for this test set but may have much better improvements for other sets
+                //TODO technically daos not thread safe but since atm each executes on different dao alright
+                ExecutorService readerService = Executors.newCachedThreadPool();
+                readerService.execute(() -> ReaderCSV.readCSV(clickLog.getAbsolutePath(), newCampaignName));
+                readerService.execute(() -> ReaderCSV.readCSV(impressionLog.getAbsolutePath(), newCampaignName));
+                readerService.execute(() -> ReaderCSV.readCSV(serverLog.getAbsolutePath(), newCampaignName));
+                readerService.shutdown();
+                //Pre-fetches to store in cache
+                //clickDao.getFromCampaign(newCampaignName);
+                //serverEntryDao.getFromCampaign(newCampaignName);
+
+                try {
+                    if (!readerService.awaitTermination(60, TimeUnit.SECONDS)) {
+                        readerService.shutdownNow();
+                        this.controller.error("The CSV reader timed out! Please try again");
+                    } else {
+
+                        this.controller.success("CSV files successfully loaded");
+
+                    }
+                } catch (InterruptedException ex) {
                     readerService.shutdownNow();
-                    this.controller.error("The CSV reader timed out! Please try again");
-                } else {
-
-                    this.controller.success("CSV files successfully loaded");
-
+                    Thread.currentThread().interrupt();
                 }
-            } catch (InterruptedException ex) {
-                readerService.shutdownNow();
-                Thread.currentThread().interrupt();
+
+                System.out.println("Finished importing data for new campaign: " + newCampaignName);
+
+                //this.controller.success("Files successfully uploaded, please click \"OK\" to begin loading data");
+
+                this.controller.doGUITask(() -> {
+
+                    //Refresh the UI
+                    campaignComboBox.getItems().add(newCampaignName);
+                    newCampaignField.setText("");
+                    clickButton.setText("Choose file");
+                    impressionButton.setText("Choose file");
+                    serverButton.setText("Choose file");
+
+                });
+
+                this.controller.loadCampaignData(newCampaignName);
+
+                //controller.unGreyOtherTabs();
+                //this.controller.goToMainPage();
+
+            } catch(Exception e){
+
+                e.printStackTrace();
+                this.controller.error("error reading files...");
+
             }
 
-            System.out.println("Finished importing data for new campaign: " + newCampaignName);
-
-            //this.controller.success("Files successfully uploaded, please click \"OK\" to begin loading data");
-
-            this.controller.doGUITask(() -> {
-
-                //Refresh the UI
-                campaignComboBox.getItems().add(newCampaignName);
-                newCampaignField.setText("");
-                clickButton.setText("Choose file");
-                impressionButton.setText("Choose file");
-                serverButton.setText("Choose file");
-
-            });
-
-            this.controller.loadCampaignData(newCampaignName);
-
-            //controller.unGreyOtherTabs();
-            //this.controller.goToMainPage();
-
-        } catch(Exception e){
-
-            e.printStackTrace();
-            this.controller.error("error reading files...");
-
-        }
+        }).start();
 
     }
 

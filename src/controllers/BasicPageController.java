@@ -200,6 +200,12 @@ public class BasicPageController {
         }).start();
     }
 
+    public MetricsModel getMetricsModel(){
+
+        return metricsModel;
+
+    }
+
     @FXML
     public void toggleImpressions(){
 

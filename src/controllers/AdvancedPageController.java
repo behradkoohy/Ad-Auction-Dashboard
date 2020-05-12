@@ -205,6 +205,12 @@ public class AdvancedPageController {
         }).start();
     }
 
+    public MetricsModel getMetricsModel(){
+
+        return metricsModel;
+
+    }
+
     @FXML
     /**
      * Histogram method

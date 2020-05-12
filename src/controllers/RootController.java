@@ -61,6 +61,8 @@ public class RootController {
     @FXML private JFXComboBox granularityComboBox;
     @FXML private JFXSlider bouncePageSlider;
     @FXML private JFXSlider bounceDurationSlider;
+    @FXML private Label bouncePageLabel;
+    @FXML private Label bounceDurationLabel;
 
     //BOTTOM BAR
     @FXML private JFXButton campaignButton;
@@ -243,7 +245,7 @@ public class RootController {
     @FXML
     public void reloadDataButtonMethod() {
         new Thread(() -> {
-            this.handleCircleClick();
+            //this.handleCircleClick();
             startLoadingIndicator();
             this.loadData();
             endLoadingIndicator();
@@ -276,10 +278,10 @@ public class RootController {
         double val = circle.getRadius();
 
         Translate circleTrans = new Translate();
-        circleTrans.setX(val);
+        circleTrans.setX(val + 20);
 
         Translate arrowTrans = new Translate();
-        arrowTrans.setY(val + (val / 3));
+        arrowTrans.setY(val + (val / 3) + 40);
 
         circle.getTransforms().add(circleTrans);
         arrow.getTransforms().add(arrowTrans);
@@ -522,9 +524,26 @@ public class RootController {
     }
 
     @FXML
-    public void updateBouncePageLabel(){}
+    public void updateBouncePageLabel(){
+
+        bouncePageLabel.setText(String.valueOf(Math.round(bouncePageSlider.getValue())));
+        basicStatsPageController.getMetricsModel().setBouncePages((int) Math.round(bouncePageSlider.getValue()));
+        advancedStatsPageController.getMetricsModel().setBouncePages((int) Math.round(bouncePageSlider.getValue()));
+        comparePageController.getMetricsModelFirst().setBouncePages((int) Math.round(bouncePageSlider.getValue()));
+        comparePageController.getMetricsModelSecond().setBouncePages((int) Math.round(bouncePageSlider.getValue()));
+
+    }
+
     @FXML
-    public void updateBounceDurationLabel(){}
+    public void updateBounceDurationLabel(){
+
+        bounceDurationLabel.setText(String.valueOf(Math.round(bounceDurationSlider.getValue())));
+        basicStatsPageController.getMetricsModel().setBounceTime(java.time.Duration.ofSeconds((int) Math.round(bounceDurationSlider.getValue())));
+        advancedStatsPageController.getMetricsModel().setBounceTime(java.time.Duration.ofSeconds((int) Math.round(bounceDurationSlider.getValue())));
+        comparePageController.getMetricsModelFirst().setBounceTime(java.time.Duration.ofSeconds((int) Math.round(bounceDurationSlider.getValue())));
+        comparePageController.getMetricsModelSecond().setBounceTime(java.time.Duration.ofSeconds((int) Math.round(bounceDurationSlider.getValue())));
+
+    }
 
     /**
      * Shows the spinner loading indicator and blurs the app
@@ -629,15 +648,19 @@ public class RootController {
     }
 
     public void setDateTimeFrom(LocalDateTime from) {
+
         //Updates tFrom and dFrom automatically
         dateFromPicker.setValue(from.toLocalDate());
         timeFromPicker.setValue(from.toLocalTime());
+
     }
 
     public void setDateTimeTo(LocalDateTime to) {
+
         //Updates tFrom and dFrom automatically
         dateToPicker.setValue(to.toLocalDate());
         timeToPicker.setValue(to.toLocalTime());
+
     }
 
     /**
@@ -656,7 +679,7 @@ public class RootController {
 
         } else {
 
-            //This make the runnable instead be added to the javafx queue and run on javafx thread
+            //This makes the runnable instead be added to the javafx queue and run on javafx thread
             Platform.runLater(runnable);
 
         }
@@ -679,7 +702,7 @@ public class RootController {
 
     public void success(String message){
 
-        if(Platform.isFxApplicationThread()){
+        doGUITask(() -> {
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Success");
@@ -687,19 +710,7 @@ public class RootController {
             alert.setContentText(message);
             alert.showAndWait();
 
-        } else {
-
-            Platform.runLater(() -> {
-
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Success");
-                alert.setHeaderText(null);
-                alert.setContentText(message);
-                alert.showAndWait();
-
-            });
-
-        }
+        });
 
     }
 
