@@ -26,6 +26,8 @@ public class DetailedPieChartsController {
     @FXML
     public void initialize(){
 
+        clickGender.getData().add(new PieChart.Data("test",10));
+
     }
 
     /**

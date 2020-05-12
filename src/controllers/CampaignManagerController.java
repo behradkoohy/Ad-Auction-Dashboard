@@ -102,6 +102,9 @@ public class CampaignManagerController {
         }
 
         try {
+
+            controller.startLoadingIndicator();
+
             //Concurrency offers small benefit for this test set but may have much better improvements for other sets
             //TODO technically daos not thread safe but since atm each executes on different dao alright
             ExecutorService readerService = Executors.newCachedThreadPool();
@@ -266,36 +269,6 @@ public class CampaignManagerController {
         x = (double) Math.round(x * 100);
         x /= 100;
         return x;
-
-    }
-
-    /**
-     * Start the loading indicator for the campaign manager
-     */
-    public void startLoadingIndicator(){
-
-        this.controller.doGUITask(() -> {
-
-            spinner.setDisable(false);
-            spinner.setVisible(true);
-            anchorPane.setEffect(new GaussianBlur(30));
-
-        });
-
-    }
-
-    /**
-     * End the loading indicator for the campaign manager
-     */
-    public void endLoadingIndicator(){
-
-        this.controller.doGUITask(() -> {
-
-            spinner.setDisable(true);
-            spinner.setVisible(false);
-            anchorPane.setEffect(null);
-
-        });
 
     }
 

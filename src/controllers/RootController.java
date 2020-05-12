@@ -12,10 +12,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -24,6 +21,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 import models.Filter;
+import popups.PrintPopup;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -48,7 +46,7 @@ public class RootController {
     @FXML private ComparePageController comparePageController;
     @FXML private CampaignManagerController campaignManagerPageController;
 
-    //private static WindowController windowController;
+    @FXML private JFXTabPane tabPane;
 
     //FILTER PANEL
     @FXML private Circle circle;
@@ -116,6 +114,8 @@ public class RootController {
     @FXML
     public void initialize(){
 
+        disableOtherTabs();
+
         granTimeUnit = ChronoUnit.DAYS;
         granDigit = 1;
         ObservableList<String> timeUnits = FXCollections.observableArrayList("Hours", "Days", "Weeks");
@@ -165,6 +165,41 @@ public class RootController {
 
     }
 
+    public void disableOtherTabs(){
+
+        doGUITask(() -> {
+
+            for(int i = 1; i < 6; i++){
+
+                tabPane.getTabs().get(i).setDisable(true);
+
+            }
+
+        });
+
+    }
+
+    public void enableOtherTabs(){
+
+        doGUITask(() -> {
+
+            for(int i = 1; i < 6; i++){
+
+                tabPane.getTabs().get(i).setDisable(false);
+
+            }
+
+        });
+
+    }
+
+    public void goToBasicsPage(){
+
+        SingleSelectionModel<Tab> model = tabPane.getSelectionModel();
+        doGUITask(() -> model.select(1));
+
+    }
+
     /**
      * Call this method whenever a new / different campaign
      * has been selected by the user to populate all parts
@@ -175,6 +210,7 @@ public class RootController {
     public void loadCampaignData(String campaign){
 
         new Thread(() -> {
+
             startLoadingIndicator();
             currentCampaign = campaign;
             doGUITask(() -> campaignLabel.setText(currentCampaign));
@@ -186,6 +222,8 @@ public class RootController {
             setDateTimeTo(to);
             this.loadData();
             endLoadingIndicator();
+            enableOtherTabs();
+            goToBasicsPage();
 
         }).start();
 
@@ -579,6 +617,17 @@ public class RootController {
 
     }
 
+    @FXML
+    /**
+     * Called by the print button
+     */
+    public void print(){
+
+        System.out.println("print method called");
+        new PrintPopup(this);
+
+    }
+
     public void setDateTimeFrom(LocalDateTime from) {
         //Updates tFrom and dFrom automatically
         dateFromPicker.setValue(from.toLocalDate());
@@ -599,7 +648,7 @@ public class RootController {
      * JAVAFX THREAD REGARDLESS OF THREAD IT IS
      * CALLED FROM
      */
-    public void doGUITask(Runnable runnable){
+    public static void doGUITask(Runnable runnable){
 
         if(Platform.isFxApplicationThread()){
 
@@ -607,6 +656,7 @@ public class RootController {
 
         } else {
 
+            //This make the runnable instead be added to the javafx queue and run on javafx thread
             Platform.runLater(runnable);
 
         }

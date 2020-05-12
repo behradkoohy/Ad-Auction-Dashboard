@@ -1,5 +1,6 @@
 package controllers;
 
+import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
@@ -27,6 +28,11 @@ public class AdvancedPageController {
     @FXML private Label cpmLabel;
     @FXML private Label bounceRateLabel;
     @FXML private PieChart contextPie;
+
+    //HISTOGRAM STUFF
+    @FXML private JFXTextField minValue;
+    @FXML private JFXTextField maxValue;
+    @FXML private JFXTextField bandLength;
 
     private RootController controller;
     private PieChartModel pieChartModel;
@@ -197,6 +203,22 @@ public class AdvancedPageController {
             this.updateAdvancedChart();
             controller.endLoadingIndicator();
         }).start();
+    }
+
+    @FXML
+    /**
+     * Histogram method
+     */
+    public void refreshData(){
+
+    }
+
+    @FXML
+    /**
+     *Histogram method
+     */
+    public void redrawDefault(){
+
     }
 
     @FXML

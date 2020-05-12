@@ -64,7 +64,7 @@
          <bottom>
             <FlowPane prefHeight="47.0" prefWidth="1158.0" style="-fx-background-color: #6d6d6d#6d6d6d;" BorderPane.alignment="CENTER">
                <children>
-                  <JFXButton fx:id="printButton" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="PRINT MENU" textFill="WHITE">
+                  <JFXButton onAction="#print" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd;" text="PRINT MENU" textFill="WHITE">
                      <FlowPane.margin>
                         <Insets left="10.0" top="10.0" />
                      </FlowPane.margin>
