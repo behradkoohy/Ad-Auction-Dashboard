@@ -119,6 +119,9 @@ public class RootController {
     private boolean hobbies;
     private boolean travel;
 
+    private Filter mainFilter;
+    private Filter compareFilter;
+
     @FXML
     public void initialize(){
 
@@ -137,6 +140,11 @@ public class RootController {
         circleIsClickable = true;
 
         this.initFilterTab();
+
+        ObservableList listCom = FXCollections.observableArrayList("ALL", "COMPARE");
+        filterTargetComboBox.setItems(listCom);
+        mainFilter = new Filter(true, true,true,true,true,true,true,true,true,true,true,true,true,true,true,true);
+        compareFilter = new Filter(true, true,true,true,true,true,true,true,true,true,true,true,true,true,true,true);
 
         campaignManagerPageController.init(this);
         basicStatsPageController.init(this);
@@ -254,6 +262,13 @@ public class RootController {
 
     @FXML
     public void reloadDataButtonMethod() {
+
+        if (filterTargetComboBox.getValue().equals("COMPARE")) {
+            compareFilter = getFilter();
+        }
+        else {
+            mainFilter = getFilter();
+        }
         new Thread(() -> {
             //this.handleCircleClick();
             startLoadingIndicator();
@@ -881,6 +896,14 @@ public class RootController {
     public Filter getFilter() {
         return new Filter(male, female, lt25, btwn2534, btwn3544, btwn4554, gt55, lowIncome, medIncome, highIncome,
                 news, shopping, socialMedia, blog, hobbies, travel);
+    }
+
+    public Filter getMainFilter() {
+        return mainFilter;
+    }
+
+    public Filter getCompareFilter() {
+        return compareFilter;
     }
 
     public Node getRoot() {
