@@ -49,6 +49,7 @@ public class RootController {
     @FXML private ComparePageController comparePageController;
     @FXML private CampaignManagerController campaignManagerPageController;
     @FXML private AccessibilityPageController accessibilityPageController;
+    @FXML private DetailedPieChartsController detailedPieChartsPageController;
 
     @FXML private StackPane rootPane;
     @FXML private JFXTabPane tabPane;
@@ -142,6 +143,7 @@ public class RootController {
         advancedStatsPageController.init(this);
         comparePageController.init(this);
         accessibilityPageController.init(this);
+        detailedPieChartsPageController.init(this);
 
         //Initially the date spinners will be from week ago until now
         LocalDateTime now = LocalDateTime.now();
@@ -247,6 +249,7 @@ public class RootController {
         basicStatsPageController.updateData();
         advancedStatsPageController.updateData();
         comparePageController.updateData();
+        detailedPieChartsPageController.updateData();
     }
 
     @FXML
