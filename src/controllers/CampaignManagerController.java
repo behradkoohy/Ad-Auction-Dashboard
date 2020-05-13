@@ -279,8 +279,16 @@ public class CampaignManagerController {
     /**
      * Called when the user deletes a selected campaign
      */
-    public void deleteCampaign(){
-
+    public void deleteCampaign() {
+        new Thread(() -> {
+            controller.startLoadingIndicator();
+            String campaignToDelete = campaignComboBox.getValue().toString();
+            clickDao.deleteCampaign(campaignToDelete);
+            impressionDao.deleteCampaign(campaignToDelete);
+            serverEntryDao.deleteCampaign(campaignToDelete);
+            this.loadPreviousCampaignsCombo();
+            controller.endLoadingIndicator();
+        }).start();
     }
 
 

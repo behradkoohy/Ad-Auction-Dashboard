@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +102,18 @@ public class ClickDao {
     public List<String> getCampaigns() throws Exception {
         try (Session session = SessionHandler.getSessionFactory().openSession()) {
             return session.createQuery("select distinct campaign from Click ", String.class).list();
+        }
+    }
+
+    @Transactional
+    public void deleteCampaign(String campaignName) {
+        System.out.println("Test");
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.createQuery("delete from Click where campaign=:campaign")
+                    .setParameter("campaign", campaignName)
+                    .executeUpdate();
+            transaction.commit();
         }
     }
 

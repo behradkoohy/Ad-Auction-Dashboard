@@ -145,7 +145,7 @@ public class RootController {
     @FXML
     public void initialize(){
 
-//        disableOtherTabs();
+        disableOtherTabs();
 
         checkboxes = new JFXCheckBox[]{maleCheckBox, femaleCheckBox, lt25CheckBox, btwn2534CheckBox, btwn3544CheckBox,
         btwn4554CheckBox, gt54CheckBox, lowCheckBox, medCheckBox, highCheckBox, newsCheckBox, shoppingCheckBox, socialMediaCheckBox,
