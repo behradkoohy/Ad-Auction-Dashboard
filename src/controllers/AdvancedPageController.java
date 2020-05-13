@@ -207,6 +207,11 @@ public class AdvancedPageController {
         }).start();
     }
 
+    public MetricsModel getMetricsModel() {
+
+        return metricsModel;
+
+    }
     /* Histogram helper method */
 
     public void updateHistogramGraphics(){

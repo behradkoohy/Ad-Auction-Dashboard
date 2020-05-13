@@ -108,9 +108,9 @@ public class ComparePageController {
         }
 
         metricsModelFirst.setCampaign(campaignNameFirst);
-        metricsModelFirst.setFilter(controller.getFilter());
+        metricsModelFirst.setFilter(controller.getMainFilter());
         metricsModelSecond.setCampaign(campaignNameSecond);
-        metricsModelSecond.setFilter(controller.getFilter());
+        metricsModelSecond.setFilter(controller.getCompareFilter());
 
         updateFirstStatistics(metricsModelFirst);
         updateSecondStatistics(metricsModelSecond, campaignNameSecond);
