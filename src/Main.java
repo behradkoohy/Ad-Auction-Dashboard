@@ -6,6 +6,9 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.application.Application;
 
+import javax.swing.*;
+import java.net.URL;
+
 
 //JavaFX application has to extend Application
 public class Main extends Application {
@@ -17,8 +20,13 @@ public class Main extends Application {
         Parent root = null;
         root = FXMLLoader.load(getClass().getClassLoader().getResource("views/layout.fxml"));
         primaryStage.setScene(new Scene(root));
-        primaryStage.getIcons().add(new Image("/icon.png"));
-
+        try {
+            URL iconURL = Main.class.getResource("/icon.png");
+            java.awt.Image image = new ImageIcon(iconURL).getImage();
+            com.apple.eawt.Application.getApplication().setDockIconImage(image);
+        } catch (Exception e) {
+            primaryStage.getIcons().add(new Image("/icon.png"));
+        }
         //Accessibility controller needs access to the stage for high contrast
         AccessibilityPageController.setStage(primaryStage);
         primaryStage.setTitle("Ad Auction Dashboard");
