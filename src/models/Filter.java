@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 
 public class Filter implements Predicate<EntityAbstract> {
 
+    //Gender
     private boolean male;
     private boolean female;
 
@@ -30,11 +31,11 @@ public class Filter implements Predicate<EntityAbstract> {
     private boolean hobbies;
     private boolean travel;
 
-
     public Filter(boolean male, boolean female,
                   boolean lt25, boolean btwn2534, boolean btwn3544, boolean btwn4554, boolean gt55,
                   boolean lowIncome, boolean medIncome, boolean highIncome,
                   boolean news, boolean shopping, boolean socialMedia, boolean blog, boolean hobbies, boolean travel) {
+
         this.male = male;
         this.female = female;
         this.lt25 = lt25;
@@ -51,6 +52,15 @@ public class Filter implements Predicate<EntityAbstract> {
         this.blog = blog;
         this.hobbies = hobbies;
         this.travel = travel;
+
+    }
+
+    public boolean[] getBoolArr(){
+
+        return new boolean[]{male, female, lt25, btwn2534, btwn3544, btwn4554, gt55,
+                lowIncome, medIncome, highIncome, news, shopping, socialMedia, blog,
+                hobbies, travel};
+
     }
 
     @Override
@@ -77,4 +87,5 @@ public class Filter implements Predicate<EntityAbstract> {
 
         );
     }
+
 }

@@ -71,6 +71,25 @@ public class RootController {
     @FXML private Label bouncePageLabel;
     @FXML private Label bounceDurationLabel;
 
+    //FILTER CHECKBOXES
+    @FXML private JFXCheckBox maleCheckBox;
+    @FXML private JFXCheckBox femaleCheckBox;
+    @FXML private JFXCheckBox lt25CheckBox;
+    @FXML private JFXCheckBox btwn2534CheckBox;
+    @FXML private JFXCheckBox btwn3544CheckBox;
+    @FXML private JFXCheckBox btwn4554CheckBox;
+    @FXML private JFXCheckBox gt54CheckBox;
+    @FXML private JFXCheckBox lowCheckBox;
+    @FXML private JFXCheckBox medCheckBox;
+    @FXML private JFXCheckBox highCheckBox;
+    @FXML private JFXCheckBox newsCheckBox;
+    @FXML private JFXCheckBox shoppingCheckBox;
+    @FXML private JFXCheckBox socialMediaCheckBox;
+    @FXML private JFXCheckBox blogCheckBox;
+    @FXML private JFXCheckBox hobbiesCheckBox;
+    @FXML private JFXCheckBox travelCheckBox;
+    private JFXCheckBox[] checkboxes;
+
     //BOTTOM BAR
     @FXML private JFXButton campaignButton;
     @FXML private JFXButton printButton;
@@ -128,6 +147,12 @@ public class RootController {
 
 //        disableOtherTabs();
 
+        checkboxes = new JFXCheckBox[]{maleCheckBox, femaleCheckBox, lt25CheckBox, btwn2534CheckBox, btwn3544CheckBox,
+        btwn4554CheckBox, gt54CheckBox, lowCheckBox, medCheckBox, highCheckBox, newsCheckBox, shoppingCheckBox, socialMediaCheckBox,
+        blogCheckBox, hobbiesCheckBox, travelCheckBox};
+
+        initFilterTargetListener();
+
         granTimeUnit = ChronoUnit.DAYS;
         granDigit = 1;
         ObservableList<String> timeUnits = FXCollections.observableArrayList("Hours", "Days", "Weeks");
@@ -179,6 +204,42 @@ public class RootController {
         blog = true;
         hobbies = true;
         travel = true;
+
+    }
+
+    public void initFilterTargetListener(){
+
+        filterTargetComboBox.setOnAction(e -> {
+
+            if(((String) filterTargetComboBox.getSelectionModel().getSelectedItem()).equals("Second Campaign")){
+
+                updateCheckBoxes(compareFilter.getBoolArr());
+
+            } else {
+
+                updateCheckBoxes(mainFilter.getBoolArr());
+
+            }
+
+        });
+
+    }
+
+    public void updateCheckBoxes(boolean[] bools){
+
+        if(bools.length != checkboxes.length){
+
+            System.err.println("Expected boolean arr is not the same size as the " +
+                    "arr of checkboxes, this should be impossible!");
+
+        }
+
+        for(int i = 0; i < bools.length; i++) {
+
+            checkboxes[i].setSelected(bools[i]);
+
+        }
+
     }
 
     public void disableOtherTabs(){
@@ -267,6 +328,7 @@ public class RootController {
         else {
             mainFilter = getFilter();
         }
+
         new Thread(() -> {
             //this.handleCircleClick();
             startLoadingIndicator();
@@ -293,12 +355,14 @@ public class RootController {
     }
 
     private LocalDateTime getFromDateForCampaign(String campaignName) {
+
         ArrayList<LocalDateTime> mins = new ArrayList<>();
         mins.add(clickDao.getMinDateFromCampaign(campaignName));
         mins.add(impressionDao.getMinDateFromCampaign(campaignName));
         mins.add(serverEntryDao.getMinDateFromCampaign(campaignName));
         Collections.sort(mins);
         return mins.get(0);
+
     }
 
     private LocalDateTime getToDateForCampaign(String campaignName) {

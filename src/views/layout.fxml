@@ -1,14 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXDatePicker?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import com.jfoenix.controls.JFXSpinner?>
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import com.jfoenix.controls.JFXTimePicker?>
+<?import java.lang.Double?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.text.Font?>
 
-<StackPane fx:id="rootPane" prefHeight="831.0" prefWidth="1158.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RootController">
+<StackPane fx:id="rootPane" prefHeight="831.0" prefWidth="1158.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RootController">
    <children>
       <BorderPane fx:id="mainApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="836.0" prefWidth="1158.0">
          <center>
@@ -32,7 +50,7 @@
                         </ScrollPane>
                     </content>
                   </Tab>
-                  <Tab fx:id="comparePageTab" text="Compare" onSelectionChanged="#compareTabChanged">
+                  <Tab fx:id="comparePageTab" onSelectionChanged="#compareTabChanged" text="Compare">
                      <fx:include fx:id="comparePage" source="ComparePage.fxml" />
                   </Tab>
                   <Tab text="Accessibility">
@@ -112,12 +130,12 @@
                                     </Label>
                                     <FlowPane prefHeight="23.0" prefWidth="268.0">
                                        <children>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleMale" selected="true" text="Male     ">
+                                          <JFXCheckBox fx:id="maleCheckBox" checkedColor="#6ccccc" onAction="#toggleMale" selected="true" text="Male     ">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleFemale" selected="true" text="Female">
+                                          <JFXCheckBox fx:id="femaleCheckBox" checkedColor="#6ccccc" onAction="#toggleFemale" selected="true" text="Female">
                                              <FlowPane.margin>
                                                 <Insets />
                                              </FlowPane.margin>
@@ -140,17 +158,17 @@
                                     </Label>
                                     <FlowPane prefHeight="25.0" prefWidth="248.0">
                                        <children>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleLt25" selected="true" text="&lt;25  ">
+                                          <JFXCheckBox fx:id="lt25CheckBox" checkedColor="#6ccccc" onAction="#toggleLt25" selected="true" text="&lt;25  ">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBtwn2534" selected="true" text="25-34">
+                                          <JFXCheckBox fx:id="btwn2534CheckBox" checkedColor="#6ccccc" onAction="#toggleBtwn2534" selected="true" text="25-34">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBtwn3544" selected="true" text="35 - 44">
+                                          <JFXCheckBox fx:id="btwn3544CheckBox" checkedColor="#6ccccc" onAction="#toggleBtwn3544" selected="true" text="35 - 44">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
@@ -162,12 +180,12 @@
                                     </FlowPane>
                                     <FlowPane prefHeight="25.0" prefWidth="248.0">
                                        <children>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBtwn4554" selected="true" text="45 - 54">
+                                          <JFXCheckBox fx:id="btwn4554CheckBox" checkedColor="#6ccccc" onAction="#toggleBtwn4554" selected="true" text="45 - 54">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleGt55" selected="true" text="&gt;54">
+                                          <JFXCheckBox fx:id="gt54CheckBox" checkedColor="#6ccccc" onAction="#toggleGt55" selected="true" text="&gt;54">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
@@ -190,17 +208,17 @@
                                     </Label>
                                     <FlowPane prefHeight="26.0" prefWidth="248.0">
                                        <children>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleLow" selected="true" text="Low">
+                                          <JFXCheckBox fx:id="lowCheckBox" checkedColor="#6ccccc" onAction="#toggleLow" selected="true" text="Low">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleMed" selected="true" text="Medium">
+                                          <JFXCheckBox fx:id="medCheckBox" checkedColor="#6ccccc" onAction="#toggleMed" selected="true" text="Medium">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleHigh" selected="true" text="High">
+                                          <JFXCheckBox fx:id="highCheckBox" checkedColor="#6ccccc" onAction="#toggleHigh" selected="true" text="High">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
@@ -223,34 +241,34 @@
                                     </Label>
                                     <FlowPane prefHeight="26.0" prefWidth="248.0">
                                        <children>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleNews" selected="true" text="News">
+                                          <JFXCheckBox fx:id="newsCheckBox" checkedColor="#6ccccc" onAction="#toggleNews" selected="true" text="News">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleShopping" selected="true" text="Shopping">
+                                          <JFXCheckBox fx:id="shoppingCheckBox" checkedColor="#6ccccc" onAction="#toggleShopping" selected="true" text="Shopping">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
-                                          <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleSocialMedia" selected="true" text="Social Media">
+                                          <JFXCheckBox fx:id="socialMediaCheckBox" checkedColor="#6ccccc" onAction="#toggleSocialMedia" selected="true" text="Social Media">
                                              <FlowPane.margin>
                                                 <Insets left="10.0" />
                                              </FlowPane.margin>
                                           </JFXCheckBox>
                                           <FlowPane prefHeight="26.0" prefWidth="248.0">
                                              <children>
-                                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBlog" selected="true" text="Blog">
+                                                <JFXCheckBox fx:id="blogCheckBox" checkedColor="#6ccccc" onAction="#toggleBlog" selected="true" text="Blog">
                                                    <FlowPane.margin>
                                                       <Insets left="10.0" />
                                                    </FlowPane.margin>
                                                 </JFXCheckBox>
-                                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleHobbies" selected="true" text="Hobbies">
+                                                <JFXCheckBox fx:id="hobbiesCheckBox" checkedColor="#6ccccc" onAction="#toggleHobbies" selected="true" text="Hobbies">
                                                    <FlowPane.margin>
                                                       <Insets left="10.0" />
                                                    </FlowPane.margin>
                                                 </JFXCheckBox>
-                                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleTravel" selected="true" text="Travel">
+                                                <JFXCheckBox fx:id="travelCheckBox" checkedColor="#6ccccc" onAction="#toggleTravel" selected="true" text="Travel">
                                                    <FlowPane.margin>
                                                       <Insets left="10.0" />
                                                    </FlowPane.margin>
