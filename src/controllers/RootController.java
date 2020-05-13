@@ -883,10 +883,12 @@ public class RootController {
                 news, shopping, socialMedia, blog, hobbies, travel);
     }
 
-    public Node getRoot(){
+    public Node getRoot() {
 
         return rootPane;
-
+    }
+    public JFXTabPane getTabPane(){
+        return this.tabPane;
     }
 
 }
