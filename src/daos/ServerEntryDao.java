@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -97,6 +98,17 @@ public class ServerEntryDao {
             } else {
                 return (Integer) max.get(0);
             }
+        }
+    }
+
+    @Transactional
+    public void deleteCampaign(String campaignName) {
+        try (Session session = SessionHandler.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.createQuery("delete from ServerEntry where campaign=:campaign")
+                    .setParameter("campaign", campaignName)
+                    .executeUpdate();
+            transaction.commit();
         }
     }
 
