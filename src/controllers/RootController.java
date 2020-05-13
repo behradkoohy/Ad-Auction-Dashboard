@@ -162,6 +162,9 @@ public class RootController {
         //Set default to days
         granularityComboBox.getSelectionModel().select(1);
 
+        filterTargetComboBox.getItems().clear();
+        filterTargetComboBox.getItems().add("Whole Application");
+
         circleIsRight = true;
         circleIsClickable = true;
 
@@ -322,7 +325,7 @@ public class RootController {
     @FXML
     public void reloadDataButtonMethod() {
 
-        if (filterTargetComboBox.getValue().equals("Second Campaign")) {
+        if (filterTargetComboBox.getValue() != null && filterTargetComboBox.getValue().equals("Second Campaign")) {
             compareFilter = getFilter();
         }
         else {

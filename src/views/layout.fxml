@@ -112,7 +112,7 @@
                                           <Insets left="20.0" top="10.0" />
                                        </VBox.margin>
                                     </Label>
-                                    <JFXComboBox fx:id="filterTargetComboBox" prefHeight="27.0" prefWidth="276.0" promptText="WHOLE APPLICATION">
+                                    <JFXComboBox fx:id="filterTargetComboBox" prefHeight="27.0" prefWidth="276.0" promptText="Whole Application">
                                        <VBox.margin>
                                           <Insets left="20.0" top="10.0" />
                                        </VBox.margin>
