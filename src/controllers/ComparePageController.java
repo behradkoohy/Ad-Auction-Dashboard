@@ -287,7 +287,6 @@ public class ComparePageController {
 
     private void populateCampaignChooser(List<String> list){
 
-        list.remove(controller.getCurrentCampaign());
         secondCampaignComboBox.getItems().clear();
         secondCampaignComboBox.getItems().addAll(list);
 
