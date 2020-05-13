@@ -32,7 +32,7 @@
                         </ScrollPane>
                     </content>
                   </Tab>
-                  <Tab text="Compare">
+                  <Tab fx:id="comparePageTab" text="Compare" onSelectionChanged="#compareTabChanged">
                      <fx:include fx:id="comparePage" source="ComparePage.fxml" />
                   </Tab>
                   <Tab text="Accessibility">

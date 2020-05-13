@@ -53,6 +53,7 @@ public class RootController {
 
     @FXML private StackPane rootPane;
     @FXML private JFXTabPane tabPane;
+    @FXML private Tab comparePageTab;
 
     //FILTER PANEL
     @FXML private Circle circle;
@@ -141,8 +142,6 @@ public class RootController {
 
         this.initFilterTab();
 
-        ObservableList listCom = FXCollections.observableArrayList("ALL", "COMPARE");
-        filterTargetComboBox.setItems(listCom);
         mainFilter = new Filter(true, true,true,true,true,true,true,true,true,true,true,true,true,true,true,true);
         compareFilter = new Filter(true, true,true,true,true,true,true,true,true,true,true,true,true,true,true,true);
 
@@ -180,7 +179,6 @@ public class RootController {
         blog = true;
         hobbies = true;
         travel = true;
-
     }
 
     public void disableOtherTabs(){
@@ -263,7 +261,7 @@ public class RootController {
     @FXML
     public void reloadDataButtonMethod() {
 
-        if (filterTargetComboBox.getValue().equals("COMPARE")) {
+        if (filterTargetComboBox.getValue().equals("Second Campaign")) {
             compareFilter = getFilter();
         }
         else {
@@ -275,6 +273,23 @@ public class RootController {
             this.loadData();
             endLoadingIndicator();
         }).start();
+    }
+
+    public void compareTabChanged() {
+        if(comparePageTab.isSelected()) {
+            System.out.println("Selected!");
+            doGUITask(() -> {
+                filterTargetComboBox.getItems().clear();
+                filterTargetComboBox.getItems().add("Whole Application");
+                filterTargetComboBox.getItems().add("Second Campaign");
+            });
+        } else {
+            System.out.println("Unselected!");
+            doGUITask(() -> {
+                filterTargetComboBox.getItems().clear();
+                filterTargetComboBox.getItems().add("Whole Application");
+            });
+        }
     }
 
     private LocalDateTime getFromDateForCampaign(String campaignName) {
@@ -901,11 +916,6 @@ public class RootController {
     public Filter getMainFilter() {
         return mainFilter;
     }
-    public JFXTabPane getTabPane(){
-        return this.tabPane;
-    }
-
-    public Node getRoot(){
 
     public Filter getCompareFilter() {
         return compareFilter;

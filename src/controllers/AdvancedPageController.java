@@ -221,12 +221,6 @@ public class AdvancedPageController {
         histogram.setCategoryGap(0);
     }
 
-    public MetricsModel getMetricsModel(){
-
-        return metricsModel;
-
-    }
-
     @FXML
     /**
      * Histogram method
