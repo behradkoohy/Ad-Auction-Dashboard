@@ -74,7 +74,7 @@ public class BasicPageController {
         pieChartModel.setCampaign(campaignName);
         pieChartModel.setStart(start);
         pieChartModel.setEnd(end);
-        metricsModel.setFilter(controller.getFilter());
+        metricsModel.setFilter(controller.getMainFilter());
 
         System.out.println(metricsModel.getNumImpressions(start, end));
         String numImpressionsStr = String.valueOf(String.valueOf(RootController.to2DP(
