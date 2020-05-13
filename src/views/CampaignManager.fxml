@@ -73,7 +73,7 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </GridPane>
-                  <JFXButton onAction="#createNewCampaign" prefHeight="27.0" prefWidth="448.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="CREATE AND LOAD NEW CAMPAIGN" textFill="WHITE">
+                  <JFXButton fx:id="loadNewCampaign" onAction="#createNewCampaign" prefHeight="27.0" prefWidth="448.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="CREATE AND LOAD NEW CAMPAIGN" textFill="WHITE">
                      <VBox.margin>
                         <Insets left="20.0" right="20.0" top="20.0" />
                      </VBox.margin>
