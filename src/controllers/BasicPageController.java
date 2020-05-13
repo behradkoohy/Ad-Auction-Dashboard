@@ -87,11 +87,11 @@ public class BasicPageController {
 
         this.updateLabels(numImpressionsStr, numClicksStr, numUniqueStr, numBouncesStr, numConversionsStr, totalCostStr);
 
-        HashMap<String, Integer> pieChartData = pieChartModel.getDistributions();
-        List<PieChart.Data> genderPieData = getGenderPieData(pieChartData.get("men"), pieChartData.get("women"));
-        List<PieChart.Data> agePieData = getAgePieData(pieChartData.get("lt25"), pieChartData.get("btwn2534"),
+        HashMap<String, Integer> pieChartData = pieChartModel.getDistributions("impressions");
+        List<PieChart.Data> genderPieData = pieChartModel.getGenderPieData(pieChartData.get("men"), pieChartData.get("women"));
+        List<PieChart.Data> agePieData = pieChartModel.getAgePieData(pieChartData.get("lt25"), pieChartData.get("btwn2534"),
                 pieChartData.get("btwn3544"), pieChartData.get("btwn4554"), pieChartData.get("gt55"));
-        List<PieChart.Data> incomePieData = getIncomePieData(pieChartData.get("low"), pieChartData.get("medium"),
+        List<PieChart.Data> incomePieData = pieChartModel.getIncomePieData(pieChartData.get("low"), pieChartData.get("medium"),
                 pieChartData.get("high"));
 
         updateBasicPieCharts(genderPieData, agePieData, incomePieData);
@@ -137,38 +137,7 @@ public class BasicPageController {
 
     }
 
-    private List<PieChart.Data> getGenderPieData(int men, int women){
 
-        List<PieChart.Data> out = new ArrayList<PieChart.Data>();
-        out.add(new PieChart.Data("Men", men));
-        out.add(new PieChart.Data("Women", women));
-        return out;
-
-    }
-
-    private List<PieChart.Data> getAgePieData(int lt25, int btwn2534, int btwn3544,
-                                             int btwn4554, int gt55){
-
-        List<PieChart.Data> out = new ArrayList<PieChart.Data>();
-        String[] tags = new String[]{"<25","25-34","35-44","45-54",">55"};
-        int[] vals = new int[]{lt25, btwn2534,btwn3544,btwn4554,gt55};
-
-        for(int i = 0; i < tags.length; i++){
-            out.add(new PieChart.Data(tags[i], vals[i]));
-        }
-
-        return out;
-    }
-
-    private List<PieChart.Data> getIncomePieData(int high, int medium, int low){
-
-        List<PieChart.Data> out = new ArrayList<PieChart.Data>();
-        out.add(new PieChart.Data("High", high));
-        out.add(new PieChart.Data("Medium", medium));
-        out.add(new PieChart.Data("Low", low));
-        return out;
-
-    }
 
     /**
      * Update the basic chart to show the given data

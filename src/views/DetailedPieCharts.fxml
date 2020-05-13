@@ -9,9 +9,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.PieChart?>
 
-<AnchorPane fx:id = "detailedPieChartsPage" xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.DetailedPieChartsController">
+<AnchorPane fx:id = "detailedPieChartsPage" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DetailedPieChartsController">
 <children>
     <GridPane alignment="CENTER" gridLinesVisible="true" layoutY="-12.0" prefHeight="1461.0" prefWidth="1158.0">
         <columnConstraints>
