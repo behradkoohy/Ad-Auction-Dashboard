@@ -81,7 +81,7 @@ public class AdvancedPageController {
         this.updateLabels(ctrStr, cpaStr, cpcStr,  cpmStr, bounceRateStr);
 
         HashMap<String, Integer> pieChartData = pieChartModel.getContextDistributions();
-        List<PieChart.Data> contextPieData = pieChartModel.getContextPieData(pieChartData.get("blog"), pieChartData.get("news"),
+        List<PieChart.Data> contextPieData = getContextPieData(pieChartData.get("blog"), pieChartData.get("news"),
                 pieChartData.get("socialmedia"), pieChartData.get("shopping"), pieChartData.get("hobbies"),
                 pieChartData.get("travel"));
 
@@ -110,7 +110,32 @@ public class AdvancedPageController {
         });
     }
 
+    /**
+     * Generate the context pie chart data that will populate the context pie chart
+     * update. Make sure you add the arguments in the order they are listed
+     * @param blog
+     * @param news
+     * @param socialmedia
+     * @param shopping
+     * @param hobbies
+     * @param travel
+     */
+    public List<PieChart.Data> getContextPieData(int blog, int news, int socialmedia, int shopping,
+                                                 int hobbies, int travel){
 
+        List<PieChart.Data> out = new ArrayList<PieChart.Data>();
+        String[] tags = new String[]{"News","Shopping","Social Media", "Blogs", "Hobbies", "Travel"};
+        int[] vals = new int[]{news, shopping, socialmedia, blog, hobbies, travel};
+
+        for(int i = 0; i < tags.length; i++){
+
+            out.add(new PieChart.Data(tags[i],vals[i]));
+
+        }
+
+        return out;
+
+    }
 
     /**
      * Updates the context pie on the advanced stats page
