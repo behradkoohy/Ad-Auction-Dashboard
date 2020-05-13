@@ -1,32 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXCheckBox?>
-<?import com.jfoenix.controls.JFXComboBox?>
-<?import com.jfoenix.controls.JFXDatePicker?>
-<?import com.jfoenix.controls.JFXSlider?>
-<?import com.jfoenix.controls.JFXSpinner?>
-<?import com.jfoenix.controls.JFXTabPane?>
-<?import com.jfoenix.controls.JFXTimePicker?>
-<?import java.lang.Double?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.Polygon?>
-<?import javafx.scene.text.Font?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<StackPane fx:id="rootPane" prefHeight="831.0" prefWidth="1158.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RootController">
+<StackPane fx:id="rootPane" prefHeight="831.0" prefWidth="1158.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.RootController">
    <children>
       <BorderPane fx:id="mainApp" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="836.0" prefWidth="1158.0">
          <center>
@@ -35,10 +17,10 @@
                   <Tab text="Campaign Management">
                     <fx:include fx:id="campaignManagerPage" source="CampaignManager.fxml" />
                   </Tab>
-                  <Tab text="Basic Statistics">
+                  <Tab fx:id="basicStatisticsTabBtn" text="Basic Statistics">
                      <fx:include fx:id="basicStatsPage" source="BasicPage.fxml" />
                   </Tab>
-                  <Tab text="Advanced Statistics">
+                  <Tab fx:id="advStatsTabBtn" text="Advanced Statistics">
                      <fx:include fx:id="advancedStatsPage" source="AdvancedPage.fxml" />
                   </Tab>
                   <Tab text="Detailed Pie Charts">

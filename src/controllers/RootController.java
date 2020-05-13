@@ -116,7 +116,7 @@ public class RootController {
     @FXML
     public void initialize(){
 
-        disableOtherTabs();
+//        disableOtherTabs();
 
         granTimeUnit = ChronoUnit.DAYS;
         granDigit = 1;

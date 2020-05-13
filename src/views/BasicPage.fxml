@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXCheckBox?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.PieChart?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<ScrollPane fx:id="basicStatsPage" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BasicPageController">
+<ScrollPane fx:id="basicStatsPage" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BasicPageController">
     <content>
         <FlowPane prefHeight="750.0" prefWidth="1104.0">
             <children>
@@ -39,27 +30,27 @@
                         <Label text="Toggle graph legend" underline="true" />
                         <FlowPane prefHeight="106.0" prefWidth="340.0">
                             <children>
-                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleImpressions" selected="true" text="Impressions">
+                                <JFXCheckBox fx:id="impressionsTgl" checkedColor="#6ccccc" onAction="#toggleImpressions" selected="true" text="Impressions">
                                     <FlowPane.margin>
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>
                                 </JFXCheckBox>
-                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleConversions" selected="false" text="Conversions">
+                                <JFXCheckBox fx:id="conversionsTgl" checkedColor="#6ccccc" onAction="#toggleConversions" selected="false" text="Conversions">
                                     <FlowPane.margin>
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>
                                 </JFXCheckBox>
-                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleClicks" selected="false" text="Clicks">
+                                <JFXCheckBox fx:id="clicksTgl" checkedColor="#6ccccc" onAction="#toggleClicks" selected="false" text="Clicks">
                                     <FlowPane.margin>
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>
                                 </JFXCheckBox>
-                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleUniques" selected="false" text="Unique users">
+                                <JFXCheckBox fx:id="uniqueTgl" checkedColor="#6ccccc" onAction="#toggleUniques" selected="false" text="Unique users">
                                     <FlowPane.margin>
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>
                                 </JFXCheckBox>
-                                <JFXCheckBox checkedColor="#6ccccc" onAction="#toggleBounces" selected="false" text="Bounces">
+                                <JFXCheckBox fx:id="bouncesTgl" checkedColor="#6ccccc" onAction="#toggleBounces" selected="false" text="Bounces">
                                     <FlowPane.margin>
                                         <Insets left="10.0" top="15.0" />
                                     </FlowPane.margin>
