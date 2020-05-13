@@ -24,6 +24,7 @@ public class Main extends Application {
             URL iconURL = Main.class.getResource("/icon.png");
             java.awt.Image image = new ImageIcon(iconURL).getImage();
             com.apple.eawt.Application.getApplication().setDockIconImage(image);
+            primaryStage.getIcons().add(new Image("/icon.png"));
         } catch (Exception e) {
             primaryStage.getIcons().add(new Image("/icon.png"));
         }
