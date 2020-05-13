@@ -184,16 +184,22 @@ public class MetricsModel {
     private ArrayList<Double> getTotalClickCostPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         ArrayList<Double> costs = new ArrayList();
+        List<Click> clicks = clickDao.getByDateAndCampaign(campaign, start, end);
 
         LocalDateTime current = start;
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            double total = 0;
-            for (Click click : clickDao.getByDateAndCampaign(campaign, current, nextTime)) {
-                total += click.getClickCost();
-            }
+//            double total = 0;
+//            for (Click click : clickDao.getByDateAndCampaign(campaign, current, nextTime)) {
+//                total += click.getClickCost();
+//            }
+
+            LocalDateTime finalCurrent = current;
+            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
+
+            double total = clicks.stream().filter(pred).filter(filter).mapToDouble(c -> c.getClickCost()).sum();
 
             costs.add(total);
             current = nextTime;
@@ -220,16 +226,22 @@ public class MetricsModel {
     private ArrayList<Double> getTotalImpressionsCostPerTime(LocalDateTime start, LocalDateTime end, Duration duration) {
 
         ArrayList<Double> costs = new ArrayList();
+        List<Impression> imps = impressionDao.getByDateAndCampaign(campaign, start, end);
 
         LocalDateTime current = start;
 
         while (current.isBefore(end)) {
             LocalDateTime nextTime = current.plus(duration);
 
-            double total = 0;
-            for (Impression impression : impressionDao.getByDateAndCampaign(campaign, current, nextTime)) {
-                total += impression.getImpressionCost();
-            }
+//            double total = 0;
+//            for (Impression impression : impressionDao.getByDateAndCampaign(campaign, current, nextTime)) {
+//                total += impression.getImpressionCost();
+//            }
+
+            LocalDateTime finalCurrent = current;
+            Predicate<EntityAbstract> pred = n -> n.getDate().isAfter(finalCurrent) && n.getDate().isBefore(nextTime);
+
+            double total = imps.stream().filter(pred).filter(filter).mapToDouble(c -> c.getImpressionCost()).sum();
 
             costs.add(total);
             current = nextTime;
