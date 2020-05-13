@@ -1,3 +1,4 @@
+import controllers.AccessibilityPageController;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.fxml.FXMLLoader;
@@ -15,12 +16,17 @@ public class Main extends Application {
         Parent root = null;
         root = FXMLLoader.load(getClass().getClassLoader().getResource("views/layout.fxml"));
         primaryStage.setScene(new Scene(root));
+
+        //Accessibility controller needs access to the stage for high contrast
+        AccessibilityPageController.setStage(primaryStage);
         primaryStage.setTitle("Ad Auction Dashboard");
         primaryStage.show();
+
     }
 
     public static void main(String[] args) {
         launch(args);
     }
+
 
 }

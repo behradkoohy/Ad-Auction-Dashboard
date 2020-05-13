@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import com.jfoenix.controls.JFXToggleButton?>
+
+<AnchorPane fx:id="accessibilityPage" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AccessibilityPageController">
+<children>
+    <JFXToggleButton layoutX="77.0" layoutY="46.0" onAction="#toggleHighContrast" scaleX="1.5" scaleY="1.5" text="High contrast mode" />
+    <JFXToggleButton layoutX="74.0" layoutY="144.0" onAction="#toggleLargeFont" scaleX="1.5" scaleY="1.5" text="Large font mode" />
+</children></AnchorPane>

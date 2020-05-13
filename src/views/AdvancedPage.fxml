@@ -115,7 +115,7 @@
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
                                             <tooltip>
-                                                <Tooltip text="The total number of times this advert has been shown to a user" />
+                                                <Tooltip text="The average number of clicks per impression" />
                                             </tooltip>
                                         </Label>
                                         <Label fx:id="clicksTxt1" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPA:" GridPane.rowIndex="1">
@@ -123,7 +123,7 @@
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
                                             <tooltip>
-                                                <Tooltip text="The total number of users that have actively clicked on this advert" />
+                                                <Tooltip text="The average amount of money spent for each acquisition (for each conversion)" />
                                             </tooltip>
                                         </Label>
                                         <Label fx:id="uniqueTxt1" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPC:" GridPane.rowIndex="2">
@@ -131,7 +131,7 @@
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
                                             <tooltip>
-                                                <Tooltip text="The total number of unique users that have clicked on the advert so far" />
+                                                <Tooltip text="The average amount of money spent for each click" />
                                             </tooltip>
                                         </Label>
                                         <Label fx:id="bounceTxt1" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="CPM:" GridPane.rowIndex="3">
@@ -139,7 +139,7 @@
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
                                             <tooltip>
-                                                <Tooltip text="The total number of bounces recorded so far. A bounce is when the user has failed to interact with the advert upon clicking on it e.g. closed after x seconds, closed after only opening one page. You can define how a bounce should be measured in the &quot;Bounce&quot; tab" />
+                                                <Tooltip text="The average amount of money spent for every 1000 impressions" />
                                             </tooltip>
                                         </Label>
                                         <Label fx:id="conversionsTxt1" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Bounce rate:" GridPane.rowIndex="4">
@@ -147,7 +147,7 @@
                                                 <Insets left="10.0" />
                                             </GridPane.margin>
                                             <tooltip>
-                                                <Tooltip text="The total number of conversions recorded so far. A conversion is when the advert has been &quot;successful&quot; e.g. the user subscribed to the service advertised or bought the product advertised" />
+                                                <Tooltip text="The average number of bounces per click" />
                                             </tooltip>
                                         </Label>
                                         <Label fx:id="numImpressions1" GridPane.columnIndex="1">
