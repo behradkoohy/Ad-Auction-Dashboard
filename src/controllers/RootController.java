@@ -151,8 +151,6 @@ public class RootController {
         btwn4554CheckBox, gt54CheckBox, lowCheckBox, medCheckBox, highCheckBox, newsCheckBox, shoppingCheckBox, socialMediaCheckBox,
         blogCheckBox, hobbiesCheckBox, travelCheckBox};
 
-        initFilterTargetListener();
-
         granTimeUnit = ChronoUnit.DAYS;
         granDigit = 1;
         ObservableList<String> timeUnits = FXCollections.observableArrayList("Hours", "Days", "Weeks");
@@ -172,6 +170,8 @@ public class RootController {
 
         mainFilter = new Filter(true, true,true,true,true,true,true,true,true,true,true,true,true,true,true,true);
         compareFilter = new Filter(true, true,true,true,true,true,true,true,true,true,true,true,true,true,true,true);
+
+        initFilterTargetListener();
 
         campaignManagerPageController.init(this);
         basicStatsPageController.init(this);
@@ -214,7 +214,7 @@ public class RootController {
 
         filterTargetComboBox.setOnAction(e -> {
 
-            if(((String) filterTargetComboBox.getSelectionModel().getSelectedItem()).equals("Second Campaign")){
+            if(filterTargetComboBox.getValue() != null && filterTargetComboBox.getValue().equals("Second Campaign")) {
 
                 updateCheckBoxes(compareFilter.getBoolArr());
 
@@ -343,17 +343,15 @@ public class RootController {
     public void compareTabChanged() {
         if(comparePageTab.isSelected()) {
             System.out.println("Selected!");
-            doGUITask(() -> {
-                filterTargetComboBox.getItems().clear();
-                filterTargetComboBox.getItems().add("Whole Application");
-                filterTargetComboBox.getItems().add("Second Campaign");
-            });
+            filterTargetComboBox.getItems().clear();
+            filterTargetComboBox.getItems().add("Whole Application");
+            filterTargetComboBox.getItems().add("Second Campaign");
+            //filterTargetComboBox.setValue("Whole Application");
         } else {
             System.out.println("Unselected!");
-            doGUITask(() -> {
-                filterTargetComboBox.getItems().clear();
-                filterTargetComboBox.getItems().add("Whole Application");
-            });
+            filterTargetComboBox.getItems().clear();
+            filterTargetComboBox.getItems().add("Whole Application");
+            //filterTargetComboBox.setValue("Whole Application");
         }
     }
 
