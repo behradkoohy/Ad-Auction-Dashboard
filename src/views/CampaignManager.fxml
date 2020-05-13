@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="controllers.CampaignManagerController">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CampaignManagerController">
    <children>
       <GridPane gridLinesVisible="true" prefHeight="721.0" prefWidth="1158.0">
          <columnConstraints>
@@ -95,12 +95,12 @@
                         <Insets top="40.0" />
                      </VBox.margin>
                   </JFXComboBox>
-                  <JFXButton onAction="#deleteCampaign" prefHeight="27.0" prefWidth="405.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="DELETE CAMPAIGN" textFill="WHITE">
+                  <JFXButton onAction="#loadPreviousCampaign" prefHeight="27.0" prefWidth="405.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="LOAD SELECTED CAMPAIGN" textFill="WHITE">
                      <VBox.margin>
                         <Insets left="20.0" right="20.0" top="40.0" />
                      </VBox.margin>
                   </JFXButton>
-                  <JFXButton onAction="#loadPreviousCampaign" prefHeight="27.0" prefWidth="405.0" style="-fx-background-color: #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd #9575cd#9575cd;" text="LOAD SELECTED CAMPAIGN" textFill="WHITE">
+                  <JFXButton onAction="#deleteCampaign" prefHeight="27.0" prefWidth="405.0" style="-fx-background-color: #ffb74d#ffb74d;" text="DELETE CAMPAIGN" textFill="WHITE">
                      <VBox.margin>
                         <Insets left="20.0" right="20.0" top="40.0" />
                      </VBox.margin>
