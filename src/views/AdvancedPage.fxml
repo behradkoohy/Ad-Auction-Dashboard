@@ -1,12 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<ScrollPane fx:id="advancedStatsPage" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdvancedPageController">
+<ScrollPane fx:id="advancedStatsPage" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AdvancedPageController">
     <content>
         <VBox fx:id="advancedStatsContent" prefHeight="1094.0" prefWidth="1152.0">
             <children>
@@ -27,6 +39,40 @@
                                         <NumberAxis side="LEFT" />
                                     </yAxis>
                                 </LineChart>
+                        <Label text="Toggle graph legend" underline="true">
+                           <VBox.margin>
+                              <Insets left="40.0" />
+                           </VBox.margin>
+                        </Label>
+                        <FlowPane prefHeight="106.0" prefWidth="340.0">
+                           <children>
+                              <JFXCheckBox fx:id="ctrBtn1" checkedColor="#6ccccc" onAction="#toggleCTR" selected="true" text="CTR">
+                                 <FlowPane.margin>
+                                    <Insets left="40.0" top="15.0" />
+                                 </FlowPane.margin>
+                              </JFXCheckBox>
+                              <JFXCheckBox fx:id="cpaBtn1" checkedColor="#6ccccc" onAction="#toggleCPA" selected="false" text="CPA">
+                                 <FlowPane.margin>
+                                    <Insets left="10.0" top="15.0" />
+                                 </FlowPane.margin>
+                              </JFXCheckBox>
+                              <JFXCheckBox fx:id="cpcBtn1" checkedColor="#6ccccc" onAction="#toggleCPC" selected="false" text="CPC">
+                                 <FlowPane.margin>
+                                    <Insets left="10.0" top="15.0" />
+                                 </FlowPane.margin>
+                              </JFXCheckBox>
+                              <JFXCheckBox fx:id="cpmBtn1" checkedColor="#6ccccc" onAction="#toggleCPM" selected="false" text="CPM">
+                                 <FlowPane.margin>
+                                    <Insets left="10.0" top="15.0" />
+                                 </FlowPane.margin>
+                              </JFXCheckBox>
+                              <JFXCheckBox fx:id="bounceRateBtn1" checkedColor="#6ccccc" onAction="#toggleBounceRate" selected="false" text="Bounce rate">
+                                 <FlowPane.margin>
+                                    <Insets left="10.0" top="15.0" />
+                                 </FlowPane.margin>
+                              </JFXCheckBox>
+                           </children>
+                        </FlowPane>
                                 <Label text="Histogram" underline="true">
                                     <VBox.margin>
                                         <Insets bottom="20.0" left="30.0" />
@@ -47,39 +93,6 @@
                         </VBox>
                         <VBox prefHeight="710.0" prefWidth="296.0">
                             <children>
-                                <Label text="Toggle graph legend" underline="true" />
-                                <FlowPane prefHeight="106.0" prefWidth="340.0">
-                                    <children>
-                                        <JFXCheckBox fx:id="ctrBtn" checkedColor="#6ccccc" onAction="#toggleCTR" selected="true" text="CTR">
-                                            <FlowPane.margin>
-                                                <Insets left="10.0" top="15.0" />
-                                            </FlowPane.margin>
-                                        </JFXCheckBox>
-                                        <JFXCheckBox fx:id="cpaBtn" checkedColor="#6ccccc" onAction="#toggleCPA" selected="false" text="CPA">
-                                            <FlowPane.margin>
-                                                <Insets left="10.0" top="15.0" />
-                                            </FlowPane.margin>
-                                        </JFXCheckBox>
-                                        <JFXCheckBox fx:id="cpcBtn" checkedColor="#6ccccc" onAction="#toggleCPC" selected="false" text="CPC">
-                                            <FlowPane.margin>
-                                                <Insets left="10.0" top="15.0" />
-                                            </FlowPane.margin>
-                                        </JFXCheckBox>
-                                        <JFXCheckBox fx:id="cpmBtn" checkedColor="#6ccccc" onAction="#toggleCPM" selected="false" text="CPM">
-                                            <FlowPane.margin>
-                                                <Insets left="10.0" top="15.0" />
-                                            </FlowPane.margin>
-                                        </JFXCheckBox>
-                                        <JFXCheckBox fx:id="bounceRateBtn" checkedColor="#6ccccc" onAction="#toggleBounceRate" selected="false" text="Bounce rate">
-                                            <FlowPane.margin>
-                                                <Insets left="10.0" top="15.0" />
-                                            </FlowPane.margin>
-                                        </JFXCheckBox>
-                                    </children>
-                                    <VBox.margin>
-                                        <Insets top="10.0" />
-                                    </VBox.margin>
-                                </FlowPane>
                                 <Label text="Information" underline="true">
                                     <VBox.margin>
                                         <Insets bottom="20.0" />
@@ -239,6 +252,9 @@
                                  </FlowPane.margin>
                               </JFXButton>
                            </children>
+                           <VBox.margin>
+                              <Insets top="50.0" />
+                           </VBox.margin>
                         </FlowPane>
                             </children>
                             <FlowPane.margin>

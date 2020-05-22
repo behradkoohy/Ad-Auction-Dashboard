@@ -4,25 +4,25 @@
 
 .root{
 
-    -fx-background: #093145;
-    -fx-focus-color: #EFD469;
-    -fx-text-fill: #ffffff;
+    -fx-background: #093145 !important;
+    -fx-focus-color: #EFD469 !important;
+    -fx-text-fill: #ffffff !important;
 
 }
 
 .chart-legend {
 
-    -fx-text-fill: #FFFFFF;
+    -fx-text-fill: #FFFFFF !important;
 
 }
 
 .jfx-button{
-    -fx-text-fill: #EFD469;
-    -fx-background-color: #9A2617;
+    -fx-text-fill: #EFD469 !important;
+    -fx-background-color: #9A2617 !important;
 }
 
 .slider{
-    -fx-border-color: white;
-    -fx-border-style: dashed;
-    -fx-border-width: 2;
+    -fx-border-color: white !important;
+    -fx-border-style: dashed !important;
+    -fx-border-width: 2 !important;
 }

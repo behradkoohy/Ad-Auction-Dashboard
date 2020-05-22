@@ -20,6 +20,7 @@ public class Main extends Application {
         Parent root = null;
         root = FXMLLoader.load(getClass().getClassLoader().getResource("views/layout.fxml"));
         primaryStage.setScene(new Scene(root));
+
         try {
             URL iconURL = Main.class.getResource("/icon.png");
             java.awt.Image image = new ImageIcon(iconURL).getImage();
@@ -28,9 +29,11 @@ public class Main extends Application {
         } catch (Exception e) {
             primaryStage.getIcons().add(new Image("/icon.png"));
         }
+
         //Accessibility controller needs access to the stage for high contrast
         AccessibilityPageController.setStage(primaryStage);
         primaryStage.setTitle("Ad Auction Dashboard");
+        primaryStage.setResizable(false);
         primaryStage.show();
 
     }

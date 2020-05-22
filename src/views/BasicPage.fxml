@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-<ScrollPane fx:id="basicStatsPage" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BasicPageController">
+<ScrollPane fx:id="basicStatsPage" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.BasicPageController">
     <content>
         <FlowPane fx:id="basicStatsContent" prefHeight="750.0" prefWidth="1104.0">
             <children>
@@ -20,6 +29,40 @@
                                     <NumberAxis side="LEFT" />
                                 </yAxis>
                             </LineChart>
+                  <Label text="Toggle graph legend" underline="true">
+                     <VBox.margin>
+                        <Insets left="40.0" />
+                     </VBox.margin>
+                  </Label>
+                  <FlowPane prefHeight="106.0" prefWidth="340.0">
+                     <children>
+                        <JFXCheckBox fx:id="impressionsTgl" checkedColor="#6ccccc" onAction="#toggleImpressions" selected="true" text="Impressions">
+                           <FlowPane.margin>
+                              <Insets left="40.0" top="15.0" />
+                           </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox fx:id="conversionsTgl" checkedColor="#6ccccc" onAction="#toggleConversions" selected="false" text="Conversions">
+                           <FlowPane.margin>
+                              <Insets left="10.0" top="15.0" />
+                           </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox fx:id="clicksTgl" checkedColor="#6ccccc" onAction="#toggleClicks" selected="false" text="Clicks">
+                           <FlowPane.margin>
+                              <Insets left="10.0" top="15.0" />
+                           </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox fx:id="uniqueTgl" checkedColor="#6ccccc" onAction="#toggleUniques" selected="false" text="Unique users">
+                           <FlowPane.margin>
+                              <Insets left="10.0" top="15.0" />
+                           </FlowPane.margin>
+                        </JFXCheckBox>
+                        <JFXCheckBox fx:id="bouncesTgl" checkedColor="#6ccccc" onAction="#toggleBounces" selected="false" text="Bounces">
+                           <FlowPane.margin>
+                              <Insets left="10.0" top="15.0" />
+                           </FlowPane.margin>
+                        </JFXCheckBox>
+                     </children>
+                  </FlowPane>
                         </children>
                         <FlowPane.margin>
                             <Insets left="10.0" top="40.0" />
@@ -27,39 +70,6 @@
                 </VBox>
                 <VBox fx:id="chartInfo" prefHeight="516.0" prefWidth="310.0">
                     <children>
-                        <Label text="Toggle graph legend" underline="true" />
-                        <FlowPane prefHeight="106.0" prefWidth="340.0">
-                            <children>
-                                <JFXCheckBox fx:id="impressionsTgl" checkedColor="#6ccccc" onAction="#toggleImpressions" selected="true" text="Impressions">
-                                    <FlowPane.margin>
-                                        <Insets left="10.0" top="15.0" />
-                                    </FlowPane.margin>
-                                </JFXCheckBox>
-                                <JFXCheckBox fx:id="conversionsTgl" checkedColor="#6ccccc" onAction="#toggleConversions" selected="false" text="Conversions">
-                                    <FlowPane.margin>
-                                        <Insets left="10.0" top="15.0" />
-                                    </FlowPane.margin>
-                                </JFXCheckBox>
-                                <JFXCheckBox fx:id="clicksTgl" checkedColor="#6ccccc" onAction="#toggleClicks" selected="false" text="Clicks">
-                                    <FlowPane.margin>
-                                        <Insets left="10.0" top="15.0" />
-                                    </FlowPane.margin>
-                                </JFXCheckBox>
-                                <JFXCheckBox fx:id="uniqueTgl" checkedColor="#6ccccc" onAction="#toggleUniques" selected="false" text="Unique users">
-                                    <FlowPane.margin>
-                                        <Insets left="10.0" top="15.0" />
-                                    </FlowPane.margin>
-                                </JFXCheckBox>
-                                <JFXCheckBox fx:id="bouncesTgl" checkedColor="#6ccccc" onAction="#toggleBounces" selected="false" text="Bounces">
-                                    <FlowPane.margin>
-                                        <Insets left="10.0" top="15.0" />
-                                    </FlowPane.margin>
-                                </JFXCheckBox>
-                            </children>
-                            <VBox.margin>
-                                <Insets top="10.0" />
-                            </VBox.margin>
-                        </FlowPane>
                         <Label text="Information" underline="true">
                             <VBox.margin>
                                 <Insets bottom="20.0" />
@@ -79,7 +89,7 @@
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <Label fx:id="numImpressionsTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of Impressions:">
+                                <Label fx:id="numImpressionsTxt" prefHeight="17.0" prefWidth="250.0" text="Total number of Impressions:">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
@@ -87,7 +97,7 @@
                                         <Tooltip text="The total number of times this advert has been shown to a user" />
                                     </tooltip>
                                 </Label>
-                                <Label fx:id="clicksTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of clicks:" GridPane.rowIndex="1">
+                                <Label fx:id="clicksTxt" prefHeight="17.0" prefWidth="250.0" text="Total number of clicks:" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
@@ -95,7 +105,7 @@
                                         <Tooltip text="The total number of users that have actively clicked on this advert" />
                                     </tooltip>
                                 </Label>
-                                <Label fx:id="uniqueTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Number of unique users:" GridPane.rowIndex="2">
+                                <Label fx:id="uniqueTxt" prefHeight="17.0" prefWidth="250.0" text="Number of unique users:" GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
@@ -103,7 +113,7 @@
                                         <Tooltip text="The total number of unique users that have clicked on the advert so far" />
                                     </tooltip>
                                 </Label>
-                                <Label fx:id="bounceTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of bounces:" GridPane.rowIndex="3">
+                                <Label fx:id="bounceTxt" prefHeight="17.0" prefWidth="250.0" text="Total number of bounces:" GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
@@ -111,7 +121,7 @@
                                         <Tooltip text="The total number of bounces recorded so far. A bounce is when the user has failed to interact with the advert upon clicking on it e.g. closed after x seconds, closed after only opening one page. You can define how a bounce should be measured in the &quot;Bounce&quot; tab" />
                                     </tooltip>
                                 </Label>
-                                <Label fx:id="conversionsTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total number of conversions:" GridPane.rowIndex="4">
+                                <Label fx:id="conversionsTxt" prefHeight="17.0" prefWidth="250.0" text="Total number of conversions:" GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
@@ -119,7 +129,7 @@
                                         <Tooltip text="The total number of conversions recorded so far. A conversion is when the advert has been &quot;successful&quot; e.g. the user subscribed to the service advertised or bought the product advertised" />
                                     </tooltip>
                                 </Label>
-                                <Label fx:id="costTxt" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="250.0" text="Total cost of campaign:" GridPane.rowIndex="5">
+                                <Label fx:id="costTxt" prefHeight="17.0" prefWidth="250.0" text="Total cost of campaign:" GridPane.rowIndex="5">
                                     <GridPane.margin>
                                         <Insets left="10.0" />
                                     </GridPane.margin>
